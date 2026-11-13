@@ -14,6 +14,7 @@ import {
   ReferenceLine
 } from 'recharts';
 import { GlucoseRecord } from '@/types';
+import { TrendingUp, Calendar } from 'lucide-react';
 
 interface GlucoseTrendChartProps {
   records: GlucoseRecord[];
@@ -55,22 +56,29 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
   }, [records, daysRange]);
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h3 className="text-lg font-bold text-slate-900">{t('chartTitle')}</h3>
-          <p className="text-xs text-slate-500">
-            Fasting vs Post-meal readings tracked separately (Asia/Phnom_Penh)
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+            <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+              {t('chartTitle')}
+            </h3>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Fasting &amp; post-meal readings tracked as separate clinical trajectories (Asia/Phnom_Penh)
           </p>
         </div>
 
-        {/* Range switcher */}
-        <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+        {/* Range switcher pills */}
+        <div className="flex items-center space-x-1 bg-slate-100 p-1.5 rounded-2xl self-start sm:self-auto border border-slate-200/80">
           <button
             onClick={() => setDaysRange(7)}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${
+            className={`px-4 py-2 text-xs font-black rounded-xl transition ${
               daysRange === 7
-                ? 'bg-white text-teal-800 shadow-xs'
+                ? 'bg-teal-700 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -78,9 +86,9 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
           </button>
           <button
             onClick={() => setDaysRange(30)}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${
+            className={`px-4 py-2 text-xs font-black rounded-xl transition ${
               daysRange === 30
-                ? 'bg-white text-teal-800 shadow-xs'
+                ? 'bg-teal-700 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -89,17 +97,18 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
         </div>
       </div>
 
-      <div className="h-72 w-full">
+      <div className="h-80 w-full">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 10, right: 15, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <LineChart data={chartData} margin={{ top: 15, right: 20, left: -10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="4 4" stroke="#f1f5f9" vertical={false} />
               <XAxis
                 dataKey="date"
                 stroke="#94a3b8"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
+                dy={10}
               />
               <YAxis
                 stroke="#94a3b8"
@@ -112,21 +121,22 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
               <Tooltip
                 contentStyle={{
                   backgroundColor: '#ffffff',
-                  borderRadius: '12px',
+                  borderRadius: '16px',
                   border: '1px solid #e2e8f0',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  fontSize: '12px'
+                  boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                  fontSize: '12px',
+                  padding: '10px 14px'
                 }}
               />
               <Legend
                 verticalAlign="top"
-                height={36}
+                height={40}
                 formatter={(value) => (
-                  <span className="text-xs font-bold text-slate-700">{value}</span>
+                  <span className="text-xs font-bold text-slate-700 ml-1">{value}</span>
                 )}
               />
 
-              {/* Safe Target Thresholds */}
+              {/* High target limit */}
               <ReferenceLine
                 y={130}
                 stroke="#f59e0b"
@@ -138,6 +148,7 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
                   position: 'insideBottomRight'
                 }}
               />
+              {/* Low alert threshold */}
               <ReferenceLine
                 y={70}
                 stroke="#ef4444"
@@ -150,27 +161,27 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
                 }}
               />
 
-              {/* Fasting Line */}
+              {/* Fasting Series */}
               <Line
                 type="monotone"
                 dataKey="fasting"
                 name={t('fastingLine')}
                 stroke="#d97706"
-                strokeWidth={3}
+                strokeWidth={3.5}
                 dot={{ r: 5, fill: '#d97706', strokeWidth: 2, stroke: '#ffffff' }}
-                activeDot={{ r: 7 }}
+                activeDot={{ r: 8 }}
                 connectNulls
               />
 
-              {/* Post-Meal Line */}
+              {/* Post-Meal Series */}
               <Line
                 type="monotone"
                 dataKey="postMeal"
                 name={t('postMealLine')}
                 stroke="#0d9488"
-                strokeWidth={3}
+                strokeWidth={3.5}
                 dot={{ r: 5, fill: '#0d9488', strokeWidth: 2, stroke: '#ffffff' }}
-                activeDot={{ r: 7 }}
+                activeDot={{ r: 8 }}
                 connectNulls
               />
             </LineChart>
@@ -182,9 +193,15 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
         )}
       </div>
 
-      <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500">
-        <span>Fasting target: 80–130 mg/dL (Educational reference)</span>
-        <span>Post-meal target: &lt; 180 mg/dL (1-2 hours)</span>
+      <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs font-medium text-slate-500">
+        <span className="flex items-center space-x-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+          <span>Fasting Reference: 80–130 mg/dL</span>
+        </span>
+        <span className="flex items-center space-x-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-teal-600" />
+          <span>Post-meal Reference: &lt; 180 mg/dL</span>
+        </span>
       </div>
     </div>
   );

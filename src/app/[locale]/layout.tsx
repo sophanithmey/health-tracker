@@ -6,7 +6,6 @@ import { routing } from '@/i18n/routing';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { RoleProvider } from '@/context/RoleContext';
 import { AppHeader } from '@/components/layout/AppHeader';
-import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import { EmergencyHypoBanner } from '@/components/layout/EmergencyHypoBanner';
 
@@ -34,15 +33,12 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <QueryProvider>
         <RoleProvider>
-          <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 pb-16 md:pb-0">
+          <div className="min-h-screen bg-slate-50/60 flex flex-col text-slate-900 pb-20 md:pb-8">
             <AppHeader />
             <EmergencyHypoBanner />
-            <div className="flex-1 flex max-w-7xl w-full mx-auto">
-              <DesktopSidebar />
-              <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full">
-                {children}
-              </main>
-            </div>
+            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+              {children}
+            </main>
             <MobileBottomNav />
           </div>
         </RoleProvider>
@@ -50,4 +46,3 @@ export default async function LocaleLayout({
     </NextIntlClientProvider>
   );
 }
-

@@ -12,12 +12,10 @@ import { RecentAlertsWidget } from '@/components/dashboard/RecentAlertsWidget';
 import { UpcomingRemindersWidget } from '@/components/dashboard/UpcomingRemindersWidget';
 import { GlucoseEntryModal } from '@/components/glucose/GlucoseEntryModal';
 import { PatientProfile, GlucoseRecord, HealthReportSummary, NotificationAlert } from '@/types';
-import { Sparkles, Utensils, HeartHandshake, Plus } from 'lucide-react';
+import { Sparkles, Utensils, HeartHandshake, Plus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 
 export default function DashboardPage() {
-  const t = useTranslations('dashboard');
-  const tCommon = useTranslations('common');
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [newAlertNotice, setNewAlertNotice] = useState<NotificationAlert | null>(null);
 
@@ -54,7 +52,7 @@ export default function DashboardPage() {
     }
   });
 
-  const { data: remindersData, refetch: refetchReminders } = useQuery({
+  const { data: remindersData } = useQuery({
     queryKey: ['reminders'],
     queryFn: async () => {
       const res = await axios.get('/api/reminders');
@@ -80,42 +78,47 @@ export default function DashboardPage() {
   const latestRecord = records[0];
 
   return (
-    <div className="space-y-6">
-      {/* Patient Header */}
-      {patient && <PatientHeaderCard patient={patient} />}
+    <div className="space-y-8 animate-fade-in">
+      {/* 1. Patient Header Hero */}
+      {patient && (
+        <PatientHeaderCard
+          patient={patient}
+          onRecordClick={() => setIsEntryOpen(true)}
+        />
+      )}
 
       {/* New Alert Notification Toast if generated */}
       {newAlertNotice && (
-        <div className="p-4 bg-amber-100 border-2 border-amber-400 rounded-2xl flex items-start justify-between gap-3 text-amber-950 animate-fade-in shadow-md">
+        <div className="p-5 bg-amber-50 border-2 border-amber-400 rounded-3xl flex items-start justify-between gap-4 text-amber-950 shadow-md">
           <div>
-            <h4 className="font-bold text-sm sm:text-base">
+            <h4 className="font-black text-base sm:text-lg">
               {newAlertNotice.titleKm || newAlertNotice.title}
             </h4>
-            <p className="text-xs sm:text-sm mt-1">
+            <p className="text-xs sm:text-sm mt-1 text-slate-800">
               {newAlertNotice.messageKm || newAlertNotice.message}
             </p>
             {newAlertNotice.guidanceSummary && (
-              <p className="text-xs mt-1.5 font-semibold text-teal-900 bg-white/60 p-2 rounded-lg">
+              <p className="text-xs mt-2 font-bold text-teal-950 bg-white/80 p-3 rounded-2xl border border-teal-200">
                 💡 {newAlertNotice.guidanceSummary}
               </p>
             )}
           </div>
           <button
             onClick={() => setNewAlertNotice(null)}
-            className="text-amber-800 font-bold text-xs p-1 hover:bg-amber-200 rounded-lg"
+            className="text-amber-800 font-black text-sm p-2 hover:bg-amber-200 rounded-xl"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Latest Glucose Reading Card */}
+      {/* 2. Latest Blood Sugar Reading Card */}
       <LatestGlucoseCard
         record={latestRecord}
         onRecordClick={() => setIsEntryOpen(true)}
       />
 
-      {/* Summary Metrics Cards */}
+      {/* 3. Summary Metrics Cards (Separate Fasting & Post-Meal Averages) */}
       {reportData?.summary && (
         <SummaryMetricsCards
           summary={reportData.summary}
@@ -123,58 +126,58 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Glucose Trend Chart */}
+      {/* 4. Glucose Trend Chart */}
       <GlucoseTrendChart records={records} />
 
-      {/* Quick Action Navigation Cards for Seniors */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* 5. Quick Health Action Spotlight Tiles */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Link
           href="/lifestyle"
-          className="p-5 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-teal-200/80 shadow-xs hover:shadow-md transition flex items-center justify-between group"
+          className="p-6 rounded-3xl bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/50 border border-teal-200/90 shadow-xs hover:shadow-md hover:border-teal-400 transition-all group flex items-center justify-between"
         >
-          <div className="flex items-center space-x-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-teal-600 text-white flex items-center justify-center shadow-xs">
-              <Utensils className="w-6 h-6" />
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center shadow-md shadow-teal-600/20 group-hover:scale-105 transition">
+              <Utensils className="w-7 h-7" />
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 text-base">
+              <h4 className="font-black text-slate-900 text-lg">
                 មគ្គុទ្ទេសក៍អាហារូបត្ថម្ភខ្មែរ
               </h4>
-              <p className="text-xs text-slate-600">
-                Cambodian Food Guide &amp; Portion Balance
+              <p className="text-xs text-slate-600 mt-0.5">
+                Cambodian Food Guide, Portion Pacing &amp; Carb Awareness
               </p>
             </div>
           </div>
-          <span className="text-teal-700 font-bold text-sm group-hover:translate-x-1 transition">
-            →
-          </span>
+          <div className="w-10 h-10 rounded-2xl bg-white border border-teal-200 flex items-center justify-center text-teal-700 font-bold group-hover:translate-x-1 transition shadow-2xs">
+            <ArrowRight className="w-5 h-5" />
+          </div>
         </Link>
 
         <Link
           href="/medications"
-          className="p-5 rounded-3xl bg-gradient-to-br from-teal-50 to-emerald-50 border border-emerald-200/80 shadow-xs hover:shadow-md transition flex items-center justify-between group"
+          className="p-6 rounded-3xl bg-gradient-to-br from-teal-50/80 via-white to-emerald-50/50 border border-emerald-200/90 shadow-xs hover:shadow-md hover:border-emerald-400 transition-all group flex items-center justify-between"
         >
-          <div className="flex items-center space-x-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-              <Sparkles className="w-6 h-6" />
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 group-hover:scale-105 transition">
+              <Sparkles className="w-7 h-7" />
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 text-base">
+              <h4 className="font-black text-slate-900 text-lg">
                 កាលវិភាគថ្នាំលេបប្រចាំថ្ងៃ
               </h4>
-              <p className="text-xs text-slate-600">
-                Daily Oral Medications &amp; Adherence Log
+              <p className="text-xs text-slate-600 mt-0.5">
+                Oral Medications (Metformin 500mg) &amp; Adherence Log
               </p>
             </div>
           </div>
-          <span className="text-emerald-700 font-bold text-sm group-hover:translate-x-1 transition">
-            →
-          </span>
+          <div className="w-10 h-10 rounded-2xl bg-white border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold group-hover:translate-x-1 transition shadow-2xs">
+            <ArrowRight className="w-5 h-5" />
+          </div>
         </Link>
       </div>
 
-      {/* Additional Widgets: Alerts & Reminders */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* 6. Lower Row: Recent Alerts & Upcoming Reminders */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RecentAlertsWidget
           alerts={alertsData || []}
           onAlertAcknowledged={refetchAlerts}
@@ -182,7 +185,7 @@ export default function DashboardPage() {
         <UpcomingRemindersWidget reminders={remindersData || []} />
       </div>
 
-      {/* Glucose Entry Modal */}
+      {/* Entry Modal */}
       <GlucoseEntryModal
         isOpen={isEntryOpen}
         onClose={() => setIsEntryOpen(false)}
@@ -191,4 +194,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
