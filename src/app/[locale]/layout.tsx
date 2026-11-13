@@ -7,7 +7,6 @@ import { QueryProvider } from '@/components/providers/QueryProvider';
 import { RoleProvider } from '@/context/RoleContext';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
-import { EmergencyHypoBanner } from '@/components/layout/EmergencyHypoBanner';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -33,9 +32,8 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <QueryProvider>
         <RoleProvider>
-          <div className="min-h-screen bg-slate-50/60 flex flex-col text-slate-900 pb-20 md:pb-8">
+          <div className="min-h-screen bg-slate-50/70 flex flex-col text-slate-900 pb-20 md:pb-10 font-sans">
             <AppHeader />
-            <EmergencyHypoBanner />
             <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
               {children}
             </main>

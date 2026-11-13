@@ -112,29 +112,54 @@ export function LatestGlucoseCard({ record, target, onRecordClick }: LatestGluco
             <div className="self-center ml-2">{badgeComponent}</div>
           </div>
 
-          {/* Target Reference Bar */}
-          <div className="mt-4 max-w-md">
-            <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1.5">
-              <span>Low (70)</span>
-              <span className="text-teal-700 font-bold">Target Range ({targetMin}–{targetMax} mg/dL)</span>
-              <span>High (180)</span>
+          {/* Visual Target Spectrum Gauge */}
+          <div className="mt-5 max-w-lg bg-white/90 p-4 rounded-2xl border border-slate-200/90 shadow-2xs">
+            <div className="flex justify-between items-center text-xs font-bold text-slate-600 mb-2">
+              <span className="text-slate-400">Low (&lt; 70)</span>
+              <span className="text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-bold">
+                Target ({targetMin}–{targetMax} mg/dL)
+              </span>
+              <span className="text-slate-400">High (&ge; 180)</span>
             </div>
-            <div className="relative h-3 bg-slate-200 rounded-full overflow-hidden">
-              {/* Target zone highlight */}
+
+            <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+              {/* Target zone */}
               <div
-                className="absolute top-0 bottom-0 bg-emerald-200"
+                className="absolute top-0 bottom-0 bg-emerald-400"
                 style={{
                   left: `${((targetMin - 60) / 160) * 100}%`,
                   width: `${((targetMax - targetMin) / 160) * 100}%`
                 }}
               />
-              {/* Current reading marker */}
+              {/* Elevated zone */}
               <div
-                className={`absolute top-0 bottom-0 w-2 rounded-full ${
-                  isCritical ? 'bg-red-600' : isHigh ? 'bg-amber-600' : 'bg-emerald-600'
-                }`}
-                style={{ left: `calc(${progressPercent}% - 4px)` }}
+                className="absolute top-0 bottom-0 bg-amber-300"
+                style={{
+                  left: `${((targetMax - 60) / 160) * 100}%`,
+                  width: `${((180 - targetMax) / 160) * 100}%`
+                }}
               />
+              {/* High zone */}
+              <div
+                className="absolute right-0 top-0 bottom-0 bg-rose-300"
+                style={{
+                  left: `${((180 - 60) / 160) * 100}%`,
+                  right: 0
+                }}
+              />
+            </div>
+
+            {/* Scale Marker Pointer */}
+            <div className="relative w-full h-5 mt-1.5">
+              <div
+                className="absolute -top-1 flex flex-col items-center -translate-x-1/2 transition-all"
+                style={{ left: `${progressPercent}%` }}
+              >
+                <div className={`w-2.5 h-2.5 rotate-45 shadow-xs ${isCritical ? 'bg-red-600' : isHigh ? 'bg-amber-600' : 'bg-emerald-600'}`} />
+                <span className={`text-[10px] font-black whitespace-nowrap mt-0.5 ${isCritical ? 'text-red-700' : isHigh ? 'text-amber-800' : 'text-emerald-800'}`}>
+                  {record.valueMgDl} mg/dL
+                </span>
+              </div>
             </div>
           </div>
 

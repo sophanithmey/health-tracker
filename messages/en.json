@@ -17,8 +17,8 @@
     "actions": "Actions",
     "status": "Status",
     "notes": "Notes",
-    "roleCaregiver": "Family Caregiver (Child)",
-    "rolePatient": "Patient (Mom)",
+    "roleCaregiver": "Caregiver (Child)",
+    "rolePatient": "Mom (Patient)",
     "activeRole": "Current Role",
     "switchRole": "Switch Role",
     "disclaimer": "This is a health-monitoring application for family care, NOT a medical diagnosis or treatment tool."
@@ -28,11 +28,11 @@
     "bloodSugar": "Blood Sugar",
     "medications": "Medications",
     "lifestyle": "Lifestyle",
-    "targets": "Glucose Targets",
-    "reports": "Health Reports",
+    "targets": "Targets",
+    "reports": "Reports",
     "settings": "Settings",
     "foodGuide": "Food Guide",
-    "emergency": "Emergency Help"
+    "emergency": "15-15 Rule"
   },
   "patient": {
     "title": "Patient Profile",
