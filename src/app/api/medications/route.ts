@@ -5,7 +5,9 @@ import { PATIENT_ID } from '@/server/db/inMemoryStore';
 
 export async function GET() {
   try {
-    const meds = await HealthRepository.getMedications(PATIENT_ID);
+    const activePatient = await HealthRepository.getPatientProfile();
+    const patientId = activePatient.id || PATIENT_ID;
+    const meds = await HealthRepository.getMedications(patientId);
     return NextResponse.json({ success: true, data: meds });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -24,9 +26,11 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const validated = MedicationSchema.parse(body);
+    const activePatient = await HealthRepository.getPatientProfile();
+    const patientId = validated.patientId || activePatient.id || PATIENT_ID;
 
     const saved = await HealthRepository.createMedication({
-      patientId: validated.patientId || PATIENT_ID,
+      patientId,
       name: validated.name,
       dosage: validated.dosage,
       frequency: validated.frequency,
@@ -35,7 +39,13 @@ export async function POST(request: Request) {
       startDate: validated.startDate,
       endDate: validated.endDate,
       isActive: validated.isActive,
-      notes: validated.notes
+      notes: validated.notes,
+      rxcui: body.rxcui || undefined,
+      genericName: body.genericName || undefined,
+      brandName: body.brandName || undefined,
+      activeIngredients: Array.isArray(body.activeIngredients) ? body.activeIngredients : undefined,
+      dosageForm: body.dosageForm || undefined,
+      referenceSource: body.referenceSource || undefined
     });
 
     return NextResponse.json({ success: true, data: saved });

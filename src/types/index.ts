@@ -202,9 +202,17 @@ export interface Medication {
   endDate?: string;
   isActive: boolean;
   notes?: string;
+  rxcui?: string;
+  genericName?: string;
+  brandName?: string;
+  activeIngredients?: string[];
+  dosageForm?: string;
+  referenceSource?: string;
   createdAt: string;
   updatedAt: string;
 }
+
+export * from './medication-database';
 
 export interface MedicationLog {
   id: string;

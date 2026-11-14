@@ -596,6 +596,12 @@ export class HealthRepository {
             endDate: d.end_date,
             isActive: d.is_active,
             notes: d.notes,
+            rxcui: d.rxcui,
+            genericName: d.generic_name,
+            brandName: d.brand_name,
+            activeIngredients: d.active_ingredients || [],
+            dosageForm: d.dosage_form,
+            referenceSource: d.reference_source,
             createdAt: d.created_at,
             updatedAt: d.updated_at
           }));
@@ -649,7 +655,13 @@ export class HealthRepository {
           start_date: newMed.startDate,
           end_date: newMed.endDate || null,
           is_active: newMed.isActive,
-          notes: newMed.notes || null
+          notes: newMed.notes || null,
+          rxcui: newMed.rxcui || null,
+          generic_name: newMed.genericName || null,
+          brand_name: newMed.brandName || null,
+          active_ingredients: newMed.activeIngredients || [],
+          dosage_form: newMed.dosageForm || null,
+          reference_source: newMed.referenceSource || null
         });
       } catch (err) {
         console.warn('Error creating health_medications in Supabase:', err);
@@ -673,6 +685,12 @@ export class HealthRepository {
         if (updates.timingInstructions !== undefined) payload.timing_instructions = updates.timingInstructions;
         if (updates.isActive !== undefined) payload.is_active = updates.isActive;
         if (updates.notes !== undefined) payload.notes = updates.notes;
+        if (updates.rxcui !== undefined) payload.rxcui = updates.rxcui;
+        if (updates.genericName !== undefined) payload.generic_name = updates.genericName;
+        if (updates.brandName !== undefined) payload.brand_name = updates.brandName;
+        if (updates.activeIngredients !== undefined) payload.active_ingredients = updates.activeIngredients;
+        if (updates.dosageForm !== undefined) payload.dosage_form = updates.dosageForm;
+        if (updates.referenceSource !== undefined) payload.reference_source = updates.referenceSource;
 
         await supabaseServer.from('health_medications').update(payload).eq('id', id);
       } catch (err) {

@@ -20,9 +20,23 @@ interface AddMedicationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  initialData?: {
+    rxcui?: string;
+    name?: string;
+    dosage?: string;
+    genericName?: string;
+    brandName?: string;
+    activeIngredients?: string[];
+    dosageForm?: string;
+  } | null;
 }
 
-export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedicationModalProps) {
+export function AddMedicationModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  initialData
+}: AddMedicationModalProps) {
   const t = useTranslations('medications');
   const tCommon = useTranslations('common');
   const locale = useLocale();
@@ -35,9 +49,27 @@ export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedication
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [rxcui, setRxcui] = useState<string | undefined>(undefined);
+  const [genericName, setGenericName] = useState<string | undefined>(undefined);
+  const [brandName, setBrandName] = useState<string | undefined>(undefined);
+  const [activeIngredients, setActiveIngredients] = useState<string[]>([]);
+  const [dosageForm, setDosageForm] = useState<string | undefined>(undefined);
   const [activePreset, setActivePreset] = useState<string | null>('Metformin HCl 500 mg');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (initialData) {
+      if (initialData.name) setName(initialData.name);
+      if (initialData.dosage) setDosage(initialData.dosage);
+      if (initialData.rxcui) setRxcui(initialData.rxcui);
+      if (initialData.genericName) setGenericName(initialData.genericName);
+      if (initialData.brandName) setBrandName(initialData.brandName);
+      if (initialData.activeIngredients) setActiveIngredients(initialData.activeIngredients);
+      if (initialData.dosageForm) setDosageForm(initialData.dosageForm);
+      setActivePreset(null);
+    }
+  }, [initialData, isOpen]);
 
   if (!isOpen) return null;
 
@@ -122,7 +154,13 @@ export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedication
         startDate: startDate || new Date().toISOString().split('T')[0],
         endDate: endDate.trim() || undefined,
         notes: notes.trim() || undefined,
-        isActive: true
+        isActive: true,
+        rxcui: rxcui || undefined,
+        genericName: genericName || undefined,
+        brandName: brandName || undefined,
+        activeIngredients: activeIngredients.length > 0 ? activeIngredients : undefined,
+        dosageForm: dosageForm || undefined,
+        referenceSource: rxcui ? 'RxNorm' : undefined
       });
 
       onSuccess();
@@ -220,9 +258,16 @@ export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedication
 
                 {/* Medicine Name */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-khmer">
-                    {t('name')} <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 font-khmer">
+                      {t('name')} <span className="text-red-500">*</span>
+                    </label>
+                    {rxcui && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200">
+                        RxCUI: {rxcui}
+                      </span>
+                    )}
+                  </div>
                   <input
                     type="text"
                     required

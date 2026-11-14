@@ -32,3 +32,4 @@ ALTER TABLE IF EXISTS health_glucose_target_audit_logs DROP CONSTRAINT IF EXISTS
 
 -- 8. health_notifications
 ALTER TABLE IF EXISTS health_notifications DROP CONSTRAINT IF EXISTS health_notifications_acknowledged_by_fkey;
+

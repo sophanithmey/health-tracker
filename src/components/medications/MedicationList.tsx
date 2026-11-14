@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import axios from 'axios';
 import { Medication, MedicationLog } from '@/types';
-import { Pill, CheckCircle2, Clock, Plus, ShieldCheck, User, Trash2 } from 'lucide-react';
+import { Pill, CheckCircle2, Clock, Plus, ShieldCheck, User, Trash2, Info } from 'lucide-react';
 import { DoseLogModal } from './DoseLogModal';
 import { AddMedicationModal } from './AddMedicationModal';
 import { useRole } from '@/context/RoleContext';
@@ -13,9 +13,10 @@ interface MedicationListProps {
   medications: Medication[];
   logs: MedicationLog[];
   onRefresh: () => void;
+  onOpenDetail?: (rxcui: string, drugName: string) => void;
 }
 
-export function MedicationList({ medications, logs, onRefresh }: MedicationListProps) {
+export function MedicationList({ medications, logs, onRefresh, onOpenDetail }: MedicationListProps) {
   const t = useTranslations('medications');
   const tCommon = useTranslations('common');
   const locale = useLocale();
@@ -142,6 +143,18 @@ export function MedicationList({ medications, logs, onRefresh }: MedicationListP
                 </div>
 
                 <div className="flex items-center space-x-2 self-end sm:self-center flex-shrink-0">
+                  {onOpenDetail && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenDetail(med.rxcui || med.name, med.name)}
+                      className="px-3.5 py-2.5 bg-white hover:bg-teal-50 text-teal-800 border border-teal-200/90 text-xs font-bold rounded-xl shadow-2xs transition flex items-center space-x-1 touch-target"
+                      title={locale === 'km' ? 'ព័ត៌មានឱសថ & សុវត្ថិភាព' : 'View Drug Guide'}
+                    >
+                      <Info className="w-3.5 h-3.5 text-teal-700" />
+                      <span>{locale === 'km' ? 'ព័ត៌មានឱសថ' : 'Drug Guide'}</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={() => setSelectedMedForLog(med)}
                     className="px-4 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition touch-target flex items-center space-x-1.5"
