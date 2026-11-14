@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
 import { useQueryClient } from '@tanstack/react-query';
@@ -31,6 +31,16 @@ interface SettingsViewProps {
 }
 
 export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
+  return (
+    <SettingsForm
+      key={patient.updatedAt || patient.id}
+      patient={patient}
+      onRefresh={onRefresh}
+    />
+  );
+}
+
+function SettingsForm({ patient, onRefresh }: SettingsViewProps) {
   const t = useTranslations('settings');
   const tPatient = useTranslations('patient');
   const tCommon = useTranslations('common');
@@ -106,26 +116,6 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
 
   const [isSavingPatient, setIsSavingPatient] = useState(false);
   const [patientSuccess, setPatientSuccess] = useState(false);
-
-  // Sync state when patient prop changes (e.g. from refetch or database update)
-  useEffect(() => {
-    if (patient) {
-      setFullName(patient.fullName || '');
-      setFullNameKm(patient.fullNameKm || '');
-      setAgeGroup(patient.ageGroup || '60-69');
-      setDiabetesType(patient.diabetesType || 'unknown');
-      setCurrentMeds(patient.currentMedicationsSummary || '');
-      setDoctorName(patient.doctorName || '');
-      setDoctorPhone(patient.doctorPhone || '');
-      setDoctorClinic(patient.doctorClinic || '');
-      setEmergencyName(patient.emergencyContactName || '');
-      setEmergencyPhone(patient.emergencyContactPhone || '');
-      setEmergencyRelation(patient.emergencyContactRelation || '');
-      setMedicalHistory(patient.medicalHistory || '');
-      setTelegramChatId(patient.telegramChatId || '');
-      setTelegramEnabled(patient.telegramNotificationsEnabled ?? true);
-    }
-  }, [patient]);
 
   const handleLanguageChange = (newLocale: 'km' | 'en') => {
     router.replace(pathname, { locale: newLocale });
