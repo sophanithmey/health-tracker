@@ -39,7 +39,7 @@ export function AppHeader() {
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Listen for mobile drawer open requests from bottom nav
+  // Listen for mobile drawer open requests from bottom nav or buttons
   useEffect(() => {
     const handleToggle = () => setIsMobileMenuOpen((prev) => !prev);
     const handleOpen = () => setIsMobileMenuOpen(true);
@@ -97,30 +97,41 @@ export function AppHeader() {
     <>
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
         {/* Tier 1: Main Brand & Utility Bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-18">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-15 sm:h-18">
             {/* Left: Brand Identity & Patient Pulse */}
-            <Link href="/" className="flex items-center space-x-2.5 sm:space-x-3 group flex-shrink-0">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-teal-700 flex items-center justify-center text-white shadow-sm shadow-teal-700/20 group-hover:scale-105 transition">
+            <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group min-w-0 pr-2">
+              <div className="relative flex-shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-700 flex items-center justify-center text-white shadow-sm shadow-teal-700/20 group-hover:scale-105 transition">
                   <Activity className="w-5 h-5" />
                 </div>
-                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border-2 border-white"></span>
                 </span>
               </div>
 
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight font-khmer">
-                    {t('appName')}
+              <div className="min-w-0">
+                <div className="flex items-center space-x-1.5">
+                  <span className="text-sm sm:text-lg font-black text-slate-900 tracking-tight leading-tight font-khmer truncate">
+                    {locale === 'km' ? (
+                      <>
+                        <span className="xs:hidden">ថែទាំជាតិស្ករ</span>
+                        <span className="hidden xs:inline sm:hidden">ថែទាំទឹកនោមផ្អែម</span>
+                        <span className="hidden sm:inline">{t('appName')}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="sm:hidden">Diabetes Care</span>
+                        <span className="hidden sm:inline">{t('appName')}</span>
+                      </>
+                    )}
                   </span>
-                  <span className="hidden lg:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                  <span className="hidden lg:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80 flex-shrink-0">
                     {patientDisplayName || 'Mom'} (Live)
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
+                <p className="text-[11px] text-slate-500 font-medium hidden sm:block truncate">
                   {patient
                     ? locale === 'km'
                       ? `ប្រព័ន្ធតាមដានជាតិស្ករ និងសុខភាពសម្រាប់ ${patientDisplayName}`
@@ -131,17 +142,17 @@ export function AppHeader() {
             </Link>
 
             {/* Right: Controls & Emergency Button */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="flex items-center space-x-1.5 sm:space-x-3 flex-shrink-0">
               {/* Emergency 15-15 Rule Button */}
               <button
                 type="button"
                 onClick={() => setIsEmergencyModalOpen(true)}
-                className="flex items-center space-x-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold transition shadow-2xs touch-target"
+                className="flex items-center space-x-1 px-2.5 py-1.5 sm:px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold transition shadow-2xs touch-target"
                 title="Emergency Guidance & 15-15 Rule"
               >
-                <ShieldAlert className="w-4 h-4 text-red-600 flex-shrink-0" />
-                <span className="hidden sm:inline">15-15 Rule</span>
-                <span className="sm:hidden font-bold">15-15</span>
+                <ShieldAlert className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 flex-shrink-0" />
+                <span className="hidden sm:inline font-bold">15-15 Rule</span>
+                <span className="sm:hidden font-black text-[11px]">15-15</span>
               </button>
 
               {/* Desktop Only: Role Switcher Pill */}
@@ -190,8 +201,8 @@ export function AppHeader() {
                 </button>
               </div>
 
-              {/* Language Switcher */}
-              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+              {/* Desktop Language Switcher (Segmented) */}
+              <div className="hidden sm:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('km')}
@@ -216,17 +227,28 @@ export function AppHeader() {
                 </button>
               </div>
 
+              {/* Mobile Single Tap Language Switcher (Fits perfectly on phone screen) */}
+              <button
+                type="button"
+                onClick={() => handleLanguageChange(locale === 'km' ? 'en' : 'km')}
+                className="sm:hidden px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold flex items-center space-x-1 touch-target shadow-2xs"
+                title={locale === 'km' ? 'Switch to English' : 'ប្តូរទៅភាសាខ្មែរ'}
+              >
+                <Globe className="w-3.5 h-3.5 text-teal-700" />
+                <span className="font-bold text-[11px]">{locale === 'km' ? 'EN' : 'ខ្មែរ'}</span>
+              </button>
+
               {/* Mobile Hamburger Menu Toggle Button */}
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200/80 transition touch-target"
+                className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition touch-target flex-shrink-0"
                 aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Navigation Menu'}
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-5 h-5 text-slate-900" />
+                  <X className="w-4 h-4 text-slate-900" />
                 ) : (
-                  <Menu className="w-5 h-5 text-slate-900" />
+                  <Menu className="w-4 h-4 text-slate-900" />
                 )}
               </button>
             </div>
@@ -265,25 +287,25 @@ export function AppHeader() {
         <div className="md:hidden fixed inset-0 z-50 flex">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
           {/* Drawer Container */}
-          <div className="relative ml-auto w-full max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-slide-left overflow-y-auto">
+          <div className="relative ml-auto w-full max-w-xs sm:max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-fade-in overflow-y-auto">
             {/* Drawer Header */}
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-2xl bg-teal-700 flex items-center justify-center text-white shadow-xs">
+            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 flex-shrink-0">
+              <div className="flex items-center space-x-2.5 min-w-0 pr-2">
+                <div className="w-10 h-10 rounded-2xl bg-teal-700 flex items-center justify-center text-white shadow-xs flex-shrink-0">
                   <Activity className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-base font-black text-slate-900 font-khmer">
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 font-khmer truncate">
                     {patientDisplayName || t('appName')}
                   </h3>
                   <div className="flex items-center space-x-1.5 mt-0.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[11px] font-bold text-emerald-800">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                    <span className="text-[11px] font-bold text-emerald-800 truncate">
                       {locale === 'km' ? 'ប្រព័ន្ធតាមដានផ្ទាល់' : 'Active Patient (Live)'}
                     </span>
                   </div>
@@ -293,14 +315,15 @@ export function AppHeader() {
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition shadow-2xs"
+                className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition shadow-2xs flex-shrink-0 touch-target"
+                aria-label="Close Navigation Menu"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Drawer Content */}
-            <div className="p-5 space-y-6 flex-1">
+            {/* Drawer Body */}
+            <div className="p-4 sm:p-5 space-y-6 flex-1">
               {/* Role Switcher Section in Drawer */}
               <div>
                 <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-2 font-khmer">
@@ -313,7 +336,7 @@ export function AppHeader() {
                       switchRole('family_admin');
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left touch-target ${
                       role === 'family_admin'
                         ? 'bg-teal-700 text-white shadow-xs'
                         : 'text-slate-700 hover:bg-slate-200/60'
@@ -328,7 +351,7 @@ export function AppHeader() {
                         </div>
                       </div>
                     </div>
-                    {role === 'family_admin' && <CheckCircle2 className="w-4 h-4 text-white" />}
+                    {role === 'family_admin' && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
                   </button>
 
                   <button
@@ -337,7 +360,7 @@ export function AppHeader() {
                       switchRole('clinician');
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left touch-target ${
                       role === 'clinician'
                         ? 'bg-blue-700 text-white shadow-xs'
                         : 'text-slate-700 hover:bg-slate-200/60'
@@ -352,7 +375,7 @@ export function AppHeader() {
                         </div>
                       </div>
                     </div>
-                    {role === 'clinician' && <CheckCircle2 className="w-4 h-4 text-white" />}
+                    {role === 'clinician' && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
                   </button>
 
                   <button
@@ -361,7 +384,7 @@ export function AppHeader() {
                       switchRole('patient');
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left touch-target ${
                       role === 'patient'
                         ? 'bg-emerald-600 text-white shadow-xs'
                         : 'text-slate-700 hover:bg-slate-200/60'
@@ -376,7 +399,7 @@ export function AppHeader() {
                         </div>
                       </div>
                     </div>
-                    {role === 'patient' && <CheckCircle2 className="w-4 h-4 text-white" />}
+                    {role === 'patient' && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
                   </button>
                 </div>
               </div>
@@ -395,23 +418,23 @@ export function AppHeader() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center justify-between p-3 rounded-2xl text-sm font-bold transition touch-target ${
+                        className={`flex items-center justify-between p-2.5 sm:p-3 rounded-2xl text-xs sm:text-sm font-bold transition touch-target ${
                           isActive
                             ? 'bg-teal-50 text-teal-900 border border-teal-200/80 shadow-2xs'
                             : 'text-slate-700 hover:bg-slate-50'
                         }`}
                       >
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-3 min-w-0">
                           <div
-                            className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
                               isActive ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-500'
                             }`}
                           >
                             <Icon className="w-4 h-4" />
                           </div>
-                          <span className="font-khmer">{item.label}</span>
+                          <span className="font-khmer truncate">{item.label}</span>
                         </div>
-                        <ChevronRight className={`w-4 h-4 ${isActive ? 'text-teal-700' : 'text-slate-300'}`} />
+                        <ChevronRight className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-teal-700' : 'text-slate-300'}`} />
                       </Link>
                     );
                   })}
@@ -428,7 +451,7 @@ export function AppHeader() {
                   }}
                   className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-black rounded-2xl shadow-sm transition touch-target text-xs"
                 >
-                  <ShieldAlert className="w-4 h-4" />
+                  <ShieldAlert className="w-4 h-4 flex-shrink-0" />
                   <span>{locale === 'km' ? 'សង្គ្រោះបន្ទាន់ជាតិស្ករ 15-15 Rule' : 'Emergency 15-15 Rule'}</span>
                 </button>
 
@@ -436,14 +459,14 @@ export function AppHeader() {
                   href="tel:119"
                   className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-2xl font-bold transition touch-target text-xs"
                 >
-                  <PhoneCall className="w-3.5 h-3.5" />
+                  <PhoneCall className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>{locale === 'km' ? 'ហៅសង្គ្រោះបន្ទាន់ 119 (Ambulance)' : 'Call Ambulance 119'}</span>
                 </a>
               </div>
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 flex-shrink-0">
               <span className="font-medium">Language:</span>
               <div className="flex items-center space-x-1 bg-white p-1 rounded-xl border border-slate-200">
                 <button
