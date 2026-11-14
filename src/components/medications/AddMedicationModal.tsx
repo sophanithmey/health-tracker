@@ -37,41 +37,47 @@ export function AddMedicationModal({
   onSuccess,
   initialData
 }: AddMedicationModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <AddMedicationDialogContent
+      key={initialData?.rxcui || initialData?.name || 'new-medication'}
+      onClose={onClose}
+      onSuccess={onSuccess}
+      initialData={initialData}
+    />
+  );
+}
+
+function AddMedicationDialogContent({
+  onClose,
+  onSuccess,
+  initialData
+}: Omit<AddMedicationModalProps, 'isOpen'>) {
   const t = useTranslations('medications');
   const tCommon = useTranslations('common');
   const locale = useLocale();
 
-  const [name, setName] = useState('');
-  const [dosage, setDosage] = useState('500 mg');
+  const [name, setName] = useState(initialData?.name || '');
+  const [dosage, setDosage] = useState(initialData?.dosage || '500 mg');
   const [frequency, setFrequency] = useState('Once daily');
   const [timingInstructions, setTimingInstructions] = useState('Take with breakfast');
   const [prescribingDoctor, setPrescribingDoctor] = useState('');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState('');
   const [notes, setNotes] = useState('');
-  const [rxcui, setRxcui] = useState<string | undefined>(undefined);
-  const [genericName, setGenericName] = useState<string | undefined>(undefined);
-  const [brandName, setBrandName] = useState<string | undefined>(undefined);
-  const [activeIngredients, setActiveIngredients] = useState<string[]>([]);
-  const [dosageForm, setDosageForm] = useState<string | undefined>(undefined);
-  const [activePreset, setActivePreset] = useState<string | null>('Metformin HCl 500 mg');
+  const [rxcui, setRxcui] = useState<string | undefined>(initialData?.rxcui);
+  const [genericName, setGenericName] = useState<string | undefined>(initialData?.genericName);
+  const [brandName, setBrandName] = useState<string | undefined>(initialData?.brandName);
+  const [activeIngredients, setActiveIngredients] = useState<string[]>(
+    initialData?.activeIngredients || []
+  );
+  const [dosageForm, setDosageForm] = useState<string | undefined>(initialData?.dosageForm);
+  const [activePreset, setActivePreset] = useState<string | null>(
+    initialData ? null : 'Metformin HCl 500 mg'
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  React.useEffect(() => {
-    if (initialData) {
-      if (initialData.name) setName(initialData.name);
-      if (initialData.dosage) setDosage(initialData.dosage);
-      if (initialData.rxcui) setRxcui(initialData.rxcui);
-      if (initialData.genericName) setGenericName(initialData.genericName);
-      if (initialData.brandName) setBrandName(initialData.brandName);
-      if (initialData.activeIngredients) setActiveIngredients(initialData.activeIngredients);
-      if (initialData.dosageForm) setDosageForm(initialData.dosageForm);
-      setActivePreset(null);
-    }
-  }, [initialData, isOpen]);
-
-  if (!isOpen) return null;
 
   const quickPresets = [
     {
