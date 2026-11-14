@@ -70,33 +70,34 @@ export function TargetAuditHistoryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-      <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative my-8 max-h-[85vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-5 animate-fade-in overflow-y-auto">
+      <div className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl relative border border-slate-200/90 my-auto flex flex-col max-h-[92vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 flex-shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold">
-              <History className="w-5 h-5" />
+        <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between flex-shrink-0 bg-white">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-teal-50 border border-teal-200/60 text-teal-700 flex items-center justify-center flex-shrink-0 shadow-xs">
+              <History className="w-6 h-6 text-teal-700" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-slate-900">
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 font-khmer tracking-tight">
                 {t('targetHistoryTitle')}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 font-medium">
                 {t('targetHistorySubtitle')}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"
+            className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Audit Log Content */}
-        <div className="overflow-y-auto py-4 space-y-4 flex-1">
+        <div className="overflow-y-auto p-6 sm:p-8 space-y-4 flex-1">
           {isLoading ? (
             <div className="py-12 text-center text-slate-400 text-xs font-medium">
               Loading target history...
@@ -179,10 +180,10 @@ export function TargetAuditHistoryModal({
         </div>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-slate-100 flex justify-end flex-shrink-0">
+        <div className="px-6 sm:px-8 py-4 border-t border-slate-100 flex justify-end flex-shrink-0 bg-white">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition"
+            className="px-8 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-2xl transition"
           >
             {tCommon('close')}
           </button>
@@ -191,3 +192,4 @@ export function TargetAuditHistoryModal({
     </div>
   );
 }
+

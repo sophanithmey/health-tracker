@@ -90,3 +90,4 @@ BEGIN
             FOR INSERT WITH CHECK (is_family_member(patient_id));
     END IF;
 END $$;
+

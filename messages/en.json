@@ -21,6 +21,7 @@
     "rolePatient": "Mom (Patient)",
     "activeRole": "Current Role",
     "switchRole": "Switch Role",
+    "optional": "Optional",
     "disclaimer": "This is a health-monitoring application for family care, NOT a medical diagnosis or treatment tool."
   },
   "nav": {

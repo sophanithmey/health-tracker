@@ -342,3 +342,4 @@ test('SafeAlertEngine does not suppress critical alerts even if repeated', () =>
   const shouldDeduplicate = SafeAlertEngine.shouldDeduplicate(criticalAlert, recentAlerts, 60);
   assert.equal(shouldDeduplicate, false);
 });
+

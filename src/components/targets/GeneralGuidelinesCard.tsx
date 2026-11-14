@@ -103,3 +103,4 @@ export function GeneralGuidelinesCard({ guidelines }: GeneralGuidelinesCardProps
     </div>
   );
 }
+
