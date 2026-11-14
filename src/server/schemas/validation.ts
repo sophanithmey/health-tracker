@@ -137,3 +137,23 @@ export const PatientProfileUpdateSchema = z.object({
   telegramNotificationsEnabled: z.boolean().optional()
 });
 
+// --------------------------------------------------------------------------
+// Knowledge & Nutrition Schemas
+// --------------------------------------------------------------------------
+
+export const KnowledgeSearchSchema = z.object({
+  q: z.string().max(200).default('diabetes'),
+  category: z
+    .enum(['understanding', 'testing_guide', 'glucose_hba1c', 'hypo_hyper', 'medications', 'nutrition'])
+    .optional()
+});
+
+export const NutritionSearchSchema = z.object({
+  q: z.string().min(1, 'Search query is required').max(150),
+  pageSize: z.coerce.number().int().min(1).max(25).default(10)
+});
+
+export const MedicationEducationQuerySchema = z.object({
+  q: z.string().min(1, 'Medication query is required').max(150)
+});
+

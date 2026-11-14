@@ -29,6 +29,7 @@
     "medications": "ថ្នាំលេប",
     "lifestyle": "របៀបរស់នៅ",
     "targets": "គោលដៅជាតិស្ករ",
+    "knowledge": "ចំណេះដឹងសុខភាព",
     "reports": "របាយការណ៍",
     "settings": "ការកំណត់",
     "foodGuide": "មគ្គុទ្ទេសក៍អាហារ",
@@ -183,6 +184,22 @@
     "language": "ភាសាប្រើប្រាស់ (Language)",
     "khmer": "ភាសាខ្មែរ (Khmer)",
     "english": "English"
+  },
+  "knowledge": {
+    "title": "ចំណេះដឹងវេជ្ជសាស្ត្រ និងការថែទាំទឹកនោមផ្អែម",
+    "subtitle": "ព័ត៌មានអប់រំដែលអាចទុកចិត្តបានពីបណ្ណាល័យវេជ្ជសាស្ត្រជាតិអាមេរិក (NIH) និង USDA",
+    "searchPlaceholder": "ស្វែងរកប្រធានបទ (ឧ. fasting, metformin, a1c, hypoglycemia, rice)...",
+    "understandingTab": "ស្វែងយល់ពីទឹកនោមផ្អែម",
+    "testingTab": "មគ្គុទ្ទេសក៍វាស់ជាតិស្ករ",
+    "glucoseTab": "កម្រិតជាតិស្ករ & HbA1c",
+    "hypoHyperTab": "ជាតិស្ករចុះទាប / ឡើងខ្ពស់",
+    "medsTab": "ព័ត៌មានថ្នាំលេប",
+    "nutritionTab": "អាហារូបត្ថម្ភ & ម្ហូបអាហារ",
+    "readArticle": "អានអត្ថបទ",
+    "curatedGuide": "ការណែនាំសំខាន់",
+    "originalSource": "ប្រភពដើម",
+    "viewMedlinePlus": "អានអត្ថបទដើមលើ MedlinePlus.gov",
+    "safetyDisclaimer": "ព័ត៌មានអប់រំសុខភាពទូទៅ៖ ចងក្រងពីបណ្ណាល័យវេជ្ជសាស្ត្រជាតិអាមេរិក (MedlinePlus/NIH) សម្រាប់តែការស្វែងយល់ និងតាមដានសុខភាពប៉ុណ្ណោះ។ មិនមែនជាការធ្វើរោគវិនិច្ឆ័យ ឬការព្យាបាលវេជ្ជសាស្ត្រឡើយ។"
   }
 }
 

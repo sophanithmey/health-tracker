@@ -29,6 +29,7 @@
     "medications": "Medications",
     "lifestyle": "Lifestyle",
     "targets": "Targets",
+    "knowledge": "Knowledge",
     "reports": "Reports",
     "settings": "Settings",
     "foodGuide": "Food Guide",
@@ -115,9 +116,9 @@
     "criticalTitle": "🚨 Critical Low Blood Sugar (< 54 mg/dL)",
     "attentionTitle": "⚠️ Blood Sugar Attention",
     "hypo1515Title": "Educational 15-15 Rule for Conscious Low Blood Sugar",
-    "hypo1515Step1": "1. Take 15 grams of fast-acting sugar immediately (e.g. 1/2 cup fruit juice or 3-4 candies).",
-    "hypo1515Step2": "2. Rest calmly for 15 minutes.",
-    "hypo1515Step3": "3. Re-test blood sugar. If still below 70 mg/dL, repeat with another 15g.",
+    "hypo1515Step1": "Take 15 grams of fast-acting sugar immediately (e.g. 1/2 cup fruit juice or 3-4 candies).",
+    "hypo1515Step2": "Rest calmly for 15 minutes.",
+    "hypo1515Step3": "Re-test blood sugar. If still below 70 mg/dL, repeat with another 15g.",
     "unconsciousWarning": "⚠️ If unconscious or unable to swallow: DO NOT give food or liquids by mouth! Call emergency medical services (119 / hospital) immediately!",
     "acknowledge": "Acknowledge Alert",
     "acknowledged": "Acknowledged"
@@ -183,6 +184,22 @@
     "language": "Language",
     "khmer": "ភាសាខ្មែរ (Khmer)",
     "english": "English"
+  },
+  "knowledge": {
+    "title": "Diabetes Knowledge & Education",
+    "subtitle": "Authoritative information from MedlinePlus (NIH) and USDA FoodData Central",
+    "searchPlaceholder": "Search topics (e.g. fasting, metformin, a1c, hypoglycemia, rice)...",
+    "understandingTab": "Understanding Diabetes",
+    "testingTab": "Testing Guide",
+    "glucoseTab": "Glucose & HbA1c",
+    "hypoHyperTab": "Low & High Blood Sugar",
+    "medsTab": "Medication Education",
+    "nutritionTab": "Food & Nutrition",
+    "readArticle": "Read Article",
+    "curatedGuide": "Curated Guide",
+    "originalSource": "Original Source",
+    "viewMedlinePlus": "View original source on MedlinePlus.gov",
+    "safetyDisclaimer": "Educational Health Information: Sourced from the U.S. National Library of Medicine (MedlinePlus/NIH) for general reference only. Does not replace clinician diagnosis or treatment advice."
   }
 }
 

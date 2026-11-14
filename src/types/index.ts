@@ -260,3 +260,55 @@ export interface ApiResponse<T = any> {
   message?: string;
 }
 
+// --------------------------------------------------------------------------
+// Knowledge & Health Information Types
+// --------------------------------------------------------------------------
+
+export type KnowledgeCategory =
+  | 'understanding'
+  | 'testing_guide'
+  | 'glucose_hba1c'
+  | 'hypo_hyper'
+  | 'medications'
+  | 'nutrition';
+
+export interface HealthKnowledgeArticle {
+  id: string;
+  category: KnowledgeCategory;
+  title: string;
+  titleKm: string;
+  summary: string;
+  summaryKm: string;
+  contentHtml?: string;
+  contentKm?: string;
+  sourceName: string;
+  sourceUrl: string;
+  lastReviewed?: string;
+  clinicalCode?: string;
+  tags?: string[];
+  isCurated?: boolean;
+}
+
+export interface FoodNutrientValues {
+  caloriesKcal?: number;
+  carbohydratesG?: number;
+  totalSugarsG?: number;
+  dietaryFiberG?: number;
+  proteinG?: number;
+  totalFatG?: number;
+}
+
+export interface FoodNutritionItem {
+  fdcId: number;
+  description: string;
+  descriptionKm?: string;
+  brandOwner?: string;
+  servingSize?: number;
+  servingSizeUnit?: string;
+  householdServingText?: string;
+  per100g: FoodNutrientValues;
+  perServing?: FoodNutrientValues;
+  foodCategory?: string;
+  sourceUrl?: string;
+}
+

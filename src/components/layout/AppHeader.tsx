@@ -14,6 +14,7 @@ import {
   Target,
   FileText,
   Settings,
+  BookOpen,
   ShieldAlert,
   Menu,
   X,
@@ -55,6 +56,7 @@ export function AppHeader() {
     { href: '/medications', label: tNav('medications'), icon: Pill },
     { href: '/lifestyle', label: tNav('lifestyle'), icon: Utensils },
     { href: '/targets', label: tNav('targets'), icon: Target },
+    { href: '/knowledge', label: tNav('knowledge'), icon: BookOpen },
     { href: '/reports', label: tNav('reports'), icon: FileText },
     { href: '/settings', label: tNav('settings'), icon: Settings }
   ];

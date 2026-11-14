@@ -7,6 +7,7 @@ import {
   Activity,
   Droplet,
   Pill,
+  BookOpen,
   HeartPulse,
   FileText,
   Settings
@@ -20,9 +21,9 @@ export function MobileBottomNav() {
     { href: '/', label: t('dashboard'), icon: Activity },
     { href: '/blood-sugar', label: t('bloodSugar'), icon: Droplet },
     { href: '/medications', label: t('medications'), icon: Pill },
+    { href: '/knowledge', label: t('knowledge'), icon: BookOpen },
     { href: '/lifestyle', label: t('lifestyle'), icon: HeartPulse },
-    { href: '/reports', label: t('reports'), icon: FileText },
-    { href: '/settings', label: t('settings'), icon: Settings }
+    { href: '/reports', label: t('reports'), icon: FileText }
   ];
 
   return (
