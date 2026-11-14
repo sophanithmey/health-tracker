@@ -2,6 +2,7 @@
 -- Family Diabetes Care - Seed Data
 -- Mom (Age 64, Oral Medication, 148 mg/dL Fasting Reading)
 -- Caregiver (Child / Family Admin)
+-- Prefixed with "health_"
 -- ============================================================================
 
 -- Fixed UUIDs for predictable references
@@ -13,7 +14,7 @@ DECLARE
     v_med_id UUID := 'd4e5f6a7-b8c9-0123-def1-234567890123';
 BEGIN
     -- 1. Create Patient Profile
-    INSERT INTO patient_profiles (
+    INSERT INTO health_patient_profiles (
         id,
         full_name,
         full_name_km,
@@ -58,7 +59,7 @@ BEGIN
     ) ON CONFLICT (id) DO NOTHING;
 
     -- 2. Educational & Caregiver Targets (Initial Unconfirmed Status)
-    INSERT INTO glucose_targets (
+    INSERT INTO health_glucose_targets (
         id,
         patient_id,
         measurement_type,
@@ -120,7 +121,7 @@ BEGIN
     ) ON CONFLICT DO NOTHING;
 
     -- 3. Oral Medication
-    INSERT INTO medications (
+    INSERT INTO health_medications (
         id,
         patient_id,
         name,
@@ -145,7 +146,7 @@ BEGIN
     ) ON CONFLICT (id) DO NOTHING;
 
     -- 4. Reminders
-    INSERT INTO reminders (
+    INSERT INTO health_reminders (
         patient_id,
         reminder_type,
         title,
@@ -192,4 +193,3 @@ BEGIN
     ) ON CONFLICT DO NOTHING;
 
 END $$;
-

@@ -41,7 +41,7 @@ export class HealthRepository {
   public static async getPatientProfile(patientId = store.PATIENT_ID): Promise<PatientProfile> {
     if (isSupabaseConfigured && supabaseServer) {
       const { data, error } = await supabaseServer
-        .from('patient_profiles')
+        .from('health_patient_profiles')
         .select('*')
         .eq('id', patientId)
         .single();
@@ -82,7 +82,7 @@ export class HealthRepository {
   ): Promise<PatientProfile> {
     if (isSupabaseConfigured && supabaseServer) {
       await supabaseServer
-        .from('patient_profiles')
+        .from('health_patient_profiles')
         .update({
           full_name: updates.fullName,
           full_name_km: updates.fullNameKm,
