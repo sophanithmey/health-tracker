@@ -22,6 +22,7 @@ import * as store from './inMemoryStore';
 import { supabaseServer, isSupabaseConfigured } from './supabaseClient';
 import { SafeAlertEngine } from '../services/alertEngine';
 import { TelegramService } from '../services/telegramService';
+import { GlucoseTargetService } from '../services/glucoseTargetService';
 
 export class HealthRepository {
   // --------------------------------------------------------------------------
@@ -173,96 +174,47 @@ export class HealthRepository {
   // Glucose Targets
   // --------------------------------------------------------------------------
   public static async getGlucoseTargets(patientId = store.PATIENT_ID): Promise<GlucoseTarget[]> {
-    if (isSupabaseConfigured && supabaseServer) {
-      try {
-        const { data, error } = await supabaseServer
-          .from('health_glucose_targets')
-          .select('*')
-          .eq('patient_id', patientId)
-          .eq('is_active', true);
-
-        if (data && !error && data.length > 0) {
-          return data.map((d: any) => ({
-            id: d.id,
-            patientId: d.patient_id,
-            measurementType: d.measurement_type,
-            targetMin: Number(d.target_min),
-            targetMax: Number(d.target_max),
-            lowAlertThreshold: Number(d.low_alert_threshold),
-            highAlertThreshold: Number(d.high_alert_threshold),
-            effectiveDate: d.effective_date,
-            configuredBy: d.configured_by,
-            clinicianApprovalStatus: d.clinician_approval_status,
-            clinicianNotes: d.clinician_notes,
-            isActive: d.is_active
-          }));
-        }
-      } catch (err) {
-        console.warn('Error fetching health_glucose_targets from Supabase:', err);
-      }
-    }
-    return store.targets.filter((t) => t.patientId === patientId);
+    return GlucoseTargetService.getPatientTargets(patientId);
   }
 
   public static async getTargetForType(
     measurementType: GlucoseRecord['measurementType'],
-    patientId = store.PATIENT_ID
+    patientId = store.PATIENT_ID,
+    atDate = new Date()
   ): Promise<GlucoseTarget | undefined> {
-    const list = await this.getGlucoseTargets(patientId);
-    return list.find((t) => t.measurementType === measurementType && t.isActive);
+    return GlucoseTargetService.findActiveApprovedTarget(patientId, measurementType, atDate);
   }
 
   public static async saveGlucoseTarget(
     targetData: Omit<GlucoseTarget, 'id' | 'effectiveDate' | 'isActive'> & { id?: string }
   ): Promise<GlucoseTarget> {
     const currentUser = this.getCurrentUser();
-    const newTarget: GlucoseTarget = {
-      id: targetData.id || `tgt-${Date.now()}`,
-      patientId: targetData.patientId,
-      measurementType: targetData.measurementType,
-      targetMin: targetData.targetMin,
-      targetMax: targetData.targetMax,
-      lowAlertThreshold: targetData.lowAlertThreshold,
-      highAlertThreshold: targetData.highAlertThreshold,
-      effectiveDate: new Date().toISOString(),
-      configuredBy: currentUser.id,
-      configuredByName: currentUser.fullName,
-      clinicianApprovalStatus: targetData.clinicianApprovalStatus || 'unconfirmed',
-      clinicianNotes: targetData.clinicianNotes,
-      isActive: true
-    };
-
-    if (isSupabaseConfigured && supabaseServer) {
-      try {
-        await supabaseServer.from('health_glucose_targets').upsert({
-          id: newTarget.id,
-          patient_id: newTarget.patientId,
-          measurement_type: newTarget.measurementType,
-          target_min: newTarget.targetMin,
-          target_max: newTarget.targetMax,
-          low_alert_threshold: newTarget.lowAlertThreshold,
-          high_alert_threshold: newTarget.highAlertThreshold,
-          effective_date: newTarget.effectiveDate,
-          configured_by: newTarget.configuredBy,
-          clinician_approval_status: newTarget.clinicianApprovalStatus,
-          clinician_notes: newTarget.clinicianNotes,
-          is_active: true
-        });
-      } catch (err) {
-        console.warn('Error saving health_glucose_targets to Supabase:', err);
-      }
+    if (targetData.id) {
+      const updated = await GlucoseTargetService.updateTarget(
+        targetData.id,
+        {
+          minValue: targetData.minValue ?? targetData.targetMin,
+          maxValue: targetData.maxValue ?? targetData.targetMax,
+          notes: targetData.clinicianNotes || targetData.notes,
+          effectiveFrom: targetData.effectiveFrom || new Date().toISOString()
+        },
+        currentUser
+      );
+      if (updated) return updated;
     }
 
-    const existingIndex = store.targets.findIndex(
-      (t) => t.patientId === targetData.patientId && t.measurementType === targetData.measurementType
+    return GlucoseTargetService.createTarget(
+      {
+        patientId: targetData.patientId,
+        measurementType: targetData.measurementType,
+        minValue: targetData.minValue ?? targetData.targetMin,
+        maxValue: targetData.maxValue ?? targetData.targetMax,
+        notes: targetData.clinicianNotes || targetData.notes,
+        effectiveFrom: targetData.effectiveFrom || new Date().toISOString(),
+        source: targetData.source || 'clinician_configured'
+      },
+      currentUser
     );
-    if (existingIndex >= 0) {
-      store.targets[existingIndex] = newTarget;
-    } else {
-      store.targets.push(newTarget);
-    }
-
-    return newTarget;
   }
 
   // --------------------------------------------------------------------------
@@ -357,7 +309,11 @@ export class HealthRepository {
   ): Promise<{ record: GlucoseRecord; alert?: NotificationAlert }> {
     const currentUser = this.getCurrentUser();
     const patientProfile = await this.getPatientProfile(input.patientId);
-    const applicableTarget = await this.getTargetForType(input.measurementType, input.patientId);
+    const applicableTarget = await this.getTargetForType(
+      input.measurementType,
+      input.patientId,
+      new Date(input.measuredAt)
+    );
 
     // Fetch previous records for trend detection
     const { records: recent } = await this.getGlucoseRecords({

@@ -49,12 +49,19 @@ export function LatestGlucoseCard({ record, target, onRecordClick }: LatestGluco
     day: 'numeric'
   });
 
-  const targetMin = target?.targetMin ?? 80;
-  const targetMax = target?.targetMax ?? 130;
+  const isTargetApproved = Boolean(
+    target &&
+      (target.approvalStatus === 'approved' ||
+        target.clinicianApprovalStatus === 'clinician_approved')
+  );
 
-  const isCritical = record.targetStatus === 'critical_low' || record.valueMgDl < 54;
-  const isHigh = record.targetStatus === 'high' || record.valueMgDl > targetMax;
-  const isLow = record.targetStatus === 'low' || (record.valueMgDl < 70 && !isCritical);
+  const targetMin = target?.minValue ?? target?.targetMin ?? 80;
+  const targetMax = target?.maxValue ?? target?.targetMax ?? 130;
+
+  const isCritical = record.valueMgDl < 54 || record.targetStatus === 'critical_low';
+  const isHigh = isTargetApproved && record.valueMgDl > targetMax;
+  const isLow = isTargetApproved && record.valueMgDl < targetMin && !isCritical;
+  const isWithin = isTargetApproved && !isHigh && !isLow && !isCritical;
 
   const cardBorder = isCritical
     ? 'border-red-300 bg-gradient-to-br from-red-50/70 via-white to-white'
@@ -62,6 +69,8 @@ export function LatestGlucoseCard({ record, target, onRecordClick }: LatestGluco
     ? 'border-amber-300 bg-gradient-to-br from-amber-50/60 via-white to-white'
     : isLow
     ? 'border-amber-300 bg-gradient-to-br from-amber-50/60 via-white to-white'
+    : !isTargetApproved
+    ? 'border-slate-300 bg-gradient-to-br from-slate-50/70 via-white to-white'
     : 'border-emerald-300 bg-gradient-to-br from-emerald-50/60 via-white to-white';
 
   const badgeComponent = isCritical ? (
@@ -69,20 +78,25 @@ export function LatestGlucoseCard({ record, target, onRecordClick }: LatestGluco
       <AlertTriangle className="w-4 h-4 mr-1.5" />
       Critical Low (&lt; 54 mg/dL)
     </span>
+  ) : !isTargetApproved ? (
+    <span className="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300 shadow-xs">
+      <Target className="w-4 h-4 mr-1.5 text-slate-500" />
+      Personal target not configured
+    </span>
   ) : isHigh ? (
     <span className="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-white shadow-xs">
       <ArrowUpRight className="w-4 h-4 mr-1.5" />
-      Above configured target
+      Above configured target (+{Number((record.valueMgDl - targetMax).toFixed(1))} mg/dL)
     </span>
   ) : isLow ? (
     <span className="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-white shadow-xs">
       <AlertTriangle className="w-4 h-4 mr-1.5" />
-      Below personal target
+      Below configured target (-{Number((targetMin - record.valueMgDl).toFixed(1))} mg/dL)
     </span>
   ) : (
     <span className="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-black bg-emerald-600 text-white shadow-xs">
       <CheckCircle2 className="w-4 h-4 mr-1.5" />
-      Within target
+      Within configured target
     </span>
   );
 
@@ -116,8 +130,16 @@ export function LatestGlucoseCard({ record, target, onRecordClick }: LatestGluco
           <div className="mt-5 max-w-lg bg-white/90 p-4 rounded-2xl border border-slate-200/90 shadow-2xs">
             <div className="flex justify-between items-center text-xs font-bold text-slate-600 mb-2">
               <span className="text-slate-400">Low (&lt; 70)</span>
-              <span className="text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-bold">
-                Target ({targetMin}–{targetMax} mg/dL)
+              <span
+                className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                  isTargetApproved
+                    ? 'text-emerald-800 bg-emerald-50 border-emerald-200'
+                    : 'text-slate-600 bg-slate-100 border-slate-300'
+                }`}
+              >
+                {isTargetApproved
+                  ? `Target (${targetMin}–${targetMax} mg/dL)`
+                  : `General Ref (${targetMin}–${targetMax} mg/dL)`}
               </span>
               <span className="text-slate-400">High (&ge; 180)</span>
             </div>
@@ -155,11 +177,44 @@ export function LatestGlucoseCard({ record, target, onRecordClick }: LatestGluco
                 className="absolute -top-1 flex flex-col items-center -translate-x-1/2 transition-all"
                 style={{ left: `${progressPercent}%` }}
               >
-                <div className={`w-2.5 h-2.5 rotate-45 shadow-xs ${isCritical ? 'bg-red-600' : isHigh ? 'bg-amber-600' : 'bg-emerald-600'}`} />
-                <span className={`text-[10px] font-black whitespace-nowrap mt-0.5 ${isCritical ? 'text-red-700' : isHigh ? 'text-amber-800' : 'text-emerald-800'}`}>
+                <div
+                  className={`w-2.5 h-2.5 rotate-45 shadow-xs ${
+                    isCritical ? 'bg-red-600' : isHigh ? 'bg-amber-600' : 'bg-emerald-600'
+                  }`}
+                />
+                <span
+                  className={`text-[10px] font-black whitespace-nowrap mt-0.5 ${
+                    isCritical
+                      ? 'text-red-700'
+                      : isHigh
+                      ? 'text-amber-800'
+                      : 'text-emerald-800'
+                  }`}
+                >
                   {record.valueMgDl} mg/dL
                 </span>
               </div>
+            </div>
+
+            {/* Target Explanation Box */}
+            <div className="mt-3 pt-2.5 border-t border-slate-100 text-[11px] text-slate-600 leading-relaxed">
+              {isHigh ? (
+                <p>
+                  <strong className="text-amber-900 font-bold">Observation:</strong> This reading is above the configured target (+{Number((record.valueMgDl - targetMax).toFixed(1))} mg/dL). Record the result and monitor the trend. Follow the care plan provided by the healthcare professional.
+                </p>
+              ) : isLow ? (
+                <p>
+                  <strong className="text-amber-900 font-bold">Observation:</strong> This reading is below the configured target (-{Number((targetMin - record.valueMgDl).toFixed(1))} mg/dL). Rest, stay hydrated, and monitor the next reading.
+                </p>
+              ) : !isTargetApproved ? (
+                <p>
+                  <strong className="text-slate-700 font-bold">Reference:</strong> General reference range shown ({targetMin}–{targetMax} mg/dL). Personalized targets should be confirmed by a healthcare professional.
+                </p>
+              ) : (
+                <p>
+                  <strong className="text-emerald-900 font-bold">Status:</strong> Reading is within Mom&apos;s approved personalized target ({targetMin}–{targetMax} mg/dL).
+                </p>
+              )}
             </div>
           </div>
 

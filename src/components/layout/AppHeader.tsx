@@ -126,6 +126,18 @@ export function AppHeader() {
                   <span className="sm:hidden">Caregiver</span>
                 </button>
                 <button
+                  onClick={() => switchRole('clinician')}
+                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
+                    role === 'clinician'
+                      ? 'bg-blue-700 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Healthcare Professional Review Mode"
+                >
+                  <span className="hidden sm:inline">{locale === 'km' ? 'វេជ្ជបណ្ឌិត' : 'Clinician'}</span>
+                  <span className="sm:hidden">{locale === 'km' ? 'ពេទ្យ' : 'MD'}</span>
+                </button>
+                <button
                   onClick={() => switchRole('patient')}
                   className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
                     role === 'patient'

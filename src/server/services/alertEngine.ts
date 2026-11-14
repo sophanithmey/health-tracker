@@ -149,8 +149,13 @@ export class SafeAlertEngine {
 
     // 4. Single Reading Above Target Max
     if (valueMgDl > targetMax) {
-      const isUnconfirmed = patientTarget?.clinicianApprovalStatus === 'unconfirmed';
-      const targetLabel = isUnconfirmed ? '(Unconfirmed Reference)' : '(Personal Target)';
+      const isApproved =
+        Boolean(patientTarget) &&
+        (patientTarget?.approvalStatus === 'approved' ||
+          patientTarget?.clinicianApprovalStatus === 'clinician_approved');
+      const targetLabel = isApproved
+        ? '(Approved Personal Target)'
+        : '(General Educational Reference - Personal Target Not Configured)';
 
       return {
         category: 'attention',
@@ -160,12 +165,12 @@ export class SafeAlertEngine {
         requiresImmediateEmergency: false,
         titleEn: `⚠️ Blood Sugar Attention: Above Target`,
         titleKm: `⚠️ ការយកចិត្តទុកដាក់៖ លើសពីគោលដៅកំណត់`,
-        messageEn: `Mom's reading: ${valueMgDl} mg/dL\nMeasurement: ${measurementType.replace('_', ' ')}\nStatus: Above target range (${targetMin}–${targetMax} mg/dL ${targetLabel}).`,
-        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់៖ ${valueMgDl} mg/dL\nពេលវាស់៖ ${measurementType}\nស្ថានភាព៖ លើសពីកម្រិតគោលដៅ (${targetMin}–${targetMax} mg/dL)។`,
+        messageEn: `Mom's reading: ${valueMgDl} mg/dL\nMeasurement: ${measurementType.replace('_', ' ')}\nStatus: Above range (${targetMin}–${targetMax} mg/dL ${targetLabel}).`,
+        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់៖ ${valueMgDl} mg/dL\nពេលវាស់៖ ${measurementType}\nស្ថានភាព៖ លើសពីកម្រិត (${targetMin}–${targetMax} mg/dL)។`,
         guidanceEn:
-          'Review the reading and continue the prescribed care plan. Stay hydrated and monitor the next scheduled reading. Never take extra medication to force blood glucose down without clinician instruction.',
+          'This reading is above the configured target. Record the result and monitor the trend. Follow the care plan provided by the healthcare professional.',
         guidanceKm:
-          'សូមពិនិត្យមើលការវាស់នេះ និងបន្តអនុវត្តផែនការថែទាំដែលបានណែនាំ។ ពិសារទឹកឱ្យបានគ្រប់គ្រាន់ និងរង់ចាំវាស់ពេលបន្ទាប់។ សូមកុំលេបថ្នាំបន្ថែមដើម្បីបន្ថយជាតិស្ករដោយគ្មានវេជ្ជបញ្ជា។'
+          'កម្រិតជាតិស្ករនេះលើសពីកម្រិតគោលដៅកំណត់។ សូមកត់ត្រាលទ្ធផល និងតាមដាននិន្នាការជាបន្តបន្ទាប់។ អនុវត្តតាមផែនការថែទាំរបស់វេជ្ជបណ្ឌិត។'
       };
     }
 

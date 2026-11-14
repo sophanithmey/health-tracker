@@ -150,3 +150,4 @@ export async function lookupMedicationEducation(searchQuery: string): Promise<He
   // 3. Fallback: Default to Metformin (the standard first-line oral diabetes medication)
   return await queryMedlinePlusConnect(DIABETES_RXNORM_MAP.metformin.code, CODE_SYSTEM_OIDS.RXNORM);
 }
+

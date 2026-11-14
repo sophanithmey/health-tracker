@@ -2,7 +2,7 @@
 // Family Diabetes Care - TypeScript Core Domain Definitions
 // ============================================================================
 
-export type UserRole = 'family_admin' | 'patient';
+export type UserRole = 'family_admin' | 'patient' | 'clinician';
 
 export type DiabetesType = 'unknown' | 'type_1' | 'type_2' | 'other';
 
@@ -12,6 +12,7 @@ export type MeasurementType =
   | '1h_after_meal'
   | '2h_after_meal'
   | 'bedtime'
+  | 'random'
   | 'other';
 
 export type TargetStatus =
@@ -20,6 +21,16 @@ export type TargetStatus =
   | 'normal'
   | 'high'
   | 'critical_high';
+
+export type GlucoseStatus =
+  | 'below_target'
+  | 'within_target'
+  | 'above_target'
+  | 'target_not_configured';
+
+export type TargetSource = 'general_guideline' | 'clinician_configured';
+
+export type TargetApprovalStatus = 'pending' | 'approved' | 'rejected' | 'expired';
 
 export type AlertCategory = 'critical' | 'attention' | 'info';
 
@@ -92,16 +103,72 @@ export interface GlucoseTarget {
   id: string;
   patientId: string;
   measurementType: MeasurementType;
+  minValue?: number;
+  maxValue?: number;
   targetMin: number;
   targetMax: number;
-  lowAlertThreshold: number;
-  highAlertThreshold: number;
+  lowAlertThreshold?: number;
+  highAlertThreshold?: number;
+  unit?: 'mg/dL';
+  source?: TargetSource;
+  approvalStatus?: TargetApprovalStatus;
+  effectiveFrom?: string;
+  effectiveUntil?: string;
   effectiveDate: string;
+  notes?: string;
+  guidelineSource?: string;
+  guidelineVersion?: string;
+  createdBy?: string;
+  createdByName?: string;
+  approvedBy?: string;
+  approvedByName?: string;
+  approvedAt?: string;
   configuredBy?: string;
   configuredByName?: string;
   clinicianApprovalStatus: ClinicianApprovalStatus;
   clinicianNotes?: string;
   isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface GlucoseTargetAuditLog {
+  id: string;
+  targetId?: string;
+  patientId: string;
+  action: 'created' | 'updated' | 'approved' | 'rejected' | 'expired';
+  oldValues?: Partial<GlucoseTarget>;
+  newValues?: Partial<GlucoseTarget>;
+  changedBy?: string;
+  changedByName?: string;
+  reason?: string;
+  createdAt: string;
+}
+
+export interface GeneralGuidelineReference {
+  measurementType: MeasurementType;
+  minMgDl?: number;
+  maxMgDl?: number;
+  labelEn: string;
+  labelKm: string;
+  notesEn: string;
+  notesKm: string;
+  guidelineSource: string;
+  guidelineVersion: string;
+}
+
+export interface GlucoseEvaluationResult {
+  status: GlucoseStatus;
+  valueMgDl: number;
+  measurementType: MeasurementType;
+  measuredAt: string;
+  activeTarget?: GlucoseTarget;
+  generalReference?: GeneralGuidelineReference;
+  differenceFromMin?: number;
+  differenceFromMax?: number;
+  explanationEn: string;
+  explanationKm: string;
+  isEducationalReferenceOnly: boolean;
 }
 
 export interface GlucoseRecord {

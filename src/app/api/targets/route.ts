@@ -15,9 +15,9 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const currentUser = HealthRepository.getCurrentUser();
-    if (currentUser.role !== 'family_admin') {
+    if (currentUser.role !== 'family_admin' && currentUser.role !== 'clinician') {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized: Only family admin can configure targets' },
+        { success: false, error: 'Unauthorized: Only family admin or clinician can configure targets' },
         { status: 403 }
       );
     }

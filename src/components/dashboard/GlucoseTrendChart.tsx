@@ -13,14 +13,15 @@ import {
   Legend,
   ReferenceLine
 } from 'recharts';
-import { GlucoseRecord } from '@/types';
+import { GlucoseRecord, GlucoseTarget } from '@/types';
 import { TrendingUp, Calendar } from 'lucide-react';
 
 interface GlucoseTrendChartProps {
   records: GlucoseRecord[];
+  target?: GlucoseTarget;
 }
 
-export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
+export function GlucoseTrendChart({ records, target }: GlucoseTrendChartProps) {
   const t = useTranslations('dashboard');
   const [daysRange, setDaysRange] = useState<7 | 30>(7);
 
@@ -136,18 +137,32 @@ export function GlucoseTrendChart({ records }: GlucoseTrendChartProps) {
                 )}
               />
 
-              {/* High target limit */}
+              {/* Configured Target Max */}
               <ReferenceLine
-                y={130}
+                y={target?.targetMax ?? 130}
                 stroke="#f59e0b"
                 strokeDasharray="4 4"
                 label={{
-                  value: 'Fasting Target Max (130)',
+                  value: target ? `Target Max (${target.targetMax})` : 'Target Max (130)',
                   fill: '#d97706',
                   fontSize: 10,
                   position: 'insideBottomRight'
                 }}
               />
+              {/* Configured Target Min */}
+              {target?.targetMin && (
+                <ReferenceLine
+                  y={target.targetMin}
+                  stroke="#10b981"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: `Target Min (${target.targetMin})`,
+                    fill: '#059669',
+                    fontSize: 10,
+                    position: 'insideBottomLeft'
+                  }}
+                />
+              )}
               {/* Low alert threshold */}
               <ReferenceLine
                 y={70}

@@ -5,19 +5,27 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslations } from 'next-intl';
 import { TargetConfigCard } from '@/components/targets/TargetConfigCard';
-import { GlucoseTarget } from '@/types';
+import { GlucoseTarget, GeneralGuidelineReference } from '@/types';
 import { Target } from 'lucide-react';
 
 export default function TargetsPage() {
   const t = useTranslations('targets');
 
-  const { data: targets, refetch } = useQuery<GlucoseTarget[]>({
-    queryKey: ['targets'],
+  const { data, refetch } = useQuery<{
+    data: GlucoseTarget[];
+    generalGuidelines: GeneralGuidelineReference[];
+  }>({
+    queryKey: ['glucose-targets'],
     queryFn: async () => {
-      const res = await axios.get('/api/targets');
-      return res.data.data;
+      const res = await axios.get(
+        '/api/patients/a1b2c3d4-e5f6-7890-abcd-ef1234567890/glucose-targets'
+      );
+      return res.data;
     }
   });
+
+  const targets = data?.data || [];
+  const guidelines = data?.generalGuidelines || [];
 
   return (
     <div className="space-y-6">
@@ -32,7 +40,12 @@ export default function TargetsPage() {
         </div>
       </div>
 
-      <TargetConfigCard targets={targets || []} onRefresh={refetch} />
+      <TargetConfigCard
+        targets={targets}
+        generalGuidelines={guidelines}
+        patientId="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        onRefresh={refetch}
+      />
     </div>
   );
 }

@@ -145,3 +145,4 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
     </div>
   );
 }
+

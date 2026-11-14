@@ -34,6 +34,7 @@ export const GlucoseTargetSchema = z.object({
     '1h_after_meal',
     '2h_after_meal',
     'bedtime',
+    'random',
     'other'
   ]),
   targetMin: z.number().min(40).max(250),
@@ -45,6 +46,100 @@ export const GlucoseTargetSchema = z.object({
 }).refine((data) => data.targetMax > data.targetMin, {
   message: 'Target maximum must be greater than target minimum',
   path: ['targetMax']
+});
+
+export const CreateGlucoseTargetSchema = z.object({
+  patientId: z.string().uuid().optional(),
+  measurementType: z.enum([
+    'fasting',
+    'before_meal',
+    '1h_after_meal',
+    '2h_after_meal',
+    'bedtime',
+    'random',
+    'other'
+  ]),
+  minValue: z.number().positive('Minimum value must be positive').max(300).optional().nullable(),
+  maxValue: z.number().positive('Maximum value must be positive').max(500).optional().nullable(),
+  unit: z.literal('mg/dL').default('mg/dL'),
+  source: z.enum(['general_guideline', 'clinician_configured']).default('clinician_configured'),
+  approvalStatus: z.enum(['pending', 'approved', 'rejected', 'expired']).default('pending'),
+  effectiveFrom: z.string().datetime().or(z.string().min(1)).optional(),
+  effectiveUntil: z.string().datetime().or(z.string().min(1)).optional().nullable(),
+  notes: z.string().max(1000).optional(),
+  guidelineSource: z.string().max(150).default('ADA Standards of Care'),
+  guidelineVersion: z.string().max(50).default('2026'),
+  targetMin: z.number().positive().max(300).optional(),
+  targetMax: z.number().positive().max(500).optional(),
+  lowAlertThreshold: z.number().positive().max(100).optional(),
+  highAlertThreshold: z.number().positive().max(400).optional()
+}).refine((data) => {
+  const min = data.minValue ?? data.targetMin;
+  const max = data.maxValue ?? data.targetMax;
+  return (min !== undefined && min !== null) || (max !== undefined && max !== null);
+}, {
+  message: 'At least one threshold (minimum or maximum) must be provided',
+  path: ['minValue']
+}).refine((data) => {
+  const min = data.minValue ?? data.targetMin;
+  const max = data.maxValue ?? data.targetMax;
+  if (min !== undefined && max !== undefined && min !== null && max !== null) {
+    return max > min;
+  }
+  return true;
+}, {
+  message: 'Target maximum must be strictly greater than target minimum',
+  path: ['maxValue']
+}).refine((data) => {
+  if (data.effectiveFrom && data.effectiveUntil) {
+    return new Date(data.effectiveUntil).getTime() >= new Date(data.effectiveFrom).getTime();
+  }
+  return true;
+}, {
+  message: 'Effective until date must be after effective from date',
+  path: ['effectiveUntil']
+});
+
+export const UpdateGlucoseTargetSchema = z.object({
+  minValue: z.number().positive('Minimum value must be positive').max(300).optional().nullable(),
+  maxValue: z.number().positive('Maximum value must be positive').max(500).optional().nullable(),
+  unit: z.literal('mg/dL').optional(),
+  notes: z.string().max(1000).optional(),
+  effectiveFrom: z.string().datetime().or(z.string().min(1)).optional(),
+  effectiveUntil: z.string().datetime().or(z.string().min(1)).optional().nullable(),
+  reason: z.string().max(500).optional(),
+  targetMin: z.number().positive().max(300).optional(),
+  targetMax: z.number().positive().max(500).optional()
+}).refine((data) => {
+  const min = data.minValue ?? data.targetMin;
+  const max = data.maxValue ?? data.targetMax;
+  if (min !== undefined && max !== undefined && min !== null && max !== null) {
+    return max > min;
+  }
+  return true;
+}, {
+  message: 'Target maximum must be strictly greater than target minimum',
+  path: ['maxValue']
+});
+
+export const ApproveRejectTargetSchema = z.object({
+  reason: z.string().max(500).optional(),
+  notes: z.string().max(1000).optional()
+});
+
+export const EvaluateGlucoseReadingSchema = z.object({
+  valueMgDl: z.number().positive('Glucose reading must be a positive number').max(800),
+  measurementType: z.enum([
+    'fasting',
+    'before_meal',
+    '1h_after_meal',
+    '2h_after_meal',
+    'bedtime',
+    'random',
+    'other'
+  ]),
+  measuredAt: z.string().datetime().or(z.string().min(1)).optional(),
+  patientId: z.string().uuid().optional()
 });
 
 export const MedicationSchema = z.object({

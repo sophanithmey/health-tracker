@@ -15,7 +15,9 @@ import {
   ActivityLog,
   LifestyleJournal,
   ReminderItem,
-  NotificationAlert
+  NotificationAlert,
+  UserRole,
+  GlucoseTargetAuditLog
 } from '@/types';
 
 export const PATIENT_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
@@ -58,6 +60,8 @@ export function updatePatientProfileInStore(updates: Partial<PatientProfile>): P
   return initialPatientProfile;
 }
 
+export const CLINICIAN_USER_ID = 'd4e5f6a7-b8c9-0123-def0-123456789012';
+
 // 2. Active Session Users
 export const users: UserProfile[] = [
   {
@@ -73,17 +77,26 @@ export const users: UserProfile[] = [
     role: 'patient',
     phone: '',
     preferredLanguage: 'km'
+  },
+  {
+    id: CLINICIAN_USER_ID,
+    fullName: 'Dr. Chea Sambath (Endocrinologist)',
+    role: 'clinician',
+    phone: '+855 12 345 678',
+    preferredLanguage: 'km'
   }
 ];
 
-export let currentActiveRole: 'family_admin' | 'patient' = 'family_admin';
+export let currentActiveRole: UserRole = 'family_admin';
 
-export function setActiveRole(role: 'family_admin' | 'patient') {
+export function setActiveRole(role: UserRole) {
   currentActiveRole = role;
 }
 
 export function getCurrentUser(): UserProfile {
-  return currentActiveRole === 'family_admin' ? users[0] : users[1];
+  if (currentActiveRole === 'clinician') return users[2];
+  if (currentActiveRole === 'patient') return users[1];
+  return users[0];
 }
 
 // 3. Family Access Mappings
@@ -105,6 +118,15 @@ export const familyMembers: FamilyMember[] = [
     relationship: 'Self (Patient)',
     role: 'patient',
     accessLevel: 'read_and_record'
+  },
+  {
+    id: 'fam-clinician',
+    patientId: PATIENT_ID,
+    userId: CLINICIAN_USER_ID,
+    userName: 'Dr. Chea Sambath',
+    relationship: 'Attending Physician',
+    role: 'clinician',
+    accessLevel: 'full'
   }
 ];
 
@@ -114,31 +136,49 @@ export const targets: GlucoseTarget[] = [
     id: 'tgt-fasting',
     patientId: PATIENT_ID,
     measurementType: 'fasting',
+    minValue: 80,
+    maxValue: 130,
     targetMin: 80,
     targetMax: 130,
     lowAlertThreshold: 70,
     highAlertThreshold: 140,
+    unit: 'mg/dL',
+    source: 'general_guideline',
+    approvalStatus: 'pending',
+    effectiveFrom: new Date().toISOString(),
     effectiveDate: new Date().toISOString(),
+    guidelineSource: 'ADA Standards of Care',
+    guidelineVersion: '2026',
     configuredByName: 'Clinical Reference',
     clinicianApprovalStatus: 'unconfirmed',
-    clinicianNotes: 'Standard educational reference range (80-130 mg/dL).',
+    clinicianNotes: 'Standard educational reference range (80-130 mg/dL). General reference only.',
     isActive: true
   },
   {
     id: 'tgt-postmeal',
     patientId: PATIENT_ID,
     measurementType: '2h_after_meal',
+    minValue: 90,
+    maxValue: 180,
     targetMin: 90,
     targetMax: 180,
     lowAlertThreshold: 70,
     highAlertThreshold: 180,
+    unit: 'mg/dL',
+    source: 'general_guideline',
+    approvalStatus: 'pending',
+    effectiveFrom: new Date().toISOString(),
     effectiveDate: new Date().toISOString(),
+    guidelineSource: 'ADA Standards of Care',
+    guidelineVersion: '2026',
     configuredByName: 'Clinical Reference',
     clinicianApprovalStatus: 'unconfirmed',
-    clinicianNotes: 'Standard post-prandial threshold under 180 mg/dL.',
+    clinicianNotes: 'Standard post-prandial threshold under 180 mg/dL. General reference only.',
     isActive: true
   }
 ];
+
+export const targetAuditLogs: GlucoseTargetAuditLog[] = [];
 
 // 5. Raw Data Collections (ALL EMPTY - Loaded from Supabase or added live by user)
 export const glucoseRecords: GlucoseRecord[] = [];

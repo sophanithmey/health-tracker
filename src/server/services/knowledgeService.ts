@@ -339,3 +339,4 @@ export async function searchHealthKnowledge(query: string): Promise<HealthKnowle
 
   return combined;
 }
+
