@@ -27,6 +27,10 @@ const {
   MedicationSafetyService
 } = jiti('../src/server/services/medication-safety-service.ts');
 
+const {
+  MedicationDetailService
+} = jiti('../src/server/services/medication-detail-service.ts');
+
 // ----------------------------------------------------------------------------
 // 1. Zod Validation Schemas
 // ----------------------------------------------------------------------------
@@ -49,13 +53,13 @@ test('MedicationSearchSchema rejects empty query string', () => {
   });
 });
 
-test('RxCuiParamSchema validates numeric concept identifiers', () => {
-  const valid = RxCuiParamSchema.parse({ rxcui: '860975' });
-  assert.equal(valid.rxcui, '860975');
+test('RxCuiParamSchema validates concept or medication identifiers', () => {
+  const validNum = RxCuiParamSchema.parse({ rxcui: '860975' });
+  assert.equal(validNum.rxcui, '860975');
 
-  assert.throws(() => RxCuiParamSchema.parse({ rxcui: 'abc-123' }), {
-    name: 'ZodError'
-  });
+  const validName = RxCuiParamSchema.parse({ rxcui: 'Domicron' });
+  assert.equal(validName.rxcui, 'Domicron');
+
   assert.throws(() => RxCuiParamSchema.parse({ rxcui: '' }), {
     name: 'ZodError'
   });
@@ -108,9 +112,9 @@ test('CURATED_DIABETES_CATALOG contains essential diabetic medications', () => {
   assert.ok(metformin.strengths.includes('500 mg'));
   assert.ok(metformin.activeIngredients.includes('Metformin Hydrochloride'));
 
-  const gliclazide = CURATED_DIABETES_CATALOG.find((m) => m.rxcui === '4715');
+  const gliclazide = CURATED_DIABETES_CATALOG.find((m) => m.rxcui === '4715' || m.rxcui === '433856');
   assert.ok(gliclazide, 'Gliclazide should exist in catalog');
-  assert.equal(gliclazide.brandName, 'Diamicron');
+  assert.ok(gliclazide.brandName.includes('Diamicron'));
 
   const sitagliptin = CURATED_DIABETES_CATALOG.find((m) => m.rxcui === '593411');
   assert.ok(sitagliptin, 'Sitagliptin should exist in catalog');
@@ -130,6 +134,21 @@ test('MedicationSearchService.search matches brand names like Januvia', async ()
   assert.ok(results && results.items && results.items.length > 0);
   const match = results.items.find((r) => r.brandName?.toLowerCase().includes('januvia') || r.name.toLowerCase().includes('januvia'));
   assert.ok(match, 'Search for Januvia should resolve to Sitagliptin');
+});
+
+test('MedicationDetailService resolves Domicron to Gliclazide concept', async () => {
+  const detail = await MedicationDetailService.getDetailByRxcui('Domicron');
+  assert.ok(detail, 'Domicron should resolve to a valid drug concept');
+  assert.ok(detail.name.toLowerCase().includes('gliclazide') || detail.genericName.toLowerCase().includes('gliclazide'));
+  assert.ok(detail.rxcui === '433856' || detail.rxcui === '4715');
+});
+
+test('MedicationDetailService resolves Gsiptin -M 50mg/1000mg to Sitagliptin/Metformin concept', async () => {
+  const detail = await MedicationDetailService.getDetailByRxcui('Gsiptin -M 50mg/1000mg');
+  assert.ok(detail, 'Gsiptin -M should resolve to a valid drug concept');
+  assert.equal(detail.rxcui, '861771');
+  assert.ok(detail.activeIngredients.some((ing) => ing.toLowerCase().includes('sitagliptin')));
+  assert.ok(detail.activeIngredients.some((ing) => ing.toLowerCase().includes('metformin')));
 });
 
 // ----------------------------------------------------------------------------

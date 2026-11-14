@@ -262,3 +262,4 @@ export function MedicationSearch({ onSelectMedication, onOpenDetail }: Medicatio
     </div>
   );
 }
+

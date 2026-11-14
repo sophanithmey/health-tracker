@@ -94,3 +94,4 @@ export interface EnrichedMedicationReference {
   safety?: MedicationSafetyInfo;
   availableSplLabels?: DailyMedLabelSummary[];
 }
+

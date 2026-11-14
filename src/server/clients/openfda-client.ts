@@ -187,3 +187,4 @@ export class OpenFDAClient {
     return safety;
   }
 }
+

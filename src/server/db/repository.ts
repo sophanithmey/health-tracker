@@ -584,27 +584,53 @@ export class HealthRepository {
           .eq('patient_id', patientId);
 
         if (data && !error) {
-          return data.map((d: any) => ({
-            id: d.id,
-            patientId: d.patient_id,
-            name: d.name,
-            dosage: d.dosage,
-            frequency: d.frequency,
-            timingInstructions: d.timing_instructions,
-            prescribingDoctor: d.prescribing_doctor,
-            startDate: d.start_date,
-            endDate: d.end_date,
-            isActive: d.is_active,
-            notes: d.notes,
-            rxcui: d.rxcui,
-            genericName: d.generic_name,
-            brandName: d.brand_name,
-            activeIngredients: d.active_ingredients || [],
-            dosageForm: d.dosage_form,
-            referenceSource: d.reference_source,
-            createdAt: d.created_at,
-            updatedAt: d.updated_at
-          }));
+          return data.map((d: any) => {
+            let rxcui = d.rxcui;
+            let genericName = d.generic_name;
+            let brandName = d.brand_name;
+            const nameLower = (d.name || '').toLowerCase();
+            if (!rxcui) {
+              if (nameLower.includes('domicron') || nameLower.includes('diamicron') || nameLower.includes('gliclazide')) {
+                rxcui = '433856';
+                genericName = genericName || 'Gliclazide';
+                brandName = brandName || 'Diamicron';
+              } else if (nameLower.includes('gsiptin') || nameLower.includes('janumet')) {
+                rxcui = '861771';
+                genericName = genericName || 'Sitagliptin / Metformin';
+                brandName = brandName || 'Gsiptin-M';
+              } else if (nameLower.includes('metformin')) {
+                rxcui = '860975';
+                genericName = genericName || 'Metformin Hydrochloride';
+                brandName = brandName || 'Glucophage XR';
+              } else if (nameLower.includes('januvia') || nameLower.includes('sitagliptin')) {
+                rxcui = '593411';
+                genericName = genericName || 'Sitagliptin';
+                brandName = brandName || 'Januvia';
+              }
+            }
+
+            return {
+              id: d.id,
+              patientId: d.patient_id,
+              name: d.name,
+              dosage: d.dosage,
+              frequency: d.frequency,
+              timingInstructions: d.timing_instructions,
+              prescribingDoctor: d.prescribing_doctor,
+              startDate: d.start_date,
+              endDate: d.end_date,
+              isActive: d.is_active,
+              notes: d.notes,
+              rxcui,
+              genericName,
+              brandName,
+              activeIngredients: d.active_ingredients || [],
+              dosageForm: d.dosage_form,
+              referenceSource: d.reference_source || (rxcui ? 'RxNorm' : undefined),
+              createdAt: d.created_at,
+              updatedAt: d.updated_at
+            };
+          });
         }
       } catch (err) {
         console.warn('Error fetching health_medications from Supabase:', err);

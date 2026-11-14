@@ -23,12 +23,36 @@ export const CURATED_DIABETES_CATALOG: RxNormDrugConcept[] = [
   {
     id: '4715',
     rxcui: '4715',
-    name: 'Gliclazide 30 MG Modified Release Oral Tablet [Diamicron MR]',
+    name: 'Gliclazide 30 MG Modified Release Oral Tablet [Diamicron MR / Domicron]',
     genericName: 'Gliclazide',
-    brandName: 'Diamicron',
+    brandName: 'Diamicron / Domicron',
     activeIngredients: ['Gliclazide'],
     strengths: ['30 mg', '60 mg', '80 mg'],
     dosageForms: ['Modified Release Oral Tablet', 'Oral Tablet'],
+    tty: 'SBD',
+    source: 'RxNorm'
+  },
+  {
+    id: '433856',
+    rxcui: '433856',
+    name: '24 HR Gliclazide 30 MG Extended Release Oral Tablet [Diamicron / Domicron]',
+    genericName: 'Gliclazide',
+    brandName: 'Diamicron / Domicron',
+    activeIngredients: ['Gliclazide'],
+    strengths: ['30 mg', '60 mg'],
+    dosageForms: ['Extended Release Oral Tablet'],
+    tty: 'SCD',
+    source: 'RxNorm'
+  },
+  {
+    id: '861771',
+    rxcui: '861771',
+    name: 'Metformin Hydrochloride 1000 MG / Sitagliptin 50 MG Oral Tablet [Janumet / Gsiptin-M]',
+    genericName: 'Sitagliptin Phosphate and Metformin Hydrochloride',
+    brandName: 'Janumet / Gsiptin-M',
+    activeIngredients: ['Sitagliptin Phosphate', 'Metformin Hydrochloride'],
+    strengths: ['50 mg / 500 mg', '50 mg / 1000 mg', '100 mg / 1000 mg'],
+    dosageForms: ['Oral Tablet', 'Film Coated Oral Tablet'],
     tty: 'SBD',
     source: 'RxNorm'
   },

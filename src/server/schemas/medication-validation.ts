@@ -22,8 +22,8 @@ export const RxCuiParamSchema = z.object({
   rxcui: z
     .string()
     .trim()
-    .min(1, 'RxCUI identifier is required')
-    .regex(/^[0-9]+$/, 'RxCUI must be a numeric concept identifier')
+    .min(1, 'RxCUI or medication identifier is required')
+    .max(150, 'Identifier is too long')
 });
 
 export const SetIdParamSchema = z.object({
@@ -52,3 +52,4 @@ export const PatientMedicationWithRefSchema = z.object({
   dosageForm: z.string().trim().optional(),
   referenceSource: z.string().trim().optional()
 });
+

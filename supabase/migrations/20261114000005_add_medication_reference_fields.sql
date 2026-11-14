@@ -13,3 +13,4 @@ ALTER TABLE IF EXISTS health_medications
 
 -- Index for RxCUI lookups
 CREATE INDEX IF NOT EXISTS idx_health_medications_rxcui ON health_medications(rxcui);
+
