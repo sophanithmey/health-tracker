@@ -36,3 +36,4 @@ BEGIN
         DELETE FROM glucose_targets WHERE patient_id = v_patient_id;
     END IF;
 END $$;
+

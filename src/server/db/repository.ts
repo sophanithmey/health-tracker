@@ -524,6 +524,24 @@ export class HealthRepository {
 
     if (isSupabaseConfigured && supabaseServer) {
       try {
+        // Ensure patient exists in health_patient_profiles to satisfy foreign key
+        const { data: patientExists } = await supabaseServer
+          .from('health_patient_profiles')
+          .select('id')
+          .eq('id', newMed.patientId)
+          .maybeSingle();
+
+        if (!patientExists) {
+          await supabaseServer.from('health_patient_profiles').insert({
+            id: newMed.patientId,
+            full_name: 'Mom Sokha',
+            full_name_km: 'ម៉ាក់ សុខា',
+            emergency_contact_name: 'Family Caregiver',
+            emergency_contact_phone: '',
+            emergency_contact_relation: 'Caregiver'
+          });
+        }
+
         await supabaseServer.from('health_medications').insert({
           id: newMed.id,
           patient_id: newMed.patientId,
@@ -576,6 +594,20 @@ export class HealthRepository {
       return store.medications[idx];
     }
     return null;
+  }
+
+  public static async deleteMedication(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabaseServer) {
+      try {
+        await supabaseServer.from('health_medications').delete().eq('id', id);
+      } catch (err) {
+        console.warn('Error deleting health_medications from Supabase:', err);
+      }
+    }
+
+    const filtered = store.medications.filter((m) => m.id !== id);
+    store.medications.splice(0, store.medications.length, ...filtered);
+    return true;
   }
 
   public static async getMedicationLogs(patientId = store.PATIENT_ID): Promise<MedicationLog[]> {

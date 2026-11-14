@@ -26,3 +26,24 @@ export async function PATCH(
   }
 }
 
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const currentUser = HealthRepository.getCurrentUser();
+    if (currentUser.role !== 'family_admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Only family admin can delete medication records' },
+        { status: 403 }
+      );
+    }
+
+    const { id } = await params;
+    await HealthRepository.deleteMedication(id);
+    return NextResponse.json({ success: true, message: 'Medication removed successfully' });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+  }
+}
+
