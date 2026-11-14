@@ -141,7 +141,7 @@ export class SafeAlertEngine {
         messageEn: `Mom's reading of ${valueMgDl} mg/dL is above the personal target (${targetMin}–${targetMax} mg/dL) for consecutive measurements.`,
         messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL លើសពីគោលដៅកំណត់ (${targetMin}–${targetMax} mg/dL) ចំនួនច្រើនដងផ្ទួនៗ។`,
         guidanceEn:
-          'Medical Follow-up Guidance: Record detailed meal and activity logs. Ensure regular hydration with plain water. Do NOT change prescribed medication doses or take extra medication without consulting Dr. Chanthy Keo or your attending clinician.',
+          'Medical Follow-up Guidance: Record detailed meal and activity logs. Ensure regular hydration with plain water. Do NOT change prescribed medication doses or take extra medication without consulting your attending clinician.',
         guidanceKm:
           'ការណែនាំវេជ្ជសាស្ត្រ៖ សូមកត់ត្រាអាហារ និងសកម្មភាពឱ្យបានលម្អិត។ ពិសារទឹកស្អាតឱ្យបានគ្រប់គ្រាន់។ សូមកុំផ្លាស់ប្តូរកម្រិតថ្នាំ ឬលេបថ្នាំលើសដោយគ្មានការពិគ្រោះជាមួយលោកវេជ្ជបណ្ឌិតឡើយ។'
       };

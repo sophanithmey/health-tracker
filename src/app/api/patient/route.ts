@@ -23,8 +23,10 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const validated = PatientProfileUpdateSchema.partial().parse(body);
-    const updated = await HealthRepository.updatePatientProfile(body.patientId || undefined, validated);
+    const validated = PatientProfileUpdateSchema.parse(body);
+    const { patientId: validatedPatientId, ...profileUpdates } = validated;
+    const targetId = body.patientId || validatedPatientId || undefined;
+    const updated = await HealthRepository.updatePatientProfile(targetId, profileUpdates);
     return NextResponse.json({ success: true, data: updated });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });

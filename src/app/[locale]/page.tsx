@@ -25,7 +25,10 @@ export default function DashboardPage() {
     queryFn: async () => {
       const res = await axios.get('/api/patient');
       return res.data.data;
-    }
+    },
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true
   });
 
   const { data: glucoseData, refetch: refetchGlucose } = useQuery<{ records: GlucoseRecord[]; total: number }>({
@@ -166,7 +169,7 @@ export default function DashboardPage() {
                 កាលវិភាគថ្នាំលេបប្រចាំថ្ងៃ
               </h4>
               <p className="text-xs text-slate-600 mt-0.5">
-                Oral Medications (Metformin 500mg) &amp; Adherence Log
+                {patient?.currentMedicationsSummary || 'Oral Medications'} &amp; Adherence Log
               </p>
             </div>
           </div>

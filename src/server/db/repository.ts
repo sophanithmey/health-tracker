@@ -38,19 +38,38 @@ export class HealthRepository {
   // --------------------------------------------------------------------------
   // Patient Profile
   // --------------------------------------------------------------------------
-  public static async getPatientProfile(patientId = store.PATIENT_ID): Promise<PatientProfile> {
+  public static async getPatientProfile(patientId?: string): Promise<PatientProfile> {
     if (isSupabaseConfigured && supabaseServer) {
       try {
-        const { data, error } = await supabaseServer
-          .from('health_patient_profiles')
-          .select('*')
-          .eq('id', patientId)
-          .maybeSingle();
+        let data = null;
+        let error = null;
+
+        if (patientId) {
+          const res = await supabaseServer
+            .from('health_patient_profiles')
+            .select('*')
+            .eq('id', patientId)
+            .maybeSingle();
+          data = res.data;
+          error = res.error;
+        }
+
+        // If not found by patientId (or no patientId provided), grab the first available row in health_patient_profiles
+        if (!data) {
+          const fallback = await supabaseServer
+            .from('health_patient_profiles')
+            .select('*')
+            .order('created_at', { ascending: true })
+            .limit(1)
+            .maybeSingle();
+          data = fallback.data;
+          error = fallback.error;
+        }
 
         if (data && !error) {
-          return {
+          const profile: PatientProfile = {
             id: data.id,
-            fullName: data.full_name,
+            fullName: data.full_name || 'Patient',
             fullNameKm: data.full_name_km || '',
             dateOfBirth: data.date_of_birth,
             ageGroup: data.age_group || '60-69',
@@ -63,9 +82,9 @@ export class HealthRepository {
             doctorName: data.doctor_name || '',
             doctorPhone: data.doctor_phone || '',
             doctorClinic: data.doctor_clinic || '',
-            emergencyContactName: data.emergency_contact_name || 'Caregiver',
+            emergencyContactName: data.emergency_contact_name || '',
             emergencyContactPhone: data.emergency_contact_phone || '',
-            emergencyContactRelation: data.emergency_contact_relation || 'Child',
+            emergencyContactRelation: data.emergency_contact_relation || '',
             preferredGlucoseUnit: data.preferred_glucose_unit || 'mg/dL',
             timezone: data.timezone || 'Asia/Phnom_Penh',
             telegramChatId: data.telegram_chat_id || '',
@@ -73,6 +92,8 @@ export class HealthRepository {
             createdAt: data.created_at,
             updatedAt: data.updated_at
           };
+          store.updatePatientProfileInStore(profile);
+          return profile;
         }
       } catch (err) {
         console.warn('Error fetching health_patient_profiles from Supabase:', err);
@@ -82,16 +103,30 @@ export class HealthRepository {
   }
 
   public static async updatePatientProfile(
-    patientId: string,
+    patientId: string | undefined,
     updates: Partial<PatientProfile>
   ): Promise<PatientProfile> {
+    let targetPatientId = patientId;
+
     if (isSupabaseConfigured && supabaseServer) {
       try {
+        // Resolve patient id if not provided
+        if (!targetPatientId) {
+          const { data: firstRow } = await supabaseServer
+            .from('health_patient_profiles')
+            .select('id')
+            .order('created_at', { ascending: true })
+            .limit(1)
+            .maybeSingle();
+          targetPatientId = firstRow?.id || store.PATIENT_ID;
+        }
+
         const payload: Record<string, any> = {
           updated_at: new Date().toISOString()
         };
         if (updates.fullName !== undefined) payload.full_name = updates.fullName;
         if (updates.fullNameKm !== undefined) payload.full_name_km = updates.fullNameKm;
+        if (updates.ageGroup !== undefined) payload.age_group = updates.ageGroup;
         if (updates.diabetesType !== undefined) payload.diabetes_type = updates.diabetesType;
         if (updates.diagnosisStatus !== undefined) payload.diagnosis_status = updates.diagnosisStatus;
         if (updates.currentMedicationsSummary !== undefined)
@@ -109,14 +144,23 @@ export class HealthRepository {
           payload.emergency_contact_relation = updates.emergencyContactRelation;
         if (updates.preferredGlucoseUnit !== undefined)
           payload.preferred_glucose_unit = updates.preferredGlucoseUnit;
+        if (updates.timezone !== undefined) payload.timezone = updates.timezone;
         if (updates.telegramChatId !== undefined) payload.telegram_chat_id = updates.telegramChatId;
         if (updates.telegramNotificationsEnabled !== undefined)
           payload.telegram_notifications_enabled = updates.telegramNotificationsEnabled;
 
-        await supabaseServer
+        const { error: updateError } = await supabaseServer
           .from('health_patient_profiles')
           .update(payload)
-          .eq('id', patientId);
+          .eq('id', targetPatientId);
+
+        if (updateError) {
+          console.error('Error updating health_patient_profiles in Supabase:', updateError);
+        } else {
+          // Re-fetch the freshly updated record directly from Supabase
+          const fresh = await this.getPatientProfile(targetPatientId);
+          return fresh;
+        }
       } catch (err) {
         console.warn('Error updating health_patient_profiles in Supabase:', err);
       }

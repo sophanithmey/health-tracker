@@ -66,7 +66,7 @@ export function DoctorVisitPdfExport({
       doc.text(`Age: ${patient.age} (${patient.ageGroup}) | Timezone: ${patient.timezone}`, 14, 42);
       doc.text(`Diabetes Classification: ${patient.diabetesType.toUpperCase()} (Configurable)`, 14, 48);
       doc.text(`Prescription: ${patient.currentMedicationsSummary}`, 14, 54);
-      doc.text(`Attending Clinician: ${patient.doctorName || 'Dr. Chanthy Keo'}`, 14, 60);
+      doc.text(`Attending Clinician: ${patient.doctorName || 'Not specified'}`, 14, 60);
 
       // Section: Summary Metrics
       doc.setFillColor(248, 250, 252);

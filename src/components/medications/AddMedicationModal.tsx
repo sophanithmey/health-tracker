@@ -20,7 +20,7 @@ export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedication
   const [dosage, setDosage] = useState('500 mg');
   const [frequency, setFrequency] = useState('Once daily');
   const [timingInstructions, setTimingInstructions] = useState('Take with breakfast');
-  const [prescribingDoctor, setPrescribingDoctor] = useState('Dr. Chanthy Keo');
+  const [prescribingDoctor, setPrescribingDoctor] = useState('');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState('');
   const [notes, setNotes] = useState('');
@@ -246,7 +246,7 @@ export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedication
                 type="text"
                 value={prescribingDoctor}
                 onChange={(e) => setPrescribingDoctor(e.target.value)}
-                placeholder="e.g. Dr. Chanthy Keo"
+                placeholder="e.g. Attending Physician"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600"
               />
             </div>
@@ -316,3 +316,4 @@ export function AddMedicationModal({ isOpen, onClose, onSuccess }: AddMedication
     </div>
   );
 }
+

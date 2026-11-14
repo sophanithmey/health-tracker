@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
+import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { PatientProfile, DiabetesType } from '@/types';
 import {
@@ -13,6 +14,8 @@ import {
   Globe,
   Bell,
   User,
+  Stethoscope,
+  HeartHandshake,
   ShieldAlert,
   Save
 } from 'lucide-react';
@@ -31,9 +34,10 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { role } = useRole();
+  const queryClient = useQueryClient();
 
   // Telegram state
-  const [telegramChatId, setTelegramChatId] = useState(patient.telegramChatId || '-100123456789');
+  const [telegramChatId, setTelegramChatId] = useState(patient.telegramChatId || '');
   const [telegramEnabled, setTelegramEnabled] = useState(patient.telegramNotificationsEnabled ?? true);
   const [testStatus, setTestStatus] = useState<{ loading: boolean; message?: string; success?: boolean }>({
     loading: false
@@ -41,14 +45,41 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
   const [isSavingTelegram, setIsSavingTelegram] = useState(false);
 
   // Patient Profile state
-  const [fullName, setFullName] = useState(patient.fullName);
-  const [fullNameKm, setFullNameKm] = useState(patient.fullNameKm || 'ម៉ាក់ សុខា');
-  const [diabetesType, setDiabetesType] = useState<DiabetesType>(patient.diabetesType);
-  const [currentMeds, setCurrentMeds] = useState(patient.currentMedicationsSummary);
-  const [emergencyName, setEmergencyName] = useState(patient.emergencyContactName);
-  const [emergencyPhone, setEmergencyPhone] = useState(patient.emergencyContactPhone);
+  const [fullName, setFullName] = useState(patient.fullName || '');
+  const [fullNameKm, setFullNameKm] = useState(patient.fullNameKm || '');
+  const [ageGroup, setAgeGroup] = useState(patient.ageGroup || '60-69');
+  const [diabetesType, setDiabetesType] = useState<DiabetesType>(patient.diabetesType || 'unknown');
+  const [currentMeds, setCurrentMeds] = useState(patient.currentMedicationsSummary || '');
+  const [doctorName, setDoctorName] = useState(patient.doctorName || '');
+  const [doctorPhone, setDoctorPhone] = useState(patient.doctorPhone || '');
+  const [doctorClinic, setDoctorClinic] = useState(patient.doctorClinic || '');
+  const [emergencyName, setEmergencyName] = useState(patient.emergencyContactName || '');
+  const [emergencyPhone, setEmergencyPhone] = useState(patient.emergencyContactPhone || '');
+  const [emergencyRelation, setEmergencyRelation] = useState(patient.emergencyContactRelation || '');
+  const [medicalHistory, setMedicalHistory] = useState(patient.medicalHistory || '');
+
   const [isSavingPatient, setIsSavingPatient] = useState(false);
   const [patientSuccess, setPatientSuccess] = useState(false);
+
+  // Sync state when patient prop changes (e.g. from refetch or database update)
+  useEffect(() => {
+    if (patient) {
+      setFullName(patient.fullName || '');
+      setFullNameKm(patient.fullNameKm || '');
+      setAgeGroup(patient.ageGroup || '60-69');
+      setDiabetesType(patient.diabetesType || 'unknown');
+      setCurrentMeds(patient.currentMedicationsSummary || '');
+      setDoctorName(patient.doctorName || '');
+      setDoctorPhone(patient.doctorPhone || '');
+      setDoctorClinic(patient.doctorClinic || '');
+      setEmergencyName(patient.emergencyContactName || '');
+      setEmergencyPhone(patient.emergencyContactPhone || '');
+      setEmergencyRelation(patient.emergencyContactRelation || '');
+      setMedicalHistory(patient.medicalHistory || '');
+      setTelegramChatId(patient.telegramChatId || '');
+      setTelegramEnabled(patient.telegramNotificationsEnabled ?? true);
+    }
+  }, [patient]);
 
   const handleLanguageChange = (newLocale: 'km' | 'en') => {
     router.replace(pathname, { locale: newLocale });
@@ -86,9 +117,11 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
     setIsSavingTelegram(true);
     try {
       await axios.post('/api/telegram/config', {
+        patientId: patient.id,
         chatId: telegramChatId,
         notificationsEnabled: telegramEnabled
       });
+      await queryClient.invalidateQueries({ queryKey: ['patient'] });
       onRefresh();
       alert('Telegram settings saved');
     } catch (err: any) {
@@ -104,15 +137,23 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
     setPatientSuccess(false);
     try {
       await axios.patch('/api/patient', {
+        patientId: patient.id,
         fullName,
         fullNameKm,
+        ageGroup,
         diabetesType,
         currentMedicationsSummary: currentMeds,
+        doctorName,
+        doctorPhone,
+        doctorClinic,
         emergencyContactName: emergencyName,
-        emergencyContactPhone: emergencyPhone
+        emergencyContactPhone: emergencyPhone,
+        emergencyContactRelation: emergencyRelation,
+        medicalHistory
       });
       setPatientSuccess(true);
       setTimeout(() => setPatientSuccess(false), 3000);
+      await queryClient.invalidateQueries({ queryKey: ['patient'] });
       onRefresh();
     } catch (err: any) {
       alert(err.response?.data?.error || 'Failed to update patient profile');
@@ -159,7 +200,214 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
         </div>
       </div>
 
-      {/* 2. Telegram Family Bot Notifications */}
+      {/* 2. Patient Medical Profile Details */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-2xl bg-teal-100 flex items-center justify-center text-teal-700">
+            <User className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900">{t('patientProfile')}</h3>
+            <p className="text-xs text-slate-500">
+              Personalized medical profile details &amp; clinician contacts
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSavePatient} className="space-y-4 max-w-2xl text-xs">
+          {/* Identity */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold text-slate-600 mb-1">
+                Name (English) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="e.g. Mom Sokha"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold text-slate-600 mb-1">
+                Name (Khmer)
+              </label>
+              <input
+                type="text"
+                value={fullNameKm}
+                onChange={(e) => setFullNameKm(e.target.value)}
+                placeholder="e.g. ម៉ាក់ សុខា"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-khmer focus:bg-white focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold text-slate-600 mb-1">
+                Age Group
+              </label>
+              <select
+                value={ageGroup}
+                onChange={(e) => setAgeGroup(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold"
+              >
+                <option value="50-59">50–59</option>
+                <option value="60-69">60–69 (Patient Profile)</option>
+                <option value="70-79">70–79</option>
+                <option value="80+">80+</option>
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-slate-600 mb-1">
+                {tPatient('diabetesType')} (Configurable)
+              </label>
+              <select
+                value={diabetesType}
+                onChange={(e) => setDiabetesType(e.target.value as DiabetesType)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold"
+              >
+                <option value="unknown">{tPatient('unknownType')}</option>
+                <option value="type_1">{tPatient('type1')}</option>
+                <option value="type_2">{tPatient('type2')}</option>
+                <option value="other">{tPatient('otherType')}</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-semibold text-slate-600 mb-1">
+              {tPatient('currentMedication')}
+            </label>
+            <input
+              type="text"
+              value={currentMeds}
+              onChange={(e) => setCurrentMeds(e.target.value)}
+              placeholder="e.g. Oral medication (Metformin 500mg)"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          {/* Clinician Contact */}
+          <div className="pt-2 border-t border-slate-200">
+            <h4 className="font-bold text-slate-800 text-xs mb-2 flex items-center space-x-1.5">
+              <Stethoscope className="w-3.5 h-3.5 text-teal-600" />
+              <span>Attending Clinician &amp; Clinic</span>
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block font-semibold text-slate-600 mb-1">Doctor Name</label>
+                <input
+                  type="text"
+                  value={doctorName}
+                  onChange={(e) => setDoctorName(e.target.value)}
+                  placeholder="e.g. Dr. Keo"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-slate-600 mb-1">Doctor Phone</label>
+                <input
+                  type="text"
+                  value={doctorPhone}
+                  onChange={(e) => setDoctorPhone(e.target.value)}
+                  placeholder="e.g. +855 12 345 678"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-slate-600 mb-1">Clinic / Hospital</label>
+                <input
+                  type="text"
+                  value={doctorClinic}
+                  onChange={(e) => setDoctorClinic(e.target.value)}
+                  placeholder="e.g. Diabetes Clinic"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Emergency Contact */}
+          <div className="pt-2 border-t border-slate-200">
+            <h4 className="font-bold text-slate-800 text-xs mb-2 flex items-center space-x-1.5">
+              <HeartHandshake className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Family Emergency Contact</span>
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block font-semibold text-slate-600 mb-1">Contact Name</label>
+                <input
+                  type="text"
+                  value={emergencyName}
+                  onChange={(e) => setEmergencyName(e.target.value)}
+                  placeholder="e.g. Dara Mey"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-slate-600 mb-1">Contact Phone</label>
+                <input
+                  type="text"
+                  value={emergencyPhone}
+                  onChange={(e) => setEmergencyPhone(e.target.value)}
+                  placeholder="e.g. +855 17 888 999"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-slate-600 mb-1">Relationship</label>
+                <input
+                  type="text"
+                  value={emergencyRelation}
+                  onChange={(e) => setEmergencyRelation(e.target.value)}
+                  placeholder="e.g. Son, Daughter, Child"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Medical Notes */}
+          <div>
+            <label className="block font-semibold text-slate-600 mb-1">
+              Medical History &amp; Allergies
+            </label>
+            <textarea
+              rows={2}
+              value={medicalHistory}
+              onChange={(e) => setMedicalHistory(e.target.value)}
+              placeholder="e.g. Hypertension history, Penicillin allergy"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-500">
+            Timezone: <strong>Asia/Phnom_Penh (UTC+7)</strong> • Default Glucose Unit: <strong>mg/dL</strong>
+          </div>
+
+          <div className="flex items-center space-x-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSavingPatient}
+              className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-xl text-xs shadow transition flex items-center space-x-1.5"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>{isSavingPatient ? tCommon('loading') : tCommon('save')}</span>
+            </button>
+            {patientSuccess && (
+              <span className="text-emerald-700 font-bold flex items-center text-xs">
+                <CheckCircle2 className="w-4 h-4 mr-1" />
+                {tCommon('saved')}
+              </span>
+            )}
+          </div>
+        </form>
+      </div>
+
+      {/* 3. Telegram Family Bot Notifications */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
@@ -238,122 +486,6 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
           )}
         </div>
       </div>
-
-      {/* 3. Patient Profile Details */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-teal-100 flex items-center justify-center text-teal-700">
-            <User className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900">{t('patientProfile')}</h3>
-            <p className="text-xs text-slate-500">
-              Configurable medical profile details (Age 60-69)
-            </p>
-          </div>
-        </div>
-
-        <form onSubmit={handleSavePatient} className="space-y-4 max-w-lg text-xs">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block font-semibold text-slate-600 mb-1">
-                Name (English)
-              </label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block font-semibold text-slate-600 mb-1">
-                Name (Khmer)
-              </label>
-              <input
-                type="text"
-                value={fullNameKm}
-                onChange={(e) => setFullNameKm(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block font-semibold text-slate-600 mb-1">
-              {tPatient('diabetesType')} (Must remain configurable)
-            </label>
-            <select
-              value={diabetesType}
-              onChange={(e) => setDiabetesType(e.target.value as DiabetesType)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold"
-            >
-              <option value="unknown">{tPatient('unknownType')}</option>
-              <option value="type_1">{tPatient('type1')}</option>
-              <option value="type_2">{tPatient('type2')}</option>
-              <option value="other">{tPatient('otherType')}</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block font-semibold text-slate-600 mb-1">
-              {tPatient('currentMedication')}
-            </label>
-            <input
-              type="text"
-              value={currentMeds}
-              onChange={(e) => setCurrentMeds(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block font-semibold text-slate-600 mb-1">
-                Emergency Contact Name
-              </label>
-              <input
-                type="text"
-                value={emergencyName}
-                onChange={(e) => setEmergencyName(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block font-semibold text-slate-600 mb-1">
-                Emergency Contact Phone
-              </label>
-              <input
-                type="text"
-                value={emergencyPhone}
-                onChange={(e) => setEmergencyPhone(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs focus:bg-white focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-500">
-            Timezone: <strong>Asia/Phnom_Penh (UTC+7)</strong> • Default Glucose Unit: <strong>mg/dL</strong>
-          </div>
-
-          <div className="flex items-center space-x-3 pt-2">
-            <button
-              type="submit"
-              disabled={isSavingPatient}
-              className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-xl text-xs shadow transition"
-            >
-              {isSavingPatient ? tCommon('loading') : tCommon('save')}
-            </button>
-            {patientSuccess && (
-              <span className="text-emerald-700 font-bold flex items-center text-xs">
-                <CheckCircle2 className="w-4 h-4 mr-1" />
-                {tCommon('saved')}
-              </span>
-            )}
-          </div>
-        </form>
-      </div>
     </div>
   );
 }
-

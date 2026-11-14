@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter, Link } from '@/i18n/routing';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { PatientProfile } from '@/types';
 import {
   Activity,
   Droplet,
@@ -28,6 +31,19 @@ export function AppHeader() {
   const pathname = usePathname();
   const { role, switchRole } = useRole();
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
+
+  const { data: patient } = useQuery<PatientProfile>({
+    queryKey: ['patient'],
+    queryFn: async () => {
+      const res = await axios.get('/api/patient');
+      return res.data?.data;
+    },
+    staleTime: 0
+  });
+
+  const patientDisplayName = patient
+    ? (locale === 'km' ? (patient.fullNameKm || patient.fullName) : patient.fullName)
+    : '';
 
   const handleLanguageChange = (newLocale: 'km' | 'en') => {
     router.replace(pathname, { locale: newLocale });
@@ -67,11 +83,15 @@ export function AppHeader() {
                     {t('appName')}
                   </span>
                   <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
-                    Mom Sokha (Live)
+                    {patientDisplayName || 'Patient'} (Live)
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
-                  {t('appTagline')}
+                  {patient
+                    ? (locale === 'km'
+                        ? `ប្រព័ន្ធតាមដានជាតិស្ករ និងសុខភាពសម្រាប់ ${patientDisplayName}`
+                        : `Family Health & Blood Sugar Monitoring for ${patient.fullName}`)
+                    : t('appTagline')}
                 </p>
               </div>
             </Link>
@@ -110,10 +130,16 @@ export function AppHeader() {
                       ? 'bg-emerald-600 text-white shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  title="Mom Sokha (Senior Mode)"
+                  title={patientDisplayName ? `${patientDisplayName} (Senior Mode)` : 'Patient (Senior Mode)'}
                 >
-                  <span className="hidden sm:inline">{t('rolePatient')}</span>
-                  <span className="sm:hidden">Mom</span>
+                  <span className="hidden sm:inline">
+                    {patientDisplayName
+                      ? (locale === 'km' ? `${patientDisplayName} (អ្នកជំងឺ)` : `${patient?.fullName} (Patient)`)
+                      : t('rolePatient')}
+                  </span>
+                  <span className="sm:hidden">
+                    {patientDisplayName ? patientDisplayName.split(' ')[0] : 'Patient'}
+                  </span>
                 </button>
               </div>
 

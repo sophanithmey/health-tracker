@@ -16,7 +16,9 @@ export default function SettingsPage() {
     queryFn: async () => {
       const res = await axios.get('/api/patient');
       return res.data.data;
-    }
+    },
+    staleTime: 0,
+    refetchOnMount: 'always'
   });
 
   if (!patient) {

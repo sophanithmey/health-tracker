@@ -166,7 +166,7 @@ export function ReportSummaryView({
       <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600 flex items-start space-x-3">
         <ShieldCheck className="w-5 h-5 text-teal-700 flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
-          <strong>Non-Diagnostic Disclaimer:</strong> This report is compiled for personal health tracking and to facilitate discussions with Mom&apos;s healthcare provider. It does not constitute a formal diagnosis or medical treatment plan. Never alter medication doses without consulting Dr. Chanthy Keo or your clinician.
+          <strong>Non-Diagnostic Disclaimer:</strong> This report is compiled for personal health tracking and to facilitate discussions with your healthcare provider. It does not constitute a formal diagnosis or medical treatment plan. Never alter medication doses without consulting your attending clinician or doctor.
         </p>
       </div>
     </div>

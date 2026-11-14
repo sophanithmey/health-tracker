@@ -36,8 +36,8 @@
   },
   "patient": {
     "title": "Patient Profile",
-    "name": "Mom Sokha (Sokha Mey)",
-    "age": "64 years old (Age group 60–69)",
+    "name": "Patient Name",
+    "age": "Age Group",
     "diabetesType": "Diabetes Type",
     "unknownType": "Unknown (Must remain configurable)",
     "type1": "Type 1 Diabetes",

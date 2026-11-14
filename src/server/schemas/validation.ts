@@ -116,21 +116,24 @@ export const TelegramConfigSchema = z.object({
 });
 
 export const PatientProfileUpdateSchema = z.object({
-  fullName: z.string().min(1).max(100),
+  patientId: z.string().optional(),
+  fullName: z.string().min(1).max(100).optional(),
   fullNameKm: z.string().max(100).optional(),
-  ageGroup: z.string().default('60-69'),
-  diabetesType: z.enum(['unknown', 'type_1', 'type_2', 'other']),
-  diagnosisStatus: z.string(),
-  currentMedicationsSummary: z.string(),
-  allergies: z.array(z.string()).default([]),
+  ageGroup: z.string().optional(),
+  diabetesType: z.enum(['unknown', 'type_1', 'type_2', 'other']).optional(),
+  diagnosisStatus: z.string().optional(),
+  currentMedicationsSummary: z.string().optional(),
+  allergies: z.array(z.string()).optional(),
   medicalHistory: z.string().optional(),
   doctorName: z.string().optional(),
   doctorPhone: z.string().optional(),
   doctorClinic: z.string().optional(),
-  emergencyContactName: z.string().min(1),
-  emergencyContactPhone: z.string().min(1),
-  emergencyContactRelation: z.string().min(1),
-  preferredGlucoseUnit: z.enum(['mg/dL', 'mmol/L']).default('mg/dL'),
-  timezone: z.string().default('Asia/Phnom_Penh')
+  emergencyContactName: z.string().optional(),
+  emergencyContactPhone: z.string().optional(),
+  emergencyContactRelation: z.string().optional(),
+  preferredGlucoseUnit: z.enum(['mg/dL', 'mmol/L']).optional(),
+  timezone: z.string().optional(),
+  telegramChatId: z.string().optional(),
+  telegramNotificationsEnabled: z.boolean().optional()
 });
 
