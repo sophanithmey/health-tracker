@@ -45,31 +45,31 @@ export function DoseLogModal({ medication, isOpen, onClose, onSuccess }: DoseLog
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-slate-200">
+      <div className="bg-white rounded-3xl max-w-xl sm:max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2 rounded-full hover:bg-slate-100"
+          className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2 rounded-full hover:bg-slate-100 transition"
           aria-label="Close"
         >
           <X className="w-6 h-6" />
         </button>
 
-        <div className="flex items-center space-x-3 text-teal-800 mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-teal-100 flex items-center justify-center text-teal-700">
+        <div className="flex items-center space-x-3 text-teal-800 mb-6">
+          <div className="w-12 h-12 rounded-2xl bg-teal-100 flex items-center justify-center text-teal-700 flex-shrink-0">
             <Pill className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900">{t('logDose')}</h3>
-            <p className="text-xs text-slate-500">{medication.name} ({medication.dosage})</p>
+            <h3 className="text-xl font-black text-slate-900 font-khmer">{t('logDose')}</h3>
+            <p className="text-xs text-slate-500 font-medium">{medication.name} ({medication.dosage})</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">
+            <label className="block text-xs font-bold text-slate-700 mb-2 font-khmer">
               Dose Status
             </label>
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               {[
                 { id: 'taken', label: t('taken'), color: 'border-emerald-500 bg-emerald-50 text-emerald-900' },
                 { id: 'missed', label: t('missed'), color: 'border-amber-500 bg-amber-50 text-amber-900' },
@@ -79,14 +79,18 @@ export function DoseLogModal({ medication, isOpen, onClose, onSuccess }: DoseLog
                   key={item.id}
                   type="button"
                   onClick={() => setStatus(item.id as MedicationDoseStatus)}
-                  className={`p-3 rounded-xl border text-left font-bold text-xs sm:text-sm transition flex items-center justify-between ${
+                  className={`p-3.5 rounded-2xl border text-left font-bold text-xs sm:text-sm transition flex flex-col justify-between min-h-[76px] ${
                     status === item.id
-                      ? `${item.color} shadow-xs ring-2 ring-teal-200`
+                      ? `${item.color} shadow-xs ring-2 ring-teal-300`
                       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  <span>{item.label}</span>
-                  {status === item.id && <Check className="w-4 h-4" />}
+                  <span className="font-bold">{item.label}</span>
+                  {status === item.id ? (
+                    <Check className="w-4 h-4 self-end text-current mt-2" />
+                  ) : (
+                    <span className="h-4 mt-2" />
+                  )}
                 </button>
               ))}
             </div>

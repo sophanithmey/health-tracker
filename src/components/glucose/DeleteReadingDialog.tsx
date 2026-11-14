@@ -24,7 +24,7 @@ export function DeleteReadingDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center border border-slate-200">
+      <div className="bg-white rounded-3xl max-w-lg sm:max-w-xl w-full p-6 sm:p-8 shadow-2xl relative text-center border border-slate-200">
         <div className="w-14 h-14 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
           <Trash2 className="w-7 h-7" />
         </div>

@@ -102,7 +102,7 @@ export function GlucoseEntryModal({ isOpen, onClose, onSuccess }: GlucoseEntryMo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto border border-slate-200">
+      <div className="bg-white rounded-3xl max-w-2xl sm:max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto border border-slate-200">
         <button
           onClick={onClose}
           className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2 rounded-full hover:bg-slate-100 transition"
@@ -191,7 +191,7 @@ export function GlucoseEntryModal({ isOpen, onClose, onSuccess }: GlucoseEntryMo
                 <label className="block text-sm font-bold text-slate-800 mb-2">
                   {t('typeLabel')}
                 </label>
-                <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-sm">
                   {[
                     { id: 'fasting', label: t('fasting') },
                     { id: 'before_meal', label: t('before_meal') },
