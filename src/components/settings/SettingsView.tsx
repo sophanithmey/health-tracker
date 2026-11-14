@@ -17,7 +17,11 @@ import {
   Stethoscope,
   HeartHandshake,
   ShieldAlert,
-  Save
+  Save,
+  Bot,
+  Zap,
+  Check,
+  Copy
 } from 'lucide-react';
 import { useRole } from '@/context/RoleContext';
 
@@ -43,6 +47,48 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
     loading: false
   });
   const [isSavingTelegram, setIsSavingTelegram] = useState(false);
+  const [webhookStatus, setWebhookStatus] = useState<{
+    loading: boolean;
+    message?: string;
+    success?: boolean;
+    url?: string;
+  }>({ loading: false });
+  const [copiedPill, setCopiedPill] = useState<string | null>(null);
+
+  const handleCopyText = (text: string) => {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedPill(text);
+      setTimeout(() => setCopiedPill(null), 2000);
+    }
+  };
+
+  const handleSyncWebhook = async () => {
+    setWebhookStatus({ loading: true });
+    try {
+      const res = await axios.post('/api/telegram/webhook/setup', { action: 'set' });
+      if (res.data?.success) {
+        setWebhookStatus({
+          loading: false,
+          success: true,
+          message: t('telegramWebhookSuccess'),
+          url: res.data?.data?.webhookUrl
+        });
+      } else {
+        setWebhookStatus({
+          loading: false,
+          success: false,
+          message: res.data?.error || res.data?.data?.description || 'Failed to register webhook'
+        });
+      }
+    } catch (err: any) {
+      setWebhookStatus({
+        loading: false,
+        success: false,
+        message: err.response?.data?.error || err.message || 'Error configuring webhook'
+      });
+    }
+  };
 
   // Patient Profile state
   const [fullName, setFullName] = useState(patient.fullName || '');
@@ -407,19 +453,28 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
         </form>
       </div>
 
-      {/* 3. Telegram Family Bot Notifications */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
-            <Bell className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900">{t('telegramSection')}</h3>
-            <p className="text-xs text-slate-500">{t('telegramHelp')}</p>
+      {/* 3. Telegram Family Bot Notifications & Two-Way Logging */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
+              <Bot className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-slate-900">{t('telegramSection')}</h3>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200/70">
+                  <Zap className="w-3 h-3 text-teal-600" />
+                  Two-Way Bot Active
+                </span>
+              </div>
+              <p className="text-xs text-slate-500">{t('telegramTwoWayDesc')}</p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-3 max-w-lg">
+        {/* Configuration Inputs */}
+        <div className="space-y-3 max-w-xl">
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1">
               {t('telegramChatId')}
@@ -466,6 +521,15 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
               <Send className="w-3.5 h-3.5" />
               <span>{testStatus.loading ? 'Sending...' : t('testTelegram')}</span>
             </button>
+
+            <button
+              onClick={handleSyncWebhook}
+              disabled={webhookStatus.loading}
+              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center space-x-1.5"
+            >
+              <Zap className="w-3.5 h-3.5 text-teal-600" />
+              <span>{webhookStatus.loading ? 'Connecting...' : t('telegramSetupWebhook')}</span>
+            </button>
           </div>
 
           {testStatus.message && (
@@ -484,6 +548,74 @@ export function SettingsView({ patient, onRefresh }: SettingsViewProps) {
               <span>{testStatus.message}</span>
             </div>
           )}
+
+          {webhookStatus.message && (
+            <div
+              className={`p-3 rounded-xl text-xs flex items-center space-x-2 ${
+                webhookStatus.success
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+              }`}
+            >
+              {webhookStatus.success ? (
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              ) : (
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              )}
+              <div>
+                <span>{webhookStatus.message}</span>
+                {webhookStatus.url && (
+                  <div className="font-mono text-[10px] text-slate-500 mt-0.5 break-all">
+                    {webhookStatus.url}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Two-Way Bot Interactive Commands & Logging Guide */}
+        <div className="pt-4 border-t border-slate-100 space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <span>📱</span> {t('telegramCommandsTitle')}
+            </h4>
+            <span className="text-[11px] text-slate-400">Click to copy example</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {[
+              { text: '148 fasting', label: t('telegramExample1') },
+              { text: '១៤៨ មុនបាយ', label: 'Khmer: ១៤៨ មុនបាយ' },
+              { text: '165 after lunch', label: t('telegramExample2') },
+              { text: '១៦៥ ក្រោយបាយ', label: 'Khmer: ១៦៥ ក្រោយបាយ' },
+              { text: '148', label: t('telegramExample3') },
+              { text: '/latest', label: t('telegramExample4') },
+              { text: '/targets', label: t('telegramExample5') },
+              { text: '/meds', label: t('telegramExample6') }
+            ].map((item, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleCopyText(item.text)}
+                className="text-left p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/70 transition flex items-center justify-between group"
+              >
+                <div className="min-w-0 pr-2">
+                  <div className="font-mono font-bold text-teal-800 text-xs">{item.text}</div>
+                  <div className="text-[11px] text-slate-500 truncate">{item.label}</div>
+                </div>
+                <div className="flex-shrink-0 text-slate-400 group-hover:text-teal-700">
+                  {copiedPill === item.text ? (
+                    <span className="flex items-center text-[10px] text-emerald-600 font-bold gap-0.5">
+                      <Check className="w-3.5 h-3.5" /> Copied
+                    </span>
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

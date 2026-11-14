@@ -30,7 +30,7 @@ export class TelegramService {
   /**
    * Escape HTML entities to prevent malformed tags in Telegram HTML mode
    */
-  private static escapeHtml(text: string): string {
+  public static escapeHtml(text: string): string {
     return text
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -127,6 +127,176 @@ export class TelegramService {
       error: lastError,
       attempts
     };
+  }
+
+  /**
+   * Send raw formatted text message to Telegram chat
+   */
+  public static async sendMessageRaw(
+    chatId: string | number,
+    text: string,
+    options?: {
+      parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+      disableWebPagePreview?: boolean;
+      maxRetries?: number;
+    }
+  ): Promise<TelegramSendResult> {
+    const token = this.getBotToken();
+    const parseMode = options?.parseMode ?? 'HTML';
+    const disableWebPagePreview = options?.disableWebPagePreview ?? true;
+    const maxRetries = options?.maxRetries ?? 3;
+
+    if (!token) {
+      console.log('--- [TELEGRAM DEV SIMULATION] ---');
+      console.log(`To Chat ID: ${chatId}`);
+      console.log(`Raw Message:\n${text}`);
+      console.log('---------------------------------');
+      return {
+        success: true,
+        messageId: Math.floor(Math.random() * 900000) + 100000,
+        deliveryStatus: 'sent',
+        attempts: 1
+      };
+    }
+
+    const url = `https://api.telegram.org/bot${token}/sendMessage`;
+    let attempts = 0;
+    let lastError = '';
+
+    while (attempts < maxRetries) {
+      attempts++;
+      try {
+        const response = await axios.post(
+          url,
+          {
+            chat_id: chatId,
+            text,
+            parse_mode: parseMode,
+            disable_web_page_preview: disableWebPagePreview
+          },
+          { timeout: 8000 }
+        );
+
+        if (response.data && response.data.ok) {
+          return {
+            success: true,
+            messageId: response.data.result.message_id,
+            deliveryStatus: 'sent',
+            attempts
+          };
+        } else {
+          lastError = response.data?.description || 'Telegram API returned not ok';
+        }
+      } catch (err: any) {
+        lastError = err.response?.data?.description || err.message || 'Unknown network error';
+        if (attempts < maxRetries) {
+          await new Promise((resolve) => setTimeout(resolve, attempts * 500));
+        }
+      }
+    }
+
+    return {
+      success: false,
+      deliveryStatus: 'failed',
+      error: lastError,
+      attempts
+    };
+  }
+
+  /**
+   * Register Webhook with Telegram Bot API
+   */
+  public static async setWebhook(
+    webhookUrl: string,
+    secretToken?: string
+  ): Promise<{ ok: boolean; description?: string }> {
+    const token = this.getBotToken();
+    if (!token) {
+      return { ok: false, description: 'Telegram Bot Token not configured on server' };
+    }
+
+    try {
+      const payload: Record<string, any> = {
+        url: webhookUrl,
+        allowed_updates: ['message', 'edited_message']
+      };
+      if (secretToken) {
+        payload.secret_token = secretToken;
+      }
+
+      const res = await axios.post(`https://api.telegram.org/bot${token}/setWebhook`, payload, {
+        timeout: 10000
+      });
+      return {
+        ok: Boolean(res.data?.ok),
+        description:
+          res.data?.description ||
+          (res.data?.ok ? 'Webhook registered successfully' : 'Failed to register webhook')
+      };
+    } catch (err: any) {
+      return {
+        ok: false,
+        description:
+          err.response?.data?.description || err.message || 'Network error setting webhook'
+      };
+    }
+  }
+
+  /**
+   * Get Webhook Info from Telegram Bot API
+   */
+  public static async getWebhookInfo(): Promise<{
+    ok: boolean;
+    result?: any;
+    description?: string;
+  }> {
+    const token = this.getBotToken();
+    if (!token) {
+      return { ok: false, description: 'Telegram Bot Token not configured on server' };
+    }
+
+    try {
+      const res = await axios.get(`https://api.telegram.org/bot${token}/getWebhookInfo`, {
+        timeout: 10000
+      });
+      return {
+        ok: Boolean(res.data?.ok),
+        result: res.data?.result,
+        description: res.data?.description
+      };
+    } catch (err: any) {
+      return {
+        ok: false,
+        description:
+          err.response?.data?.description || err.message || 'Network error getting webhook info'
+      };
+    }
+  }
+
+  /**
+   * Delete Webhook
+   */
+  public static async deleteWebhook(): Promise<{ ok: boolean; description?: string }> {
+    const token = this.getBotToken();
+    if (!token) {
+      return { ok: false, description: 'Telegram Bot Token not configured on server' };
+    }
+
+    try {
+      const res = await axios.post(`https://api.telegram.org/bot${token}/deleteWebhook`, {}, {
+        timeout: 10000
+      });
+      return {
+        ok: Boolean(res.data?.ok),
+        description: res.data?.description || 'Webhook deleted'
+      };
+    } catch (err: any) {
+      return {
+        ok: false,
+        description:
+          err.response?.data?.description || err.message || 'Network error deleting webhook'
+      };
+    }
   }
 
   /**

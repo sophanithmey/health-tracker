@@ -238,6 +238,56 @@ export class HealthRepository {
     return store.updatePatientProfileInStore(updates);
   }
 
+  public static async getPatientByTelegramChatId(chatId: string | number): Promise<PatientProfile> {
+    const stringChatId = String(chatId);
+    if (isSupabaseConfigured && supabaseServer) {
+      try {
+        const { data, error } = await supabaseServer
+          .from('health_patient_profiles')
+          .select('*')
+          .eq('telegram_chat_id', stringChatId)
+          .maybeSingle();
+
+        if (data && !error) {
+          const profile: PatientProfile = {
+            id: data.id,
+            fullName: data.full_name || 'Patient',
+            fullNameKm: data.full_name_km || '',
+            dateOfBirth: data.date_of_birth,
+            ageGroup: data.age_group || '60-69',
+            age: 64,
+            diabetesType: data.diabetes_type || 'unknown',
+            diagnosisStatus: data.diagnosis_status || 'under_monitoring',
+            currentMedicationsSummary: data.current_medications_summary || 'Oral medication',
+            allergies: data.allergies || [],
+            medicalHistory: data.medical_history || '',
+            doctorName: data.doctor_name || '',
+            doctorPhone: data.doctor_phone || '',
+            doctorClinic: data.doctor_clinic || '',
+            emergencyContactName: data.emergency_contact_name || '',
+            emergencyContactPhone: data.emergency_contact_phone || '',
+            emergencyContactRelation: data.emergency_contact_relation || '',
+            preferredGlucoseUnit: data.preferred_glucose_unit || 'mg/dL',
+            timezone: data.timezone || 'Asia/Phnom_Penh',
+            telegramChatId: data.telegram_chat_id || '',
+            telegramNotificationsEnabled: data.telegram_notifications_enabled ?? true,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at
+          };
+          return profile;
+        }
+      } catch (err) {
+        console.warn('Error querying patient by telegramChatId:', err);
+      }
+    }
+
+    if (store.initialPatientProfile.telegramChatId === stringChatId) {
+      return store.initialPatientProfile;
+    }
+
+    return this.getPatientProfile();
+  }
+
   // --------------------------------------------------------------------------
   // Glucose Targets
   // --------------------------------------------------------------------------
@@ -371,6 +421,14 @@ export class HealthRepository {
       records: list.slice(offset, offset + limit),
       total
     };
+  }
+
+  public static async getLatestGlucoseRecord(patientId?: string): Promise<GlucoseRecord | null> {
+    const { records } = await this.getGlucoseRecords({
+      patientId,
+      limit: 1
+    });
+    return records.length > 0 ? records[0] : null;
   }
 
   public static async createGlucoseRecord(
