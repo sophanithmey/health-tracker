@@ -222,9 +222,9 @@ export function GlucoseTrendChart({ records, target }: GlucoseTrendChartProps) {
   const targetMin = target?.targetMin ?? 80;
 
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+    <div className="bg-white rounded-3xl p-4 sm:p-7 border border-slate-200/80 shadow-xs space-y-6">
       {/* Header & Controls */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2.5">
             <div className="w-10 h-10 rounded-2xl bg-teal-100/80 border border-teal-200/60 flex items-center justify-center text-teal-700 shadow-2xs">

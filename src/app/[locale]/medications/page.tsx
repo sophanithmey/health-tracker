@@ -84,17 +84,22 @@ export default function MedicationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('prescriptions')}
-          className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center justify-center space-x-2 touch-target ${
+          className={`flex-1 py-3 px-3 sm:px-4 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center justify-center space-x-1.5 sm:space-x-2 touch-target ${
             activeTab === 'prescriptions'
               ? 'bg-teal-700 text-white shadow-sm shadow-teal-700/20'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
-          <ClipboardList className="w-4 h-4" />
-          <span className="font-khmer">
-            {locale === 'km' ? 'បញ្ជីថ្នាំរបស់ម៉ាក់ & កត់ត្រាការលេប' : "Mom's Prescriptions & Dose Logs"}
+          <ClipboardList className="w-4 h-4 flex-shrink-0" />
+          <span className="font-khmer truncate">
+            <span className="sm:hidden">
+              {locale === 'km' ? 'បញ្ជីថ្នាំម៉ាក់' : "Mom's Meds"}
+            </span>
+            <span className="hidden sm:inline">
+              {locale === 'km' ? 'បញ្ជីថ្នាំរបស់ម៉ាក់ & កត់ត្រាការលេប' : "Mom's Prescriptions & Dose Logs"}
+            </span>
           </span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black flex-shrink-0 ${
             activeTab === 'prescriptions' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
           }`}>
             {medications?.length || 0}
@@ -104,15 +109,20 @@ export default function MedicationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('database')}
-          className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center justify-center space-x-2 touch-target ${
+          className={`flex-1 py-3 px-3 sm:px-4 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center justify-center space-x-1.5 sm:space-x-2 touch-target ${
             activeTab === 'database'
               ? 'bg-teal-700 text-white shadow-sm shadow-teal-700/20'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
-          <Search className="w-4 h-4" />
-          <span className="font-khmer">
-            {locale === 'km' ? 'មូលទិន្នន័យថ្នាំ & ពត៌មានលម្អិត' : 'Drug Database & Reference (RxNorm)'}
+          <Search className="w-4 h-4 flex-shrink-0" />
+          <span className="font-khmer truncate">
+            <span className="sm:hidden">
+              {locale === 'km' ? 'ស្វែងរកថ្នាំ' : 'Drug Reference'}
+            </span>
+            <span className="hidden sm:inline">
+              {locale === 'km' ? 'មូលទិន្នន័យថ្នាំ & ព័ត៌មានលម្អិត' : 'Drug Database & Reference (RxNorm)'}
+            </span>
           </span>
         </button>
       </div>

@@ -142,28 +142,30 @@ export function MedicationList({ medications, logs, onRefresh, onOpenDetail }: M
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2 self-end sm:self-center flex-shrink-0">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-teal-200/60 w-full sm:w-auto justify-end flex-shrink-0">
                   {onOpenDetail && (
                     <button
                       type="button"
                       onClick={() => onOpenDetail(med.rxcui || med.name, med.name)}
-                      className="px-3.5 py-2.5 bg-white hover:bg-teal-50 text-teal-800 border border-teal-200/90 text-xs font-bold rounded-xl shadow-2xs transition flex items-center space-x-1 touch-target"
+                      className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-white hover:bg-teal-50 text-teal-800 border border-teal-200/90 text-xs font-bold rounded-xl shadow-2xs transition flex items-center justify-center space-x-1.5 touch-target"
                       title={locale === 'km' ? 'ព័ត៌មានឱសថ & សុវត្ថិភាព' : 'View Drug Guide'}
                     >
-                      <Info className="w-3.5 h-3.5 text-teal-700" />
+                      <Info className="w-3.5 h-3.5 text-teal-700 flex-shrink-0" />
                       <span>{locale === 'km' ? 'ព័ត៌មានឱសថ' : 'Drug Guide'}</span>
                     </button>
                   )}
 
                   <button
+                    type="button"
                     onClick={() => setSelectedMedForLog(med)}
-                    className="px-4 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition touch-target flex items-center space-x-1.5"
+                    className="flex-1 sm:flex-initial px-4 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition touch-target flex items-center justify-center space-x-1.5"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-4 h-4 flex-shrink-0" />
                     <span>{t('logDose')}</span>
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => handleDelete(med.id, med.name)}
                     disabled={deletingId === med.id}
                     className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition border border-transparent hover:border-red-200 touch-target disabled:opacity-50"

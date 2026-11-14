@@ -266,6 +266,18 @@
     "originalSource": "Original Source",
     "viewMedlinePlus": "View original source on MedlinePlus.gov",
     "safetyDisclaimer": "Educational Health Information: Sourced from the U.S. National Library of Medicine (MedlinePlus/NIH) for general reference only. Does not replace clinician diagnosis or treatment advice."
+  },
+  "footer": {
+    "aboutTitle": "Family Diabetes Care",
+    "aboutDesc": "A collaborative health monitoring application for families caring for an elderly parent with diabetes, backed by ADA glycemic standards.",
+    "emergencyTitle": "Emergency Helplines (Cambodia)",
+    "ambulance119": "National Ambulance (119)",
+    "police117": "Police Emergency (117)",
+    "quickLinks": "Quick Navigation",
+    "guidelines": "ADA Standards of Care 2026 Reference",
+    "disclaimer": "Non-Diagnostic Medical Notice: This tool is intended for family health tracking and educational purposes. It does not replace medical advice, diagnosis, or prescription modifications by an attending clinician.",
+    "copyright": "Family Diabetes Care. Designed with love for Mom.",
+    "menuMore": "Menu & More"
   }
 }
 

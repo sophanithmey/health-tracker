@@ -7,6 +7,7 @@ import { QueryProvider } from '@/components/providers/QueryProvider';
 import { RoleProvider } from '@/context/RoleContext';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
+import { AppFooter } from '@/components/layout/AppFooter';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -37,6 +38,7 @@ export default async function LocaleLayout({
             <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
               {children}
             </main>
+            <AppFooter />
             <MobileBottomNav />
           </div>
         </RoleProvider>
