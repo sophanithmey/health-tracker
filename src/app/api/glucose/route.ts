@@ -11,9 +11,13 @@ export async function GET(request: Request) {
     const endDate = searchParams.get('endDate') || undefined;
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : 50;
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : 0;
+    const patientParam = searchParams.get('patientId') || undefined;
+
+    const activePatient = patientParam ? null : await HealthRepository.getPatientProfile();
+    const patientId = patientParam || activePatient?.id || PATIENT_ID;
 
     const result = await HealthRepository.getGlucoseRecords({
-      patientId: PATIENT_ID,
+      patientId,
       measurementType,
       startDate,
       endDate,
@@ -33,9 +37,11 @@ export async function POST(request: Request) {
     const validated = GlucoseReadingSchema.parse(body);
 
     const currentUser = HealthRepository.getCurrentUser();
+    const activePatient = validated.patientId ? null : await HealthRepository.getPatientProfile();
+    const patientId = validated.patientId || activePatient?.id || PATIENT_ID;
 
     const { record, alert } = await HealthRepository.createGlucoseRecord({
-      patientId: validated.patientId || PATIENT_ID,
+      patientId,
       valueMgDl: validated.valueMgDl,
       measurementType: validated.measurementType,
       measuredAt: validated.measuredAt,

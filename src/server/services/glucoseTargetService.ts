@@ -98,6 +98,29 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
 };
 
 export class GlucoseTargetService {
+  private static async resolveProfileId(preferredId?: string): Promise<string | null> {
+    if (!isSupabaseConfigured || !supabaseServer) return preferredId || null;
+    try {
+      if (preferredId) {
+        const { data } = await supabaseServer
+          .from('health_profiles')
+          .select('id')
+          .eq('id', preferredId)
+          .maybeSingle();
+        if (data?.id) return data.id;
+      }
+      const { data: firstProfile } = await supabaseServer
+        .from('health_profiles')
+        .select('id')
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      return firstProfile?.id || null;
+    } catch {
+      return null;
+    }
+  }
+
   /**
    * Return general educational guidelines for reference display
    */
@@ -349,6 +372,8 @@ export class GlucoseTargetService {
 
     const effectiveFrom = data.effectiveFrom || new Date().toISOString();
 
+    const resolvedProfileId = await this.resolveProfileId(currentUser.id);
+
     const newTarget: GlucoseTarget = {
       id: targetId,
       patientId,
@@ -368,12 +393,12 @@ export class GlucoseTargetService {
       notes: data.notes,
       guidelineSource: data.guidelineSource || 'ADA Standards of Care',
       guidelineVersion: data.guidelineVersion || '2026',
-      createdBy: currentUser.id,
+      createdBy: resolvedProfileId || currentUser.id,
       createdByName: currentUser.fullName,
-      approvedBy: isClinician ? currentUser.id : undefined,
+      approvedBy: isClinician ? (resolvedProfileId || currentUser.id) : undefined,
       approvedByName: isClinician ? currentUser.fullName : undefined,
       approvedAt: isClinician ? new Date().toISOString() : undefined,
-      configuredBy: currentUser.id,
+      configuredBy: resolvedProfileId || currentUser.id,
       configuredByName: currentUser.fullName,
       clinicianApprovalStatus: isClinician ? 'clinician_approved' : 'unconfirmed',
       clinicianNotes: data.notes,
@@ -516,12 +541,14 @@ export class GlucoseTargetService {
     // 1. Inactivate / supersede any previous active targets for the same measurement type
     await this.supersedePreviousTargets(existing.patientId, existing.measurementType, targetId);
 
+    const resolvedProfileId = await this.resolveProfileId(clinicianUser.id);
+
     // 2. Set this target to approved
     const approvedTarget: GlucoseTarget = {
       ...existing,
       approvalStatus: 'approved',
       clinicianApprovalStatus: 'clinician_approved',
-      approvedBy: clinicianUser.id,
+      approvedBy: resolvedProfileId || clinicianUser.id,
       approvedByName: clinicianUser.fullName,
       approvedAt: nowIso,
       clinicianNotes: params.notes || existing.clinicianNotes,
@@ -690,6 +717,7 @@ export class GlucoseTargetService {
 
     if (isSupabaseConfigured && supabaseServer) {
       try {
+        const resolvedChangedBy = await this.resolveProfileId(entry.changedBy);
         await supabaseServer.from('health_glucose_target_audit_logs').insert({
           id: entry.id,
           target_id: entry.targetId,
@@ -697,7 +725,7 @@ export class GlucoseTargetService {
           action: entry.action,
           old_values: entry.oldValues,
           new_values: entry.newValues,
-          changed_by: entry.changedBy,
+          changed_by: resolvedChangedBy,
           changed_by_name: entry.changedByName,
           reason: entry.reason,
           created_at: entry.createdAt

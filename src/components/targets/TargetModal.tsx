@@ -478,7 +478,7 @@ export function TargetModal({ isOpen, onClose, onSuccess, target }: TargetModalP
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1.5">
                       <Calendar className="w-4 h-4 text-slate-400" />
-                      <span>{t('effectiveUntil')} ({tCommon('optional')})</span>
+                      <span>{t('effectiveUntil')} ({locale === 'km' ? 'ជម្រើស' : 'Optional'})</span>
                     </label>
                     <input
                       type="date"
@@ -493,7 +493,7 @@ export function TargetModal({ isOpen, onClose, onSuccess, target }: TargetModalP
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1.5">
                     <FileText className="w-4 h-4 text-teal-600" />
-                    <span>{t('clinicalNotes')} ({tCommon('optional')})</span>
+                    <span>{t('clinicalNotes')} ({locale === 'km' ? 'ជម្រើស' : 'Optional'})</span>
                   </label>
                   <textarea
                     rows={2}

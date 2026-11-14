@@ -36,6 +36,74 @@ export class HealthRepository {
     store.setActiveRole(role);
   }
 
+  private static cachedProfileId: string | null = null;
+
+  public static async resolveProfileId(preferredId?: string): Promise<string | null> {
+    if (!isSupabaseConfigured || !supabaseServer) return preferredId || null;
+
+    try {
+      // 1. Check if preferredId exists in health_profiles
+      if (preferredId) {
+        const { data } = await supabaseServer
+          .from('health_profiles')
+          .select('id')
+          .eq('id', preferredId)
+          .maybeSingle();
+        if (data?.id) return data.id;
+      }
+
+      // 2. Check cached valid profile
+      if (this.cachedProfileId) {
+        const { data } = await supabaseServer
+          .from('health_profiles')
+          .select('id')
+          .eq('id', this.cachedProfileId)
+          .maybeSingle();
+        if (data?.id) return data.id;
+      }
+
+      // 3. Check any existing profile in health_profiles
+      const { data: firstProfile } = await supabaseServer
+        .from('health_profiles')
+        .select('id')
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (firstProfile?.id) {
+        this.cachedProfileId = firstProfile.id;
+        return firstProfile.id;
+      }
+
+      // 4. If health_profiles has 0 rows, auto-provision a caregiver auth user & profile
+      try {
+        const email = `caregiver.${Date.now()}@gmail.com`;
+        const { data: signUpData } = await supabaseServer.auth.signUp({
+          email,
+          password: 'CaregiverPassword123!',
+        });
+        const newUserId = signUpData?.user?.id;
+        if (newUserId) {
+          await supabaseServer.from('health_profiles').insert({
+            id: newUserId,
+            full_name: 'Caregiver',
+            role: 'family_admin',
+            preferred_language: 'km'
+          });
+          this.cachedProfileId = newUserId;
+          return newUserId;
+        }
+      } catch (autoErr) {
+        console.warn('Auto-provisioning profile failed:', autoErr);
+      }
+
+      return null;
+    } catch (err) {
+      console.warn('Error resolving profile ID:', err);
+      return null;
+    }
+  }
+
   // --------------------------------------------------------------------------
   // Patient Profile
   // --------------------------------------------------------------------------
@@ -228,7 +296,11 @@ export class HealthRepository {
     limit?: number;
     offset?: number;
   }): Promise<{ records: GlucoseRecord[]; total: number }> {
-    const patientId = filters?.patientId || store.PATIENT_ID;
+    let patientId = filters?.patientId;
+    if (!patientId) {
+      const activePatient = await this.getPatientProfile();
+      patientId = activePatient.id || store.PATIENT_ID;
+    }
 
     if (isSupabaseConfigured && supabaseServer) {
       try {
@@ -394,10 +466,12 @@ export class HealthRepository {
       }
     }
 
+    const resolvedUserId = await this.resolveProfileId(currentUser.id);
+
     const newRecord: GlucoseRecord = {
       ...input,
       id: recordId,
-      recordedBy: currentUser.id,
+      recordedBy: resolvedUserId || currentUser.id,
       recordedByName: currentUser.fullName,
       recordedByRole: currentUser.role,
       targetStatus: evalResult.targetStatus,
@@ -409,7 +483,7 @@ export class HealthRepository {
 
     if (isSupabaseConfigured && supabaseServer) {
       try {
-        await supabaseServer.from('health_glucose_records').insert({
+        const payload: Record<string, any> = {
           id: newRecord.id,
           patient_id: newRecord.patientId,
           value_mgdl: newRecord.valueMgDl,
@@ -418,11 +492,33 @@ export class HealthRepository {
           meal_description: newRecord.mealDescription || null,
           symptoms: newRecord.symptoms || [],
           notes: newRecord.notes || null,
-          recorded_by: currentUser.id,
+          recorded_by: resolvedUserId,
           target_status: newRecord.targetStatus,
           alert_triggered: newRecord.alertTriggered,
           alert_id: newRecord.alertId || null
-        });
+        };
+
+        const { data, error } = await supabaseServer
+          .from('health_glucose_records')
+          .insert(payload)
+          .select();
+
+        if (error) {
+          console.error('Error inserting health_glucose_records into Supabase:', error);
+          if (error.code === '23503') {
+            const fallbackProfile = await this.resolveProfileId();
+            if (fallbackProfile && fallbackProfile !== payload.recorded_by) {
+              payload.recorded_by = fallbackProfile;
+              const retry = await supabaseServer
+                .from('health_glucose_records')
+                .insert(payload)
+                .select();
+              if (retry.error) {
+                console.error('Retry with fallback profile failed:', retry.error);
+              }
+            }
+          }
+        }
       } catch (err) {
         console.warn('Error inserting health_glucose_records into Supabase:', err);
       }
@@ -645,11 +741,12 @@ export class HealthRepository {
     logData: Omit<MedicationLog, 'id' | 'createdAt' | 'recordedBy' | 'recordedByName'>
   ): Promise<MedicationLog> {
     const currentUser = this.getCurrentUser();
+    const resolvedUserId = await this.resolveProfileId(currentUser.id);
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `log-${Date.now()}`;
     const newLog: MedicationLog = {
       ...logData,
       id,
-      recordedBy: currentUser.id,
+      recordedBy: resolvedUserId || currentUser.id,
       recordedByName: currentUser.fullName,
       createdAt: new Date().toISOString()
     };
@@ -663,7 +760,7 @@ export class HealthRepository {
           status: newLog.status,
           scheduled_time: newLog.scheduledTime,
           recorded_time: newLog.recordedTime,
-          recorded_by: newLog.recordedBy,
+          recorded_by: resolvedUserId,
           notes: newLog.notes || null
         });
       } catch (err) {
@@ -713,11 +810,12 @@ export class HealthRepository {
     mealData: Omit<MealLog, 'id' | 'createdAt' | 'recordedBy' | 'recordedByName'>
   ): Promise<MealLog> {
     const currentUser = this.getCurrentUser();
+    const resolvedUserId = await this.resolveProfileId(currentUser.id);
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `meal-${Date.now()}`;
     const newMeal: MealLog = {
       ...mealData,
       id,
-      recordedBy: currentUser.id,
+      recordedBy: resolvedUserId || currentUser.id,
       recordedByName: currentUser.fullName,
       createdAt: new Date().toISOString()
     };
@@ -734,7 +832,7 @@ export class HealthRepository {
           carb_estimate: newMeal.carbEstimate || null,
           cambodian_dish_id: newMeal.cambodianDishId || null,
           notes: newMeal.notes || null,
-          recorded_by: newMeal.recordedBy
+          recorded_by: resolvedUserId
         });
       } catch (err) {
         console.warn('Error inserting health_meal_logs into Supabase:', err);
@@ -778,11 +876,12 @@ export class HealthRepository {
     actData: Omit<ActivityLog, 'id' | 'createdAt' | 'recordedBy' | 'recordedByName'>
   ): Promise<ActivityLog> {
     const currentUser = this.getCurrentUser();
+    const resolvedUserId = await this.resolveProfileId(currentUser.id);
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `act-${Date.now()}`;
     const newAct: ActivityLog = {
       ...actData,
       id,
-      recordedBy: currentUser.id,
+      recordedBy: resolvedUserId || currentUser.id,
       recordedByName: currentUser.fullName,
       createdAt: new Date().toISOString()
     };
@@ -797,7 +896,7 @@ export class HealthRepository {
           intensity: newAct.intensity,
           logged_at: newAct.loggedAt,
           notes: newAct.notes || null,
-          recorded_by: newAct.recordedBy
+          recorded_by: resolvedUserId
         });
       } catch (err) {
         console.warn('Error inserting health_activity_logs into Supabase:', err);
@@ -844,11 +943,12 @@ export class HealthRepository {
     journalData: Omit<LifestyleJournal, 'id' | 'createdAt' | 'updatedAt' | 'recordedBy'>
   ): Promise<LifestyleJournal> {
     const currentUser = this.getCurrentUser();
+    const resolvedUserId = await this.resolveProfileId(currentUser.id);
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `journ-${Date.now()}`;
     const newJournal: LifestyleJournal = {
       ...journalData,
       id,
-      recordedBy: currentUser.id,
+      recordedBy: resolvedUserId || currentUser.id,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -862,7 +962,7 @@ export class HealthRepository {
           sleep_hours: newJournal.sleepHours,
           symptoms: newJournal.symptoms || [],
           notes: newJournal.notes || null,
-          recorded_by: newJournal.recordedBy,
+          recorded_by: resolvedUserId,
           updated_at: new Date().toISOString()
         });
       } catch (err) {

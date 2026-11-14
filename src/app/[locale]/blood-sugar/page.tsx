@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslations } from 'next-intl';
 import { GlucoseHistoryTable } from '@/components/glucose/GlucoseHistoryTable';
@@ -11,6 +11,7 @@ import { Droplet, Plus } from 'lucide-react';
 
 export default function BloodSugarPage() {
   const t = useTranslations('bloodSugar');
+  const queryClient = useQueryClient();
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [newAlertNotice, setNewAlertNotice] = useState<NotificationAlert | null>(null);
 
@@ -74,6 +75,7 @@ export default function BloodSugarPage() {
         isOpen={isEntryOpen}
         onClose={() => setIsEntryOpen(false)}
         onSuccess={(alert) => {
+          queryClient.invalidateQueries({ queryKey: ['glucose'] });
           refetch();
           if (alert) setNewAlertNotice(alert);
         }}

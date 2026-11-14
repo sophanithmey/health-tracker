@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { useTranslations } from 'next-intl';
 import { PatientHeaderCard } from '@/components/dashboard/PatientHeaderCard';
 import { LatestGlucoseCard } from '@/components/dashboard/LatestGlucoseCard';
 import { SummaryMetricsCards } from '@/components/dashboard/SummaryMetricsCards';
@@ -18,14 +17,7 @@ import {
   NotificationAlert,
   GlucoseTarget,
 } from '@/types';
-import {
-  Sparkles,
-  Utensils,
-  HeartHandshake,
-  Plus,
-  ArrowRight,
-  ShieldCheck,
-} from 'lucide-react';
+import { Sparkles, Utensils, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 
 export default function DashboardPage() {
@@ -96,7 +88,14 @@ export default function DashboardPage() {
     },
   });
 
+  const queryClient = useQueryClient();
+
   const refreshAll = () => {
+    queryClient.invalidateQueries({ queryKey: ['glucose'] });
+    queryClient.invalidateQueries({ queryKey: ['reports'] });
+    queryClient.invalidateQueries({ queryKey: ['alerts'] });
+    queryClient.invalidateQueries({ queryKey: ['patient'] });
+    queryClient.invalidateQueries({ queryKey: ['glucose-targets'] });
     refetchGlucose();
     refetchReport();
     refetchAlerts();
@@ -179,7 +178,7 @@ export default function DashboardPage() {
       <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
         <Link
           href='/lifestyle'
-          className='p-6 rounded-3xl bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/50 border border-teal-200/90 shadow-xs hover:shadow-md hover:border-teal-400 transition-all group flex items-center justify-between'
+          className='p-6 rounded-3xl bg-linear-to-br from-emerald-50/80 via-white to-teal-50/50 border border-teal-200/90 shadow-xs hover:shadow-md hover:border-teal-400 transition-all group flex items-center justify-between'
         >
           <div className='flex items-center space-x-4'>
             <div className='w-14 h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center shadow-md shadow-teal-600/20 group-hover:scale-105 transition'>
