@@ -136,6 +136,13 @@ export class HealthRepository {
         }
 
         if (data && !error) {
+          const inMemType = store.initialPatientProfile?.diabetesType;
+          const resolvedDiabetesType =
+            data.diabetes_type === 'other' &&
+            (inMemType === 'prediabetes' || inMemType === 'gestational')
+              ? inMemType
+              : data.diabetes_type || 'unknown';
+
           const profile: PatientProfile = {
             id: data.id,
             fullName: data.full_name || 'Patient',
@@ -143,7 +150,7 @@ export class HealthRepository {
             dateOfBirth: data.date_of_birth,
             ageGroup: data.age_group || '60-69',
             age: 64,
-            diabetesType: data.diabetes_type || 'unknown',
+            diabetesType: resolvedDiabetesType,
             diagnosisStatus: data.diagnosis_status || 'under_monitoring',
             currentMedicationsSummary: data.current_medications_summary || 'Oral medication',
             allergies: data.allergies || [],
@@ -225,6 +232,26 @@ export class HealthRepository {
 
         if (updateError) {
           console.error('Error updating health_patient_profiles in Supabase:', updateError);
+          // If remote check constraint fails because 'prediabetes' or 'gestational' is not in the DB constraint,
+          // safely store 'other' in the database column so that all profile changes are persisted in Supabase
+          if (
+            updateError.code === '23514' &&
+            payload.diabetes_type &&
+            (payload.diabetes_type === 'prediabetes' || payload.diabetes_type === 'gestational')
+          ) {
+            const fallbackPayload = { ...payload, diabetes_type: 'other' };
+            const { error: fallbackError } = await supabaseServer
+              .from('health_patient_profiles')
+              .update(fallbackPayload)
+              .eq('id', targetPatientId);
+
+            if (!fallbackError) {
+              const fresh = await this.getPatientProfile(targetPatientId);
+              fresh.diabetesType = updates.diabetesType as any;
+              store.updatePatientProfileInStore(fresh);
+              return fresh;
+            }
+          }
         } else {
           // Re-fetch the freshly updated record directly from Supabase
           const fresh = await this.getPatientProfile(targetPatientId);
@@ -249,6 +276,13 @@ export class HealthRepository {
           .maybeSingle();
 
         if (data && !error) {
+          const inMemType = store.initialPatientProfile?.diabetesType;
+          const resolvedDiabetesType =
+            data.diabetes_type === 'other' &&
+            (inMemType === 'prediabetes' || inMemType === 'gestational')
+              ? inMemType
+              : data.diabetes_type || 'unknown';
+
           const profile: PatientProfile = {
             id: data.id,
             fullName: data.full_name || 'Patient',
@@ -256,7 +290,7 @@ export class HealthRepository {
             dateOfBirth: data.date_of_birth,
             ageGroup: data.age_group || '60-69',
             age: 64,
-            diabetesType: data.diabetes_type || 'unknown',
+            diabetesType: resolvedDiabetesType,
             diagnosisStatus: data.diagnosis_status || 'under_monitoring',
             currentMedicationsSummary: data.current_medications_summary || 'Oral medication',
             allergies: data.allergies || [],
@@ -438,18 +472,13 @@ export class HealthRepository {
     >
   ): Promise<{ record: GlucoseRecord; alert?: NotificationAlert }> {
     const currentUser = this.getCurrentUser();
-    const patientProfile = await this.getPatientProfile(input.patientId);
-    const applicableTarget = await this.getTargetForType(
-      input.measurementType,
-      input.patientId,
-      new Date(input.measuredAt)
-    );
 
-    // Fetch previous records for trend detection
-    const { records: recent } = await this.getGlucoseRecords({
-      patientId: input.patientId,
-      limit: 10
-    });
+    // Parallelize independent queries to avoid waterfalls (Rule async-parallel)
+    const [patientProfile, applicableTarget, { records: recent }] = await Promise.all([
+      this.getPatientProfile(input.patientId),
+      this.getTargetForType(input.measurementType, input.patientId, new Date(input.measuredAt)),
+      this.getGlucoseRecords({ patientId: input.patientId, limit: 10 })
+    ]);
 
     // 1. Evaluate safety alert deterministically
     const evalResult = SafeAlertEngine.evaluateReading({
@@ -1227,55 +1256,55 @@ export class HealthRepository {
     patientId = store.PATIENT_ID
   ): Promise<HealthReportSummary> {
     const cutoff = new Date(Date.now() - days * 86400000).toISOString();
-    const { records } = await this.getGlucoseRecords({
-      patientId,
-      startDate: cutoff
-    });
 
-    // Strictly separate fasting from post-meal!
-    const fastingRecords = records.filter(
-      (r) => r.measurementType === 'fasting' || r.measurementType === 'before_meal'
-    );
-    const postMealRecords = records.filter(
-      (r) => r.measurementType === '1h_after_meal' || r.measurementType === '2h_after_meal'
-    );
+    // Parallelize all 4 independent data queries concurrently (Rule async-parallel)
+    const [{ records }, journals, activities, medLogs] = await Promise.all([
+      this.getGlucoseRecords({ patientId, startDate: cutoff }),
+      this.getLifestyleJournals(patientId),
+      this.getActivityLogs(patientId),
+      this.getMedicationLogs(patientId)
+    ]);
+
+    // Single pass calculation combining iterations (Rule js-combine-iterations & js-min-max-loop)
+    let fastingSum = 0;
+    let fastingCount = 0;
+    let postMealSum = 0;
+    let postMealCount = 0;
+    let lowest: number | null = null;
+    let highest: number | null = null;
+    let belowTargetCount = 0;
+    let aboveTargetCount = 0;
+    let inTargetCount = 0;
+
+    for (const r of records) {
+      const val = r.valueMgDl;
+      if (lowest === null || val < lowest) lowest = val;
+      if (highest === null || val > highest) highest = val;
+
+      if (r.measurementType === 'fasting' || r.measurementType === 'before_meal') {
+        fastingSum += val;
+        fastingCount++;
+      } else if (r.measurementType === '1h_after_meal' || r.measurementType === '2h_after_meal') {
+        postMealSum += val;
+        postMealCount++;
+      }
+
+      if (r.targetStatus === 'low' || r.targetStatus === 'critical_low') {
+        belowTargetCount++;
+      } else if (r.targetStatus === 'high' || r.targetStatus === 'critical_high') {
+        aboveTargetCount++;
+      } else if (r.targetStatus === 'normal') {
+        inTargetCount++;
+      }
+    }
 
     const fastingAvg =
-      fastingRecords.length > 0
-        ? Math.round(
-            (fastingRecords.reduce((acc, curr) => acc + curr.valueMgDl, 0) /
-              fastingRecords.length) *
-              10
-          ) / 10
-        : null;
-
+      fastingCount > 0 ? Math.round((fastingSum / fastingCount) * 10) / 10 : null;
     const postMealAvg =
-      postMealRecords.length > 0
-        ? Math.round(
-            (postMealRecords.reduce((acc, curr) => acc + curr.valueMgDl, 0) /
-              postMealRecords.length) *
-              10
-          ) / 10
-        : null;
-
-    const values = records.map((r) => r.valueMgDl);
-    const lowest = values.length > 0 ? Math.min(...values) : null;
-    const highest = values.length > 0 ? Math.max(...values) : null;
-
-    const belowTargetCount = records.filter(
-      (r) => r.targetStatus === 'low' || r.targetStatus === 'critical_low'
-    ).length;
-    const aboveTargetCount = records.filter(
-      (r) => r.targetStatus === 'high' || r.targetStatus === 'critical_high'
-    ).length;
-    const inTargetCount = records.filter((r) => r.targetStatus === 'normal').length;
+      postMealCount > 0 ? Math.round((postMealSum / postMealCount) * 10) / 10 : null;
 
     const inTargetPercentage =
       records.length > 0 ? Math.round((inTargetCount / records.length) * 100) : 0;
-
-    const journals = await this.getLifestyleJournals(patientId);
-    const activities = await this.getActivityLogs(patientId);
-    const medLogs = await this.getMedicationLogs(patientId);
 
     const avgWater =
       journals.length > 0

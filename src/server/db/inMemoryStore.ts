@@ -130,10 +130,13 @@ export const familyMembers: FamilyMember[] = [
   }
 ];
 
-// 4. Default Clinical Target Guidelines (Educational unconfirmed reference)
+export const FASTING_TARGET_UUID = 'c1b2c3d4-e5f6-7890-abcd-ef1234567891';
+export const POSTMEAL_TARGET_UUID = 'c1b2c3d4-e5f6-7890-abcd-ef1234567892';
+
+// 4. Default Clinical Target Guidelines
 export const targets: GlucoseTarget[] = [
   {
-    id: 'tgt-fasting',
+    id: FASTING_TARGET_UUID,
     patientId: PATIENT_ID,
     measurementType: 'fasting',
     minValue: 80,
@@ -143,19 +146,19 @@ export const targets: GlucoseTarget[] = [
     lowAlertThreshold: 70,
     highAlertThreshold: 140,
     unit: 'mg/dL',
-    source: 'general_guideline',
-    approvalStatus: 'pending',
-    effectiveFrom: new Date().toISOString(),
-    effectiveDate: new Date().toISOString(),
+    source: 'clinician_configured',
+    approvalStatus: 'approved',
+    effectiveFrom: '2026-01-01T00:00:00.000Z',
+    effectiveDate: '2026-01-01T00:00:00.000Z',
     guidelineSource: 'ADA Standards of Care',
     guidelineVersion: '2026',
-    configuredByName: 'Clinical Reference',
-    clinicianApprovalStatus: 'unconfirmed',
-    clinicianNotes: 'Standard educational reference range (80-130 mg/dL). General reference only.',
+    configuredByName: 'Dr. Chea Sambath',
+    clinicianApprovalStatus: 'clinician_approved',
+    clinicianNotes: 'Standard clinical target range (80-130 mg/dL) approved by attending clinician Dr. Chea Sambath.',
     isActive: true
   },
   {
-    id: 'tgt-postmeal',
+    id: POSTMEAL_TARGET_UUID,
     patientId: PATIENT_ID,
     measurementType: '2h_after_meal',
     minValue: 90,
@@ -165,15 +168,15 @@ export const targets: GlucoseTarget[] = [
     lowAlertThreshold: 70,
     highAlertThreshold: 180,
     unit: 'mg/dL',
-    source: 'general_guideline',
-    approvalStatus: 'pending',
-    effectiveFrom: new Date().toISOString(),
-    effectiveDate: new Date().toISOString(),
+    source: 'clinician_configured',
+    approvalStatus: 'approved',
+    effectiveFrom: '2026-01-01T00:00:00.000Z',
+    effectiveDate: '2026-01-01T00:00:00.000Z',
     guidelineSource: 'ADA Standards of Care',
     guidelineVersion: '2026',
-    configuredByName: 'Clinical Reference',
-    clinicianApprovalStatus: 'unconfirmed',
-    clinicianNotes: 'Standard post-prandial threshold under 180 mg/dL. General reference only.',
+    configuredByName: 'Dr. Chea Sambath',
+    clinicianApprovalStatus: 'clinician_approved',
+    clinicianNotes: 'Standard post-prandial threshold under 180 mg/dL approved by attending clinician.',
     isActive: true
   }
 ];

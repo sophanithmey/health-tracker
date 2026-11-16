@@ -11,13 +11,17 @@ export async function GET() {
   }
 }
 
+export async function PUT(request: Request) {
+  return PATCH(request);
+}
+
 export async function PATCH(request: Request) {
   try {
     const currentUser = HealthRepository.getCurrentUser();
-    // Only family_admin can update patient medical profile
-    if (currentUser.role !== 'family_admin') {
+    // Family admin and patient can update patient profile and emergency contacts
+    if (currentUser.role !== 'family_admin' && currentUser.role !== 'patient') {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized: Only family admin can update patient profile' },
+        { success: false, error: 'Unauthorized: Only authorized users can update patient profile' },
         { status: 403 }
       );
     }
@@ -29,6 +33,7 @@ export async function PATCH(request: Request) {
     const updated = await HealthRepository.updatePatientProfile(targetId, profileUpdates);
     return NextResponse.json({ success: true, data: updated });
   } catch (error: any) {
+    console.error('Failed to update patient profile:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
   }
 }

@@ -2,8 +2,15 @@
 
 import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import { PatientProfile } from '@/types';
-import { Pill, AlertCircle, Stethoscope, HeartHandshake, PhoneCall } from 'lucide-react';
+import {
+  Pill,
+  Stethoscope,
+  PhoneCall,
+  Activity,
+  ChevronRight
+} from 'lucide-react';
 
 interface PatientHeaderCardProps {
   patient: PatientProfile;
@@ -14,95 +21,131 @@ export function PatientHeaderCard({ patient }: PatientHeaderCardProps) {
   const t = useTranslations('patient');
   const locale = useLocale();
 
+  const diabetesTypeKey =
+    patient.diabetesType === 'prediabetes' ? 'prediabetes' :
+    patient.diabetesType === 'type_1' ? 'type1' :
+    patient.diabetesType === 'type_2' ? 'type2' :
+    patient.diabetesType === 'gestational' ? 'gestational' :
+    'otherType';
+
+  const initials = (patient.fullName || 'PT')
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'PT';
+
   return (
     <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm relative">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Left: Avatar & Patient Identity */}
-        <div className="flex items-center space-x-4 sm:space-x-5">
+        <div className="flex items-start sm:items-center space-x-4 sm:space-x-5">
           {/* Avatar with soft status ring */}
-          <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-teal-50 border-2 border-teal-600/30 flex items-center justify-center font-black text-xl sm:text-2xl text-teal-800 shadow-xs">
-              {(patient.fullName || 'PT')
-                .split(' ')
-                .filter(Boolean)
-                .map((n) => n[0])
-                .join('')
-                .slice(0, 2)
-                .toUpperCase() || 'PT'}
+          <div className="relative shrink-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-linear-to-br from-teal-700 via-teal-800 to-emerald-900 text-white flex items-center justify-center font-black text-xl sm:text-2xl shadow-sm border border-teal-500/20">
+              {initials}
             </div>
             <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white shadow-2xs"></span>
             </span>
           </div>
 
-          <div>
+          <div className="space-y-1">
             <div className="flex flex-wrap items-baseline gap-2">
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-khmer">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-khmer">
                 {patient.fullNameKm || patient.fullName || 'Patient'}
               </h2>
-              {patient.fullNameKm && patient.fullName && patient.fullNameKm !== patient.fullName && (
-                <span className="text-sm font-semibold text-slate-500">
+              {patient.fullNameKm && patient.fullName && patient.fullNameKm !== patient.fullName ? (
+                <span className="text-xs sm:text-sm font-semibold text-slate-500">
                   ({patient.fullName})
                 </span>
-              )}
+              ) : null}
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/80">
+                {locale === 'km' ? 'ម៉ាក់' : "Mom's Profile"}
+              </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
-              {locale === 'km' ? 'ក្រុមអាយុ៖ ' : 'Age: '}{patient.ageGroup} • {locale === 'km' ? 'តំបន់ម៉ោង៖ ' : 'Timezone: '}{patient.timezone}
+            <p className="text-xs text-slate-500 font-medium">
+              {locale === 'km' ? 'ក្រុមអាយុ៖ ' : 'Age: '}
+              <span className="font-semibold text-slate-700">{patient.ageGroup}</span>
+              {' '}•{' '}
+              {patient.timezone}
             </p>
 
             {/* Badges Row */}
-            <div className="flex flex-wrap items-center gap-2 mt-2.5">
-              <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">
-                <AlertCircle className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
-                {t('diabetesType')}: {patient.diabetesType.toUpperCase()}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-teal-50 text-teal-900 border border-teal-200/70 shadow-2xs">
+                <Activity className="w-3.5 h-3.5 mr-1.5 text-teal-700" />
+                {t(diabetesTypeKey)}
               </span>
 
-              <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-200">
-                <Pill className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
-                {patient.currentMedicationsSummary || 'Oral medication'}
-              </span>
+              <Link
+                href="/medications"
+                className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-200/80 hover:bg-emerald-100/70 transition shadow-2xs group"
+                title="View Mom's Medication Schedule"
+              >
+                <Pill className="w-3.5 h-3.5 mr-1.5 text-emerald-700 shrink-0" />
+                <span className="truncate max-w-[200px] sm:max-w-[280px]">
+                  {patient.currentMedicationsSummary || t('currentMedication')}
+                </span>
+                <ChevronRight className="w-3 h-3 ml-1 text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Right: Clinician & Family Contact Pill */}
-        <div className="flex flex-col sm:flex-row lg:flex-col gap-2 justify-end lg:items-end">
-          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 sm:min-w-[270px]">
-            <div className="flex items-center justify-between text-xs text-slate-500 pb-1.5 border-b border-slate-200 mb-1.5">
-              <span className="flex items-center space-x-1 font-bold text-teal-800">
-                <Stethoscope className="w-3.5 h-3.5 text-teal-600" />
-                <span>{t('doctor')}</span>
-              </span>
-              <span className="font-semibold text-slate-700">
-                {patient.doctorPhone || (locale === 'km' ? 'គ្មានលេខទូរស័ព្ទ' : 'No phone')}
-              </span>
+        {/* Right: Care Team & Emergency Quick Actions */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:self-center shrink-0">
+          {/* Clinician Card */}
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex items-center space-x-3 text-xs">
+            <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-700 flex items-center justify-center shrink-0">
+              <Stethoscope className="w-5 h-5" />
             </div>
-
-            <div className="text-sm font-black text-slate-900">
-              {patient.doctorName || (locale === 'km' ? 'មិនទាន់កំណត់' : 'Not assigned')}
-            </div>
-            <div className="text-xs text-slate-500 truncate">
-              {patient.doctorClinic || (locale === 'km' ? 'គ្លីនិកមិនទាន់បញ្ជាក់' : 'No clinic specified')}
-            </div>
-
-            <div className="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium flex items-center space-x-1">
-                <HeartHandshake className="w-3.5 h-3.5 text-emerald-600" />
-                <span>{t('emergencyContact')}:</span>
-              </span>
-              <span className="font-bold text-slate-800">
-                {patient.emergencyContactName ? (
-                  <>
-                    {patient.emergencyContactName} {patient.emergencyContactPhone ? `(${patient.emergencyContactPhone})` : ''}
-                  </>
-                ) : (
-                  <span className="text-slate-400 italic">{locale === 'km' ? 'មិនទាន់កំណត់' : 'Not set'}</span>
-                )}
-              </span>
+            <div className="min-w-0">
+              <div className="text-[10px] font-bold text-teal-800 uppercase tracking-wider">
+                {t('doctor')}
+              </div>
+              <div className="font-bold text-slate-900 truncate">
+                {patient.doctorName || (locale === 'km' ? 'មិនទាន់កំណត់' : 'Not assigned')}
+              </div>
+              <div className="text-[11px] text-slate-500 truncate">
+                {patient.doctorClinic || (locale === 'km' ? 'គ្លីនិកមិនទាន់បញ្ជាក់' : 'No clinic specified')}
+              </div>
             </div>
           </div>
+
+          {/* Emergency 1-Tap Call Button */}
+          {patient.emergencyContactPhone ? (
+            <a
+              href={`tel:${patient.emergencyContactPhone.replace(/\s+/g, '')}`}
+              className="p-3 sm:p-3.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-300 text-emerald-950 flex items-center space-x-3 transition shadow-2xs group touch-target"
+              title={`Call ${patient.emergencyContactName}`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <PhoneCall className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+                  {locale === 'km' ? 'ទូរស័ព្ទបន្ទាន់' : 'Emergency Contact'}
+                </div>
+                <div className="font-black text-xs sm:text-sm text-slate-900 truncate">
+                  {patient.emergencyContactName} {patient.emergencyContactRelation ? `(${patient.emergencyContactRelation})` : ''}
+                </div>
+                <div className="text-[11px] font-bold text-emerald-700">
+                  {patient.emergencyContactPhone}
+                </div>
+              </div>
+            </a>
+          ) : (
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-500">
+              <span className="text-[10px] font-bold uppercase tracking-wider block text-slate-400">
+                {t('emergencyContact')}
+              </span>
+              <span>{locale === 'km' ? 'មិនទាន់កំណត់' : 'Not configured'}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

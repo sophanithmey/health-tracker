@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { CAMBODIAN_FOOD_GUIDE, CambodianDish } from '@/data/cambodianFoodGuide';
-import { Utensils, Info, Check, ShieldCheck, Sparkles, Filter } from 'lucide-react';
+import { Utensils, Info, Check, ShieldCheck, Apple, Filter } from 'lucide-react';
 
 export function CambodianFoodGuide() {
   const t = useTranslations('lifestyle');
@@ -20,14 +20,14 @@ export function CambodianFoodGuide() {
       {/* Educational Header Banner */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-emerald-950">
         <div className="flex items-start space-x-3">
-          <Sparkles className="w-7 h-7 text-emerald-700 flex-shrink-0 mt-0.5" />
+          <Apple className="w-7 h-7 text-emerald-700 flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="text-lg font-bold text-emerald-900 mb-1">
               មគ្គុទ្ទេសក៍អាហារូបត្ថម្ភខ្មែរសម្រាប់សុខភាព (Cambodian Food Guide)
             </h3>
             <p className="text-sm leading-relaxed text-emerald-800">
               {locale === 'km'
-                ? 'របបអាហារសុខភាពផ្ដោតលើការញ៉ាំបន្លែបៃតងគ្មានជាតិម្សៅឱ្យបានច្រើន ប្រូតេអ៊ីនគ្រប់គ្រាន់ និងការកម្រិតបរិមាណបាយ ឬជាតិម្សៅឱ្យសមល្មម។ គ្មានអាហារណាដែល «ត្រូវហាមដាច់ខាត» ឬ «ញ៉ាំមិនកំណត់» នោះទេ — គន្លឹះសំខាន់គឺការយល់ដឹងពីចំណែកអាហារ។'
+                ? 'របបអាហារសុខភាពផ្ដោតលើការញ៉ាំបន្លែបៃតងគ្មានជាតិម្សៅឱ្យបានច្រើន ប្រូតេអ៊ីនគ្រប់គ្រាន់ និងការកម្រិតបរិមាណបាយ ឬជាតិម្សៅឱ្យសមល្មម គ្មានអាហារណាដែល «ត្រូវហាមដាច់ខាត» ឬ «ញ៉ាំមិនកំណត់» នោះទេ — គន្លឹះសំខាន់គឺការយល់ដឹងពីចំណែកអាហារ'
                 : 'Balanced nutrition focuses on generous non-starchy leafy greens, lean protein, and mindful carbohydrate portion control. No single food is universally forbidden or unlimited — the key is portion awareness and sequence.'}
             </p>
           </div>

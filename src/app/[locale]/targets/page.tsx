@@ -2,29 +2,25 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { useTranslations } from 'next-intl';
+import { targetService, TargetsResponse } from '@/services/target-service';
 import { TargetConfigCard } from '@/components/targets/TargetConfigCard';
-import { GlucoseTarget, GeneralGuidelineReference } from '@/types';
 import { Target } from 'lucide-react';
+
+const PATIENT_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 
 export default function TargetsPage() {
   const t = useTranslations('targets');
 
-  const { data, refetch } = useQuery<{
-    data: GlucoseTarget[];
-    generalGuidelines: GeneralGuidelineReference[];
-  }>({
-    queryKey: ['glucose-targets'],
-    queryFn: async () => {
-      const res = await axios.get(
-        '/api/patients/a1b2c3d4-e5f6-7890-abcd-ef1234567890/glucose-targets'
-      );
-      return res.data;
-    }
+  const { data, refetch } = useQuery<TargetsResponse>({
+    queryKey: ['targets'],
+    queryFn: () => targetService.getTargets(PATIENT_ID),
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true
   });
 
-  const targets = data?.data || [];
+  const targets = data?.targets || [];
   const guidelines = data?.generalGuidelines || [];
 
   return (
@@ -43,7 +39,7 @@ export default function TargetsPage() {
       <TargetConfigCard
         targets={targets}
         generalGuidelines={guidelines}
-        patientId="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        patientId={PATIENT_ID}
         onRefresh={refetch}
       />
     </div>

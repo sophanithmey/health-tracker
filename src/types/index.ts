@@ -4,7 +4,13 @@
 
 export type UserRole = 'family_admin' | 'patient' | 'clinician';
 
-export type DiabetesType = 'unknown' | 'type_1' | 'type_2' | 'other';
+export type DiabetesType =
+  | 'unknown'
+  | 'type_1'
+  | 'type_2'
+  | 'prediabetes'
+  | 'gestational'
+  | 'other';
 
 export type MeasurementType =
   | 'fasting'

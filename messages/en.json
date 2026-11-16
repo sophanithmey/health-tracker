@@ -22,7 +22,14 @@
     "activeRole": "Current Role",
     "switchRole": "Switch Role",
     "optional": "Optional",
-    "disclaimer": "This is a health-monitoring application for family care, NOT a medical diagnosis or treatment tool."
+    "disclaimer": "This is a health-monitoring application for family care, NOT a medical diagnosis or treatment tool.",
+    "continue": "Continue",
+    "caregiverShort": "Caregiver",
+    "clinicianShort": "Clinician",
+    "emergency1515": "Rule 15-15",
+    "callEmergency": "Call Emergency Contact",
+    "nationalAmbulance": "Emergency 119",
+    "navigation": "Navigation"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -50,7 +57,10 @@
     "doctor": "Attending Clinician",
     "clinic": "Clinic / Hospital",
     "emergencyContact": "Emergency Contact",
-    "allergies": "Known Allergies"
+    "allergies": "Known Allergies",
+    "prediabetes": "Prediabetes",
+    "gestational": "Gestational Diabetes",
+    "unknown": "Unknown / Not specified"
   },
   "dashboard": {
     "title": "Mom's Health Dashboard",
@@ -87,7 +97,32 @@
     "upcomingReminders": "Upcoming Reminders",
     "medicationSchedule": "Today's Medication",
     "lifestyleActivities": "Recent Activities",
-    "noReadings": "No readings recorded yet"
+    "noReadings": "No readings recorded yet",
+    "compareMonths": "Monthly Comparison",
+    "timelineMode": "Daily Timeline",
+    "bloodSugarTrend": "Blood Sugar Trend",
+    "personalTargetNotConfigured": "Personal target not configured",
+    "aboveConfiguredTarget": "Above configured target (+{diff} mg/dL)",
+    "belowConfiguredTarget": "Below configured target (-{diff} mg/dL)",
+    "withinConfiguredTarget": "Within configured target",
+    "criticalLow": "Critical Low (< 54 mg/dL)",
+    "dailyWellnessTitle": "Daily Wellness & Routine",
+    "dailyWellnessSubtitle": "Physical activity, hydration pacing, and smart diabetic meal picks for Mom",
+    "todayRoutine": "Today's Routine",
+    "physicalActivity": "Physical Activity",
+    "goal": "Goal",
+    "minsUnit": "mins",
+    "postMealWalkTip": "A 15-minute gentle walk after meals blunts post-meal glucose spikes.",
+    "logQuickWalkBtn": "+ Log 15m Walk",
+    "hydrationIntake": "Hydration Intake",
+    "done": "Done",
+    "glassesUnit": "glasses",
+    "hydrationTip": "Proper hydration supports kidneys in flushing excess glucose safely.",
+    "addOneGlass": "+1 Glass",
+    "whatMomCanEat": "What Mom Can Eat",
+    "viewCambodianFoodGuide": "View Cambodian Food Guide",
+    "pacingBannerText": "Gentle post-meal walking and consistent hydration help maintain blood sugar in the 80–130 mg/dL target range.",
+    "lifestyleHubLink": "Lifestyle Hub →"
   },
   "bloodSugar": {
     "title": "Blood Sugar Management",
@@ -111,7 +146,15 @@
     "deleteMessage": "This action cannot be undone. Only the family caregiver admin can delete records.",
     "filterType": "Filter by measurement type",
     "allTypes": "All measurement types",
-    "history": "Glucose History"
+    "history": "Glucose History",
+    "confirmReading": "Confirm Blood Sugar Reading",
+    "readingValue": "Reading Value",
+    "measurementType": "Measurement Context",
+    "logNewReading": "Log New Reading",
+    "recordReadingDesc": "Record blood glucose and relevant context",
+    "date": "Date",
+    "time": "Time",
+    "notesPlaceholder": "Additional notes or symptoms..."
   },
   "targets": {
     "title": "Personalized Glucose Targets",
@@ -151,7 +194,9 @@
     "clinicalContext": "Clinical Context & Applicability",
     "targetHistoryTitle": "Glucose Target Change & Approval History",
     "targetHistorySubtitle": "Chronological audit trail of target proposals, updates, and clinician decisions",
-    "approvalNotes": "Clinician Notes"
+    "approvalNotes": "Clinician Notes",
+    "editTarget": "Edit Target",
+    "newTarget": "New Glycemic Target"
   },
   "alerts": {
     "criticalTitle": "🚨 Critical Low Blood Sugar (< 54 mg/dL)",
@@ -202,7 +247,36 @@
     "searchPlaceholder": "Search generic or brand name (e.g. Metformin, Gliclazide, Januvia)...",
     "safetyDisclaimer": "Educational safety reference only. Spontaneous FDA adverse event reports do not prove clinical causation. Always consult your attending doctor before stopping or modifying medication.",
     "viewGuide": "View Drug Guide",
-    "addToPrescriptions": "Add to Prescriptions"
+    "addToPrescriptions": "Add to Prescriptions",
+    "routineScheduleSubtitle": "Organized by daily routine schedule for effortless family tracking",
+    "bySchedule": "By Schedule",
+    "allPills": "All Pills",
+    "allTakenTitle": "🎉 All scheduled doses taken for today!",
+    "allTakenDetail": "Excellent consistency supports stable daytime and fasting glucose.",
+    "todayAdherenceTitle": "Today's Adherence: {taken} of {total} doses taken",
+    "pendingDoses": "{count} dose(s) pending for today.",
+    "complete": "complete",
+    "takenAt": "Taken at {time}",
+    "dueToday": "Due today",
+    "instructionsPrefix": "Instructions:",
+    "markTaken": "Mark Taken",
+    "takenStatus": "Taken",
+    "customDose": "Custom Dose / Note",
+    "drugGuide": "Drug Guide",
+    "removePrescription": "Remove prescription",
+    "morningRoutine": "Morning Routine",
+    "morningRoutineHint": "With Breakfast (around 07:00 – 08:30 AM)",
+    "afternoonRoutine": "Afternoon Routine",
+    "afternoonRoutineHint": "With Lunch (around 11:30 AM – 01:00 PM)",
+    "eveningRoutine": "Evening Routine",
+    "eveningRoutineHint": "After Dinner (around 06:00 – 07:30 PM)",
+    "bedtimeRoutine": "Bedtime Routine",
+    "bedtimeRoutineHint": "Before Sleep (around 09:00 – 10:00 PM)",
+    "otherRoutine": "Other Prescriptions",
+    "otherRoutineHint": "As directed by physician",
+    "pillUnit": "pill",
+    "pillsUnit": "pills",
+    "noMedicationsFound": "No medications recorded yet"
   },
   "lifestyle": {
     "title": "Lifestyle Tracking",
@@ -261,7 +335,19 @@
     "telegramWebhookSuccess": "Telegram Webhook registered successfully!",
     "language": "Language",
     "khmer": "ភាសាខ្មែរ (Khmer)",
-    "english": "English"
+    "english": "English",
+    "saveSuccess": "Saved successfully",
+    "fullName": "Patient Full Name",
+    "fullNameKm": "Khmer Full Name",
+    "ageGroup": "Age Group",
+    "diabetesType": "Diabetes Type",
+    "emergencyContact": "Emergency Contact",
+    "saveChanges": "Save Changes",
+    "switchRole": "Active Role View",
+    "telegramEnabled": "Enable automatic Telegram alerts",
+    "saveTelegram": "Save Telegram Settings",
+    "testNotification": "Send Test Notification",
+    "testSentSuccess": "Test notification sent successfully"
   },
   "knowledge": {
     "title": "Diabetes Knowledge & Education",
@@ -292,4 +378,3 @@
     "menuMore": "Menu & More"
   }
 }
-

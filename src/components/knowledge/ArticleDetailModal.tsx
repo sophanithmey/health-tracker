@@ -28,7 +28,7 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
   const displayContent = locale === 'km' && article.contentKm ? article.contentKm : article.contentHtml;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-5 animate-fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-5 animate-fade-in overflow-y-auto" role="dialog" aria-modal="true">
       <div className="bg-white rounded-3xl max-w-3xl sm:max-w-4xl w-full shadow-2xl relative border border-slate-200/90 my-auto flex flex-col max-h-[92vh] overflow-hidden">
         {/* Header */}
         <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between flex-shrink-0 bg-white">
@@ -37,15 +37,16 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
               <BookOpen className="w-6 h-6 text-teal-700" />
             </div>
             <div>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200/70 mb-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-teal-50 text-teal-800 border border-teal-200/70 mb-1">
+                <Building2 className="w-3 h-3 text-teal-700" />
                 {article.sourceName}
               </span>
               <h3 className="text-lg sm:text-xl font-black text-slate-900 font-khmer leading-snug">
                 {displayTitle}
               </h3>
-              {secondaryTitle && (
+              {secondaryTitle ? (
                 <p className="text-xs text-slate-400 font-medium">{secondaryTitle}</p>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -67,18 +68,18 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
               <span>{article.sourceName}</span>
             </span>
 
-            {article.lastReviewed && (
+            {article.lastReviewed ? (
               <span className="flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
                 <span>Reviewed: {article.lastReviewed}</span>
               </span>
-            )}
+            ) : null}
 
-            {article.clinicalCode && (
+            {article.clinicalCode ? (
               <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono font-bold text-[11px]">
                 Code: {article.clinicalCode}
               </span>
-            )}
+            ) : null}
           </div>
 
           {/* Medical Non-Diagnostic Disclaimer */}
@@ -91,7 +92,7 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
                   : 'Educational Health Information Disclaimer: '}
               </strong>
               {locale === 'km'
-                ? 'ខ្លឹមសារនេះត្រូវបានចងក្រងពីបណ្ណាល័យវេជ្ជសាស្ត្រជាតិអាមេរិក (MedlinePlus/NIH) សម្រាប់តែការស្វែងយល់ និងតាមដានសុខភាពគ្រួសារប៉ុណ្ណោះ។ វាមិនមែនជាការធ្វើរោគវិនិច្ឆ័យ ឬការព្យាបាលវេជ្ជសាស្ត្រឡើយ។ កុំផ្លាស់ប្តូរកម្រិតថ្នាំដោយគ្មានការពិគ្រោះយោបល់ជាមួយគ្រូពេទ្យ។'
+                ? 'ខ្លឹមសារនេះត្រូវបានចងក្រងពីបណ្ណាល័យវេជ្ជសាស្ត្រជាតិអាមេរិក (MedlinePlus/NIH) សម្រាប់តែការស្វែងយល់ និងតាមដានសុខភាពគ្រួសារប៉ុណ្ណោះ វាមិនមែនជាការធ្វើរោគវិនិច្ឆ័យ ឬការព្យាបាលវេជ្ជសាស្ត្រឡើយ កុំផ្លាស់ប្តូរកម្រិតថ្នាំដោយគ្មានការពិគ្រោះយោបល់ជាមួយគ្រូពេទ្យ'
                 : 'This article is sourced from the U.S. National Library of Medicine (MedlinePlus/NIH) for general educational reference only. It does not replace professional medical diagnosis or personalized treatment plans. Never modify prescribed medication doses without consulting your clinician.'}
             </div>
           </div>
@@ -103,7 +104,7 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
           />
 
           {/* Tags */}
-          {article.tags && article.tags.length > 0 && (
+          {article.tags && article.tags.length > 0 ? (
             <div className="pt-4 border-t border-slate-100">
               <div className="flex flex-wrap items-center gap-1.5">
                 <Tag className="w-3.5 h-3.5 text-slate-400 mr-1" />
@@ -117,7 +118,7 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Footer */}
@@ -145,4 +146,3 @@ export function ArticleDetailModal({ article, onClose }: ArticleDetailModalProps
     </div>
   );
 }
-

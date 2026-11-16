@@ -5,7 +5,6 @@ import { useLocale } from 'next-intl';
 import {
   Droplet,
   Clock,
-  Sparkles,
   CheckCircle2,
   AlertCircle,
   HelpCircle,
@@ -30,7 +29,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
       educationalRange: '80–130 mg/dL (General educational target)',
       educationalRangeKm: '៨០–១៣០ mg/dL (កម្រិតគោលដៅយោងទូទៅ)',
       importance: 'Shows baseline liver glucose release during the night.',
-      importanceKm: 'ឆ្លុះបញ្ចាំងពីកម្រិតជាតិស្ករមូលដ្ឋានដែលថ្លើមបញ្ចេញពេលយប់។'
+      importanceKm: 'ឆ្លុះបញ្ចាំងពីកម្រិតជាតិស្ករមូលដ្ឋានដែលថ្លើមបញ្ចេញពេលយប់'
     },
     {
       id: 'before_meal',
@@ -41,7 +40,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
       educationalRange: '80–130 mg/dL',
       educationalRangeKm: '៨០–១៣០ mg/dL',
       importance: 'Provides baseline before carbohydrate intake.',
-      importanceKm: 'ផ្តល់ទិន្នន័យដើមមុនពេលរាងកាយស្រូបកាបូអ៊ីដ្រាតពីអាហារ។'
+      importanceKm: 'ផ្តល់ទិន្នន័យដើមមុនពេលរាងកាយស្រូបកាបូអ៊ីដ្រាតពីអាហារ'
     },
     {
       id: 'post_meal',
@@ -52,7 +51,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
       educationalRange: '< 180 mg/dL',
       educationalRangeKm: 'ក្រោម ១៨០ mg/dL',
       importance: 'Measures how effectively insulin clears mealtime carbohydrates.',
-      importanceKm: 'បង្ហាញពីប្រសិទ្ធភាពនៃការគ្រប់គ្រងកាបូអ៊ីដ្រាតក្រោយពេលបាយ។'
+      importanceKm: 'បង្ហាញពីប្រសិទ្ធភាពនៃការគ្រប់គ្រងកាបូអ៊ីដ្រាតក្រោយពេលបាយ'
     },
     {
       id: 'bedtime',
@@ -63,7 +62,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
       educationalRange: '100–140 mg/dL',
       educationalRangeKm: '១០០–១៤០ mg/dL',
       importance: 'Ensures safe blood glucose levels throughout the sleep cycle.',
-      importanceKm: 'ធានាសុវត្ថិភាពជាតិស្ករពេញមួយយប់ពេលសម្រាក។'
+      importanceKm: 'ធានាសុវត្ថិភាពជាតិស្ករពេញមួយយប់ពេលសម្រាក'
     }
   ];
 
@@ -73,28 +72,28 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
       title: 'Wash & Dry Hands',
       titleKm: 'លាងដៃ និងជូតឱ្យស្ងួត',
       desc: 'Use warm, soapy water. Do not use scented hand sanitizers or lotions with glycerin, which can distort meter readings.',
-      descKm: 'លាងដៃជាមួយទឹកក្ដៅឧណ្ហៗ និងសាប៊ូ រួចជូតឱ្យស្ងួត។ កុំប្រើជែលលាងដៃដែលមានក្លិនក្រអូប ព្រោះជាតិស្ករក្នុងនោះអាចធ្វើឱ្យតួលេខខុស។'
+      descKm: 'លាងដៃជាមួយទឹកក្ដៅឧណ្ហៗ និងសាប៊ូ រួចជូតឱ្យស្ងួត កុំប្រើជែលលាងដៃដែលមានក្លិនក្រអូប ព្រោះជាតិស្ករក្នុងនោះអាចធ្វើឱ្យតួលេខខុស'
     },
     {
       step: '02',
       title: 'Prepare Lancet & Strip',
       titleKm: 'រៀបចំម្ជុល និងបន្ទះតេស្ត',
       desc: 'Insert a new test strip into the monitor. Always use a fresh, sterile lancet to minimize pain and prevent tissue damage.',
-      descKm: 'ដាក់បន្ទះតេស្តថ្មីចូលក្នុងម៉ាស៊ីន។ ត្រូវប្តូរម្ជុលថ្មីជានិច្ច ដើម្បីកុំឱ្យឈឺ និងការពារការបង្ករោគ។'
+      descKm: 'ដាក់បន្ទះតេស្តថ្មីចូលក្នុងម៉ាស៊ីន ត្រូវប្តូរម្ជុលថ្មីជានិច្ច ដើម្បីកុំឱ្យឈឺ និងការពារការបង្ករោគ'
     },
     {
       step: '03',
       title: 'Prick the Side of the Finger',
       titleKm: 'ចាក់នៅគែមចំហៀងម្រាមដៃ',
       desc: 'Prick the side of your fingertip where there are fewer nerve endings. Alternate fingers daily to avoid calluses.',
-      descKm: 'ចាក់នៅគែមចំហៀងចុងម្រាមដៃ (ឈឺតិចជាងកណ្តាលម្រាម)។ ប្តូរម្រាមដៃវាស់ជារៀងរាល់ថ្ងៃ។'
+      descKm: 'ចាក់នៅគែមចំហៀងចុងម្រាមដៃ (ឈឺតិចជាងកណ្តាលម្រាម) ប្តូរម្រាមដៃវាស់ជារៀងរាល់ថ្ងៃ'
     },
     {
       step: '04',
       title: 'Apply Blood & Record',
       titleKm: 'ដាក់ឈាមលើបន្ទះ និងកត់ត្រា',
       desc: 'Touch the strip edge to the drop of blood. Never squeeze the finger forcefully. Log the reading into Family Diabetes Care immediately.',
-      descKm: 'ដាក់គែមបន្ទះតេស្តទៅផ្អឹបនឹងតំណក់ឈាម។ កុំច្របាច់ម្រាមដៃខ្លាំងពេក។ កត់ត្រាតួលេខ (mg/dL) ចូលក្នុងកម្មវិធីភ្លាមៗ។'
+      descKm: 'ដាក់គែមបន្ទះតេស្តទៅផ្អឹបនឹងតំណក់ឈាម កុំច្របាច់ម្រាមដៃខ្លាំងពេក កត់ត្រាតួលេខ (mg/dL) ចូលក្នុងកម្មវិធីភ្លាមៗ'
     }
   ];
 
@@ -114,7 +113,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
           </h2>
           <p className="text-teal-100/90 text-xs sm:text-sm mt-2 leading-relaxed font-khmer">
             {locale === 'km'
-              ? 'ការវាស់ជាតិស្ករបានត្រឹមត្រូវជួយឱ្យគ្រួសារ និងគ្រូពេទ្យដឹងច្បាស់ពីការឆ្លើយតបរបស់រាងកាយចំពោះអាហារ និងថ្នាំលេប។'
+              ? 'ការវាស់ជាតិស្ករបានត្រឹមត្រូវជួយឱ្យគ្រួសារ និងគ្រូពេទ្យដឹងច្បាស់ពីការឆ្លើយតបរបស់រាងកាយចំពោះអាហារ និងថ្នាំលេប'
               : 'Accurate self-monitoring of blood glucose (SMBG) gives your family and physician reliable insights into how food and medication affect blood sugar.'}
           </p>
         </div>
@@ -131,7 +130,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
           </h3>
           <p className="text-xs text-slate-500 font-khmer mt-0.5">
             {locale === 'km'
-              ? 'កុំច្របាច់បញ្ចូលគ្នានូវលទ្ធផលវាស់មុនបាយ និងក្រោយបាយ ព្រោះវាមានកម្រិតគោលដៅខុសគ្នា។'
+              ? 'កុំច្របាច់បញ្ចូលគ្នានូវលទ្ធផលវាស់មុនបាយ និងក្រោយបាយ ព្រោះវាមានកម្រិតគោលដៅខុសគ្នា'
               : 'Never combine fasting and post-meal readings into one average because their metabolic targets are distinct.'}
           </p>
         </div>
@@ -205,7 +204,7 @@ export function TestingGuideView({ onOpenArticleModal }: TestingGuideViewProps) 
               : 'Individualized Target Notice: '}
           </strong>
           {locale === 'km'
-            ? 'កម្រិត ៨០–១៣០ mg/dL (មុនបាយ) និងក្រោម ១៨០ mg/dL (ក្រោយបាយ) គឺជាកម្រិតយោងអប់រំប៉ុណ្ណោះ។ គ្រូពេទ្យប្រចាំកាយនឹងកំណត់គោលដៅជាក់លាក់សម្រាប់ម៉ាក់នៅក្នុងទំព័រ «គោលដៅជាតិស្ករ»។'
+            ? 'កម្រិត ៨០–១៣០ mg/dL (មុនបាយ) និងក្រោម ១៨០ mg/dL (ក្រោយបាយ) គឺជាកម្រិតយោងអប់រំប៉ុណ្ណោះ គ្រូពេទ្យប្រចាំកាយនឹងកំណត់គោលដៅជាក់លាក់សម្រាប់ម៉ាក់នៅក្នុងទំព័រ «គោលដៅជាតិស្ករ»'
             : 'Reference ranges of 80–130 mg/dL (pre-meal) and below 180 mg/dL (post-meal) are educational guidelines only. Always adhere to Mom\'s personalized targets configured by her attending doctor.'}
         </div>
       </div>

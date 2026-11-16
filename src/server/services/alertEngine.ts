@@ -65,11 +65,11 @@ export class SafeAlertEngine {
         titleEn: '🚨 Critical Emergency: Severe Symptoms Reported',
         titleKm: '🚨 អាសន្នធ្ងន់ធ្ងរ៖ រោគសញ្ញាគ្រោះថ្នាក់',
         messageEn: `Severe symptoms reported with glucose reading of ${valueMgDl} mg/dL.`,
-        messageKm: `មានរោគសញ្ញាធ្ងន់ធ្ងរត្រូវបានរាយការណ៍ រួមជាមួយកម្រិតជាតិស្ករ ${valueMgDl} mg/dL។`,
+        messageKm: `មានរោគសញ្ញាធ្ងន់ធ្ងរត្រូវបានរាយការណ៍ រួមជាមួយកម្រិតជាតិស្ករ ${valueMgDl} mg/dL`,
         guidanceEn:
           'EMERGENCY INSTRUCTION: Call emergency medical services (119 or local hospital) IMMEDIATELY. If the patient is unconscious or unable to swallow, DO NOT give any food, liquids, or oral medications. Position patient on their side to maintain an open airway.',
         guidanceKm:
-          'ការណែនាំបន្ទាន់៖ សូមទូរស័ព្ទទៅសង្គ្រោះបន្ទាន់ (119 ឬមន្ទីរពេទ្យ) ជាបន្ទាន់! ប្រសិនបើអ្នកជំងឺបាត់បង់ស្មារតី ឬមិនអាចលេបបាន សូមកុំបញ្ចុកអាហារ ទឹក ឬថ្នាំតាមមាត់ជាដាច់ខាត។ ផ្អៀងខ្លួនអ្នកជំងឺទៅម្ខាងដើម្បីងាយដកដង្ហើម។'
+          'ការណែនាំបន្ទាន់៖ សូមទូរស័ព្ទទៅសង្គ្រោះបន្ទាន់ (119 ឬមន្ទីរពេទ្យ) ជាបន្ទាន់! ប្រសិនបើអ្នកជំងឺបាត់បង់ស្មារតី ឬមិនអាចលេបបាន សូមកុំបញ្ចុកអាហារ ទឹក ឬថ្នាំតាមមាត់ជាដាច់ខាត ផ្អៀងខ្លួនអ្នកជំងឺទៅម្ខាងដើម្បីងាយដកដង្ហើម'
       };
     }
 
@@ -84,11 +84,11 @@ export class SafeAlertEngine {
         titleEn: '🚨 Critical Low Blood Sugar (< 54 mg/dL)',
         titleKm: '🚨 ជាតិស្ករធ្លាក់ចុះទាបកម្រិតគ្រោះថ្នាក់ (< 54 mg/dL)',
         messageEn: `Mom's blood sugar is critically low at ${valueMgDl} mg/dL (${measurementType}).`,
-        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់គឺធ្លាក់ចុះទាបខ្លាំង ${valueMgDl} mg/dL (${measurementType})។`,
+        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់គឺធ្លាក់ចុះទាបខ្លាំង ${valueMgDl} mg/dL (${measurementType})`,
         guidanceEn:
           'ACTION REQUIRED: If conscious and able to swallow, apply the educational 15-15 rule: provide 15 grams of rapid fast-acting sugar (e.g. 1/2 cup of fruit juice or 3-4 sugar candies), wait 15 minutes, and re-test. If unconscious or unable to swallow, DO NOT give anything by mouth — call emergency services immediately.',
         guidanceKm:
-          'វិធានការបន្ទាន់៖ ប្រសិនបើនៅដឹងខ្លួន និងអាចលេបបាន សូមអនុវត្តគោលការណ៍ ១៥-១៥៖ ឱ្យពិសារជាតិស្ករស្រូបលឿន ១៥ ក្រាម (ដូចជាទឹកផ្លែឈើកន្លះកែវ ឬស្ករគ្រាប់ ៣-៤ គ្រាប់) រួចរង់ចាំ ១៥ នាទី និងវាស់ម្ដងទៀត។ ប្រសិនបើសន្លប់ ឬលេបមិនរួច សូមកុំបញ្ចុកអ្វីទាំងអស់ ហើយទូរស័ព្ទទៅពេទ្យជាបន្ទាន់។'
+          'វិធានការបន្ទាន់៖ ប្រសិនបើនៅដឹងខ្លួន និងអាចលេបបាន សូមអនុវត្តគោលការណ៍ ១៥-១៥៖ ឱ្យពិសារជាតិស្ករស្រូបលឿន ១៥ ក្រាម (ដូចជាទឹកផ្លែឈើកន្លះកែវ ឬស្ករគ្រាប់ ៣-៤ គ្រាប់) រួចរង់ចាំ ១៥ នាទី និងវាស់ម្ដងទៀត ប្រសិនបើសន្លប់ ឬលេបមិនរួច សូមកុំបញ្ចុកអ្វីទាំងអស់ ហើយទូរស័ព្ទទៅពេទ្យជាបន្ទាន់'
       };
     }
 
@@ -103,11 +103,11 @@ export class SafeAlertEngine {
         titleEn: '⚠️ Blood Sugar Attention: Low (< 70 mg/dL)',
         titleKm: '⚠️ ជាតិស្ករធ្លាក់ចុះទាប (< 70 mg/dL)',
         messageEn: `Mom's blood sugar is ${valueMgDl} mg/dL, which is below the safe threshold of 70 mg/dL.`,
-        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់គឺ ${valueMgDl} mg/dL ដែលទាបជាងកម្រិតសុវត្ថិភាព ៧០ mg/dL។`,
+        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់គឺ ${valueMgDl} mg/dL ដែលទាបជាងកម្រិតសុវត្ថិភាព ៧០ mg/dL`,
         guidanceEn:
           'Recommended Action: If conscious, have 15 grams of simple carbohydrates (e.g. 1/2 glass of sweet juice). Rest and re-check blood glucose in 15 minutes. Notify caregiver and contact clinician if symptoms persist. Do not skip scheduled meals.',
         guidanceKm:
-          'ការណែនាំ៖ ប្រសិនបើដឹងខ្លួនធម្មតា សូមពិសារកាបូអ៊ីដ្រាតសាមញ្ញ ១៥ ក្រាម (ដូចជាទឹកផ្អែមកន្លះកែវ)។ សម្រាក និងវាស់ជាតិស្ករឡើងវិញក្រោយ ១៥ នាទី។ ជូនដំណឹងដល់កូនចៅ និងទាក់ទងគ្រូពេទ្យប្រសិនមិនធូរស្រាល។ កុំអត់បាយ។'
+          'ការណែនាំ៖ ប្រសិនបើដឹងខ្លួនធម្មតា សូមពិសារកាបូអ៊ីដ្រាតសាមញ្ញ ១៥ ក្រាម (ដូចជាទឹកផ្អែមកន្លះកែវ) សម្រាក និងវាស់ជាតិស្ករឡើងវិញក្រោយ ១៥ នាទី ជូនដំណឹងដល់កូនចៅ និងទាក់ទងគ្រូពេទ្យប្រសិនមិនធូរស្រាល កុំអត់បាយ'
       };
     }
 
@@ -139,11 +139,11 @@ export class SafeAlertEngine {
         titleEn: '⚠️ Pattern Attention: Repeated High Readings',
         titleKm: '⚠️ ការយកចិត្តទុកដាក់៖ ជាតិស្ករឡើងខ្ពស់ផ្ទួនៗ',
         messageEn: `Mom's reading of ${valueMgDl} mg/dL is above the personal target (${targetMin}–${targetMax} mg/dL) for consecutive measurements.`,
-        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL លើសពីគោលដៅកំណត់ (${targetMin}–${targetMax} mg/dL) ចំនួនច្រើនដងផ្ទួនៗ។`,
+        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL លើសពីគោលដៅកំណត់ (${targetMin}–${targetMax} mg/dL) ចំនួនច្រើនដងផ្ទួនៗ`,
         guidanceEn:
           'Medical Follow-up Guidance: Record detailed meal and activity logs. Ensure regular hydration with plain water. Do NOT change prescribed medication doses or take extra medication without consulting your attending clinician.',
         guidanceKm:
-          'ការណែនាំវេជ្ជសាស្ត្រ៖ សូមកត់ត្រាអាហារ និងសកម្មភាពឱ្យបានលម្អិត។ ពិសារទឹកស្អាតឱ្យបានគ្រប់គ្រាន់។ សូមកុំផ្លាស់ប្តូរកម្រិតថ្នាំ ឬលេបថ្នាំលើសដោយគ្មានការពិគ្រោះជាមួយលោកវេជ្ជបណ្ឌិតឡើយ។'
+          'ការណែនាំវេជ្ជសាស្ត្រ៖ សូមកត់ត្រាអាហារ និងសកម្មភាពឱ្យបានលម្អិត ពិសារទឹកស្អាតឱ្យបានគ្រប់គ្រាន់ សូមកុំផ្លាស់ប្តូរកម្រិតថ្នាំ ឬលេបថ្នាំលើសដោយគ្មានការពិគ្រោះជាមួយលោកវេជ្ជបណ្ឌិតឡើយ'
       };
     }
 
@@ -166,11 +166,11 @@ export class SafeAlertEngine {
         titleEn: `⚠️ Blood Sugar Attention: Above Target`,
         titleKm: `⚠️ ការយកចិត្តទុកដាក់៖ លើសពីគោលដៅកំណត់`,
         messageEn: `Mom's reading: ${valueMgDl} mg/dL\nMeasurement: ${measurementType.replace('_', ' ')}\nStatus: Above range (${targetMin}–${targetMax} mg/dL ${targetLabel}).`,
-        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់៖ ${valueMgDl} mg/dL\nពេលវាស់៖ ${measurementType}\nស្ថានភាព៖ លើសពីកម្រិត (${targetMin}–${targetMax} mg/dL)។`,
+        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់៖ ${valueMgDl} mg/dL\nពេលវាស់៖ ${measurementType}\nស្ថានភាព៖ លើសពីកម្រិត (${targetMin}–${targetMax} mg/dL)`,
         guidanceEn:
           'This reading is above the configured target. Record the result and monitor the trend. Follow the care plan provided by the healthcare professional.',
         guidanceKm:
-          'កម្រិតជាតិស្ករនេះលើសពីកម្រិតគោលដៅកំណត់។ សូមកត់ត្រាលទ្ធផល និងតាមដាននិន្នាការជាបន្តបន្ទាប់។ អនុវត្តតាមផែនការថែទាំរបស់វេជ្ជបណ្ឌិត។'
+          'កម្រិតជាតិស្ករនេះលើសពីកម្រិតគោលដៅកំណត់ សូមកត់ត្រាលទ្ធផល និងតាមដាននិន្នាការជាបន្តបន្ទាប់ អនុវត្តតាមផែនការថែទាំរបស់វេជ្ជបណ្ឌិត'
       };
     }
 
@@ -185,11 +185,11 @@ export class SafeAlertEngine {
         titleEn: '⚠️ Blood Sugar Attention: Slightly Below Target',
         titleKm: '⚠️ ការយកចិត្តទុកដាក់៖ ទាបជាងកម្រិតគោលដៅបន្តិច',
         messageEn: `Mom's reading of ${valueMgDl} mg/dL is slightly below the target minimum (${targetMin} mg/dL).`,
-        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL គឺទាបជាងកម្រិតគោលដៅអប្បបរមា (${targetMin} mg/dL) បន្តិច។`,
+        messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL គឺទាបជាងកម្រិតគោលដៅអប្បបរមា (${targetMin} mg/dL) បន្តិច`,
         guidanceEn:
           'Ensure regular meals and monitor for symptoms like shakiness or sweating. Re-test if symptoms develop.',
         guidanceKm:
-          'សូមប្រាកដថាពិសារអាហារទៀងទាត់ និងសង្កេតរោគសញ្ញាដូចជាញ័រដៃ ឬបែកញើស។ វាស់ឡើងវិញប្រសិនបើមានរោគសញ្ញា។'
+          'សូមប្រាកដថាពិសារអាហារទៀងទាត់ និងសង្កេតរោគសញ្ញាដូចជាញ័រដៃ ឬបែកញើស វាស់ឡើងវិញប្រសិនបើមានរោគសញ្ញា'
       };
     }
 
@@ -203,9 +203,9 @@ export class SafeAlertEngine {
       titleEn: '✅ Blood Sugar Within Target',
       titleKm: '✅ ជាតិស្ករស្ថិតក្នុងកម្រិតគោលដៅល្អ',
       messageEn: `Mom's reading of ${valueMgDl} mg/dL is within the target range (${targetMin}–${targetMax} mg/dL).`,
-      messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL គឺស្ថិតក្នុងកម្រិតគោលដៅល្អ (${targetMin}–${targetMax} mg/dL)។`,
+      messageKm: `កម្រិតជាតិស្កររបស់ម៉ាក់ ${valueMgDl} mg/dL គឺស្ថិតក្នុងកម្រិតគោលដៅល្អ (${targetMin}–${targetMax} mg/dL)`,
       guidanceEn: 'Great job maintaining the routine! Continue the prescribed care plan and balanced meals.',
-      guidanceKm: 'ការថែទាំបានល្អណាស់! សូមបន្តអនុវត្តផែនការថែទាំ និងបរិភោគអាហារមានតុល្យភាពជាធម្មតា។'
+      guidanceKm: 'ការថែទាំបានល្អណាស់! សូមបន្តអនុវត្តផែនការថែទាំ និងបរិភោគអាហារមានតុល្យភាពជាធម្មតា'
     };
   }
 

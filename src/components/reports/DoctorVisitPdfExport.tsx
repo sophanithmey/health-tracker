@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import jsPDF from 'jspdf';
 import { Download, Printer, FileText, Check } from 'lucide-react';
 import { HealthReportSummary, PatientProfile, GlucoseRecord, GlucoseTarget } from '@/types';
 
@@ -26,9 +25,12 @@ export function DoctorVisitPdfExport({
     window.print();
   };
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
     setIsExporting(true);
     try {
+      // Dynamically load heavy jsPDF module only when user requests PDF download (Rule bundle-conditional)
+      const { default: jsPDF } = await import('jspdf');
+
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',

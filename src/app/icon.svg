@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="60%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="dropGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#042f2e" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect width="64" height="64" rx="16" fill="url(#bg)" />
+
+  <!-- Glucose Droplet -->
+  <path
+    d="M32 9C32 9 16 27 16 38.5C16 47.3366 23.1634 54.5 32 54.5C40.8366 54.5 48 47.3366 48 38.5C48 27 32 9 32 9Z"
+    fill="url(#dropGlow)"
+    filter="url(#shadow)"
+  />
+
+  <!-- Embedded Clinical Pulse Line inside Droplet -->
+  <path
+    d="M22 39H26.5L28.5 33.5L32 45L35 36.5L37 40H42"
+    stroke="#ffffff"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Loving Heart Accent -->
+  <path
+    d="M45.5 16.5C44.4 15.4 42.6 15.4 41.5 16.5L40.5 17.5L39.5 16.5C38.4 15.4 36.6 15.4 35.5 16.5C34.4 17.6 34.4 19.4 35.5 20.5L40.5 25.5L45.5 20.5C46.6 19.4 46.6 17.6 45.5 16.5Z"
+    fill="#f43f5e"
+  />
+</svg>

@@ -8,9 +8,12 @@ export async function GET(request: Request) {
     const daysParam = searchParams.get('days');
     const days = daysParam ? parseInt(daysParam, 10) : 7;
 
-    const summary = await HealthRepository.getHealthReportSummary(days, PATIENT_ID);
-    const patient = await HealthRepository.getPatientProfile(PATIENT_ID);
-    const targets = await HealthRepository.getGlucoseTargets(PATIENT_ID);
+    // Parallelize independent data fetches to avoid sequential waterfalls (Rule async-parallel)
+    const [summary, patient, targets] = await Promise.all([
+      HealthRepository.getHealthReportSummary(days, PATIENT_ID),
+      HealthRepository.getPatientProfile(PATIENT_ID),
+      HealthRepository.getGlucoseTargets(PATIENT_ID)
+    ]);
 
     return NextResponse.json({
       success: true,

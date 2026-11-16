@@ -155,7 +155,7 @@ export class TelegramInboundService {
         originalUnit,
         validationError: 'Invalid reading: Blood glucose must be at least 20 mg/dL.',
         validationErrorKm:
-          'តម្លៃជាតិស្ករមិនត្រឹមត្រូវ៖ ជាតិស្ករត្រូវតែយ៉ាងហោចណាស់ 20 mg/dL។ សូមពិនិត្យឧបករណ៍វាស់ជាតិស្កររបស់អ្នកឡើងវិញ។'
+          'តម្លៃជាតិស្ករមិនត្រឹមត្រូវ៖ ជាតិស្ករត្រូវតែយ៉ាងហោចណាស់ 20 mg/dL សូមពិនិត្យឧបករណ៍វាស់ជាតិស្កររបស់អ្នកឡើងវិញ'
       };
     }
 
@@ -325,7 +325,7 @@ export class TelegramInboundService {
         return (
           `🤖 <b>ជំនួយការថែទាំជាតិស្ករគ្រួសារ (Family Diabetes Care)</b>\n\n` +
           `សួស្តី${user?.first_name ? ' ' + TelegramService.escapeHtml(user.first_name) : ''}! ` +
-          `ខ្ញុំជាជំនួយការកត់ត្រា និងតាមដានជាតិស្ករសម្រាប់ <b>${TelegramService.escapeHtml(patientName)}</b>។\n\n` +
+          `ខ្ញុំជាជំនួយការកត់ត្រា និងតាមដានជាតិស្ករសម្រាប់ <b>${TelegramService.escapeHtml(patientName)}</b>\n\n` +
           `📝 <b>របៀបកត់ត្រាជាតិស្ករ (How to log):</b>\n` +
           `គ្រាន់តែផ្ញើសារជាលេខ និងពេលវាស់ដូចខាងក្រោម៖\n` +
           `• <code>148 fasting</code> ឬ <code>១៤៨ មុនបាយ</code>\n` +
@@ -356,8 +356,8 @@ export class TelegramInboundService {
           return (
             `📊 <b>សង្ខេបជាតិស្ករ (Glucose Status)</b>\n\n` +
             `👤 <b>អ្នកជំងឺ:</b> ${TelegramService.escapeHtml(patientName)}\n\n` +
-            `ℹ️ មិនទាន់មានការកត់ត្រាជាតិស្ករនៅឡើយទេ។\n\n` +
-            `👉 <i>ដើម្បីកត់ត្រា សូមវាយឧទាហរណ៍៖ <code>120 fasting</code> ឬ <code>១៤៨ មុនបាយ</code>។</i>`
+            `ℹ️ មិនទាន់មានការកត់ត្រាជាតិស្ករនៅឡើយទេ\n\n` +
+            `👉 <i>ដើម្បីកត់ត្រា សូមវាយឧទាហរណ៍៖ <code>120 fasting</code> ឬ <code>១៤៨ មុនបាយ</code></i>`
           );
         }
 
@@ -445,7 +445,7 @@ export class TelegramInboundService {
           `   • គោលដៅ៖ <code>${postmealTargetStr}</code>\n\n` +
           `🚨 <b>កម្រិតប្រកាសអាសន្នទាប (Hypoglycemia threshold):</b>\n` +
           `   • ក្រោម <code>70 mg/dL</code> ត្រូវអនុវត្តក្បួន 15-15 ភ្លាមៗ!\n\n` +
-          `ℹ️ <i>យោងតាមគោលការណ៍ណែនាំស្តង់ដារជំងឺទឹកនោមផ្អែម ADA Standards of Care 2026។</i>`
+          `ℹ️ <i>យោងតាមគោលការណ៍ណែនាំស្តង់ដារជំងឺទឹកនោមផ្អែម ADA Standards of Care 2026</i>`
         );
       }
 
@@ -478,7 +478,7 @@ export class TelegramInboundService {
         }
 
         response +=
-          `⚠️ <i>ការរំលឹកសុវត្ថិភាព៖ សូមកុំផ្លាស់ប្តូរកម្រិតថ្នាំដោយគ្មានការពិគ្រោះជាមួយគ្រូពេទ្យព្យាបាល។</i>`;
+          `⚠️ <i>ការរំលឹកសុវត្ថិភាព៖ សូមកុំផ្លាស់ប្តូរកម្រិតថ្នាំដោយគ្មានការពិគ្រោះជាមួយគ្រូពេទ្យព្យាបាល</i>`;
         return response;
       }
 
@@ -502,8 +502,8 @@ export class TelegramInboundService {
           `✅ <b>បានភ្ជាប់ Telegram Bot ជោគជ័យ!</b>\n\n` +
           `Chat ID <code>${chatId}</code> ត្រូវបានភ្ជាប់ជាមួយ <b>${TelegramService.escapeHtml(
             patient.fullNameKm || patient.fullName
-          )}</b>។\n` +
-          `ឥឡូវនេះ អ្នកអាចផ្ញើកម្រិតជាតិស្ករដោយផ្ទាល់មកទីនេះដើម្បីកត់ត្រាបានហើយ។`
+          )}</b>\n` +
+          `ឥឡូវនេះ អ្នកអាចផ្ញើកម្រិតជាតិស្ករដោយផ្ទាល់មកទីនេះដើម្បីកត់ត្រាបានហើយ`
         );
       }
 
@@ -586,7 +586,7 @@ export class TelegramInboundService {
     let statusHeader = '✅ <b>កត់ត្រាជាតិស្ករបានជោគជ័យ (Glucose Logged)</b>';
     let statusBadge = '✅ ស្ថិតក្នុងគោលដៅល្អ (Within Target)';
     let guidanceText =
-      '💡 <b>ការណែនាំ:</b> ល្អណាស់! ជាតិស្ករស្ថិតក្នុងកម្រិតល្អ។ សូមបន្តទទួលទានអាហារសុខភាព និងលេបថ្នាំទៀងទាត់។';
+      '💡 <b>ការណែនាំ:</b> ល្អណាស់! ជាតិស្ករស្ថិតក្នុងកម្រិតល្អ សូមបន្តទទួលទានអាហារសុខភាព និងលេបថ្នាំទៀងទាត់';
 
     // 1. Critical Low / Hypoglycemia (< 70 mg/dL or < 54 mg/dL)
     if (valueMgDl < 70) {
@@ -602,8 +602,8 @@ export class TelegramInboundService {
         `   • ស្ករគ្រាប់ ៣-៤ គ្រាប់\n` +
         `   • ឬទឹកផ្លែឈើ/ទឹកក្រូចកន្លះកែវ (120 ml)\n` +
         `   • ឬទឹកឃ្មុំ ១ ស្លាបព្រាបាយ\n` +
-        `2. <b>សម្រាក ១៥ នាទី</b> រួចវាស់ជាតិស្ករឡើងវិញ។\n` +
-        `3. បើនៅក្រោម 70 mg/dL ដដែល សូមញ៉ាំ 15 ក្រាមម្តងទៀត។\n` +
+        `2. <b>សម្រាក ១៥ នាទី</b> រួចវាស់ជាតិស្ករឡើងវិញ\n` +
+        `3. បើនៅក្រោម 70 mg/dL ដដែល សូមញ៉ាំ 15 ក្រាមម្តងទៀត\n` +
         `4. ប្រសិនបើសន្លប់ ឬមិនដឹងខ្លួន សូមទូរស័ព្ទទៅ <b>119</b> ជាបន្ទាន់! (កុំបញ្ចុកទឹក ឬអាហារពេលសន្លប់)`;
     }
     // 2. High Glucose (> 180 mg/dL or > 250 mg/dL)
@@ -612,12 +612,12 @@ export class TelegramInboundService {
         statusHeader = '🚨 <b>ប្រកាសអាសន្ន៖ ជាតិស្ករឡើងខ្ពស់ខ្លាំង (CRITICAL HIGH)</b>';
         statusBadge = '🚨 ឡើងខ្ពស់កម្រិតអាសន្ន (> 250 mg/dL)';
         guidanceText =
-          `💡 <b>ការណែនាំបន្ទាន់:</b> ជាតិស្ករឡើងខ្ពស់ខ្លាំង! សូមពិនិត្យថ្នាំទឹកនោមផ្អែម ពិសារទឹកស្អាតឱ្យបានច្រើន និងទាក់ទងគ្រូពេទ្យប្រសិនបើមានអារម្មណ៍អស់កម្លាំងខ្លាំង ចង្អោរ ឬពិបាកដកដង្ហើម។`;
+          `💡 <b>ការណែនាំបន្ទាន់:</b> ជាតិស្ករឡើងខ្ពស់ខ្លាំង! សូមពិនិត្យថ្នាំទឹកនោមផ្អែម ពិសារទឹកស្អាតឱ្យបានច្រើន និងទាក់ទងគ្រូពេទ្យប្រសិនបើមានអារម្មណ៍អស់កម្លាំងខ្លាំង ចង្អោរ ឬពិបាកដកដង្ហើម`;
       } else {
         statusHeader = '⚠️ <b>កត់ត្រាជាតិស្ករបានជោគជ័យ (Glucose Logged)</b>';
         statusBadge = '⚠️ លើសគោលដៅកំណត់ (Above Target)';
         guidanceText =
-          `💡 <b>ការណែនាំ:</b> សូមពិសារទឹកស្អាតឱ្យបានច្រើន កត់ត្រាអាហារដែលបានទទួលទាន និងវាស់ជាតិស្ករឡើងវិញក្រោយអាហារ ២ ម៉ោង។`;
+          `💡 <b>ការណែនាំ:</b> សូមពិសារទឹកស្អាតឱ្យបានច្រើន កត់ត្រាអាហារដែលបានទទួលទាន និងវាស់ជាតិស្ករឡើងវិញក្រោយអាហារ ២ ម៉ោង`;
       }
     }
     // 3. Below Target (70 - 79 mg/dL for fasting)
@@ -625,7 +625,7 @@ export class TelegramInboundService {
       statusHeader = '⚠️ <b>កត់ត្រាជាតិស្ករបានជោគជ័យ (Glucose Logged)</b>';
       statusBadge = '⚠️ ទាបជាងគោលដៅបន្តិច (Target: 80–130 mg/dL)';
       guidanceText =
-        '💡 <b>ការណែនាំ:</b> ជាតិស្ករទាបជាង 80 mg/dL បន្តិច។ សូមតាមដានរោគសញ្ញាវិលមុខ ឬស្រវាំងភ្នែក និងពិសារអាហារពេលព្រឹកឱ្យបានទៀងទាត់។';
+        '💡 <b>ការណែនាំ:</b> ជាតិស្ករទាបជាង 80 mg/dL បន្តិច សូមតាមដានរោគសញ្ញាវិលមុខ ឬស្រវាំងភ្នែក និងពិសារអាហារពេលព្រឹកឱ្យបានទៀងទាត់';
     }
 
     // Assemble rich confirmation card
@@ -643,7 +643,7 @@ export class TelegramInboundService {
     response += `\n${guidanceText}\n`;
 
     if (parsed.isInferredType) {
-      response += `\nℹ️ <i>សម្គាល់៖ ប្រភេទវាស់ត្រូវបានកំណត់តាមម៉ោង (${typeLabels.en})។ អ្នកអាចវាយបញ្ជាក់ដូចជា៖ <code>148 fasting</code> ឬ <code>150 ក្រោយបាយ</code>។</i>`;
+      response += `\nℹ️ <i>សម្គាល់៖ ប្រភេទវាស់ត្រូវបានកំណត់តាមម៉ោង (${typeLabels.en}) អ្នកអាចវាយបញ្ជាក់ដូចជា៖ <code>148 fasting</code> ឬ <code>150 ក្រោយបាយ</code></i>`;
     }
 
     return response;
@@ -679,7 +679,7 @@ export class TelegramInboundService {
         `• <code>148 fasting</code> ឬ <code>១៤៨ មុនបាយ</code>\n` +
         `• <code>165 after lunch</code> ឬ <code>១៦៥ ក្រោយបាយ</code>\n` +
         `• ឬវាយតែលេខ <code>148</code>\n\n` +
-        `វាយ <code>/help</code> ដើម្បីមើលការណែនាំលម្អិត។\n\n` +
+        `វាយ <code>/help</code> ដើម្បីមើលការណែនាំលម្អិត\n\n` +
         `<i>Hello! Send a reading like <code>148 fasting</code> or type <code>/help</code>.</i>`;
     }
 

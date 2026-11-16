@@ -1,13 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslations } from 'next-intl';
 import { GlucoseHistoryTable } from '@/components/glucose/GlucoseHistoryTable';
-import { GlucoseEntryModal } from '@/components/glucose/GlucoseEntryModal';
 import { GlucoseRecord, NotificationAlert } from '@/types';
 import { Droplet, Plus } from 'lucide-react';
+
+const GlucoseEntryModal = dynamic(
+  () => import('@/components/glucose/GlucoseEntryModal').then((m) => m.GlucoseEntryModal),
+  { ssr: false }
+);
 
 export default function BloodSugarPage() {
   const t = useTranslations('bloodSugar');
@@ -48,7 +53,7 @@ export default function BloodSugarPage() {
         </button>
       </div>
 
-      {newAlertNotice && (
+      {newAlertNotice ? (
         <div className="p-4 bg-amber-100 border-2 border-amber-400 rounded-2xl flex items-start justify-between gap-3 text-amber-950 animate-fade-in shadow-md">
           <div>
             <h4 className="font-bold text-sm sm:text-base">
@@ -65,7 +70,7 @@ export default function BloodSugarPage() {
             ✕
           </button>
         </div>
-      )}
+      ) : null}
 
       {/* History Table */}
       <GlucoseHistoryTable records={records} onRefresh={refetch} />

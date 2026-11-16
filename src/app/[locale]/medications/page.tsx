@@ -1,15 +1,25 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslations, useLocale } from 'next-intl';
 import { MedicationList } from '@/components/medications/MedicationList';
 import { MedicationSearch } from '@/components/medications/MedicationSearch';
-import { MedicationDetailModal } from '@/components/medications/MedicationDetailModal';
-import { AddMedicationModal } from '@/components/medications/AddMedicationModal';
 import { Medication, MedicationLog, RxNormDrugConcept } from '@/types';
 import { Pill, Search, ClipboardList, BookOpen, Plus } from 'lucide-react';
+
+// Dynamically load modals on demand to optimize initial chunk size (Rule bundle-dynamic-imports)
+const MedicationDetailModal = dynamic(
+  () => import('@/components/medications/MedicationDetailModal').then((m) => m.MedicationDetailModal),
+  { ssr: false }
+);
+
+const AddMedicationModal = dynamic(
+  () => import('@/components/medications/AddMedicationModal').then((m) => m.AddMedicationModal),
+  { ssr: false }
+);
 
 export default function MedicationsPage() {
   const t = useTranslations('medications');

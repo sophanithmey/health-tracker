@@ -1,11 +1,62 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
+export const viewport: Viewport = {
+  themeColor: '#0f766e',
+  width: 'device-width',
+  initialScale: 1
+};
+
 export const metadata: Metadata = {
-  title: 'Family Diabetes Care | ថែទាំជំងឺទឹកនោមផ្អែមគ្រួសារ',
-  description: 'Bilingual mobile-first family diabetes monitoring web application for mom.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Family Diabetes Care | ថែទាំជំងឺទឹកនោមផ្អែមគ្រួសារ',
+    template: '%s | Family Diabetes Care'
+  },
+  description: 'Bilingual mobile-first family diabetes monitoring web application for mom. Track daily blood glucose, medication adherence, and wellness routines with ADA clinical standards.',
+  keywords: [
+    'diabetes care',
+    'blood glucose tracker',
+    'Cambodia healthcare',
+    'ADA diabetes standards',
+    'family health monitoring',
+    'ថែទាំជំងឺទឹកនោមផ្អែម',
+    'ជាតិស្ករ'
+  ],
+  authors: [{ name: 'Family Diabetes Care' }],
+  creator: 'Family Diabetes Care',
+  manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico'
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '32x32' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' }
+    ]
+  },
+  openGraph: {
+    title: 'Family Diabetes Care | ថែទាំជំងឺទឹកនោមផ្អែមគ្រួសារ',
+    description: 'Bilingual mobile-first family diabetes monitoring web application for mom. Track blood sugar, medications, and daily wellness routines.',
+    url: '/',
+    siteName: 'Family Diabetes Care',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1376,
+        height: 768,
+        alt: 'Family Diabetes Care - Blood Sugar & Wellness Monitoring for Mom'
+      }
+    ],
+    locale: 'km_KH',
+    alternateLocale: ['en_US'],
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Family Diabetes Care | ថែទាំជំងឺទឹកនោមផ្អែមគ្រួសារ',
+    description: 'Bilingual mobile-first family diabetes monitoring web application for mom.',
+    images: ['/og-image.png']
   }
 };
 

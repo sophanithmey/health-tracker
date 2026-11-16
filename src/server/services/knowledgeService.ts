@@ -23,7 +23,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     summary:
       'Type 2 diabetes occurs when body cells do not respond normally to insulin (insulin resistance). Learn how insulin regulates blood sugar and key risk factors.',
     summaryKm:
-      'ជំងឺទឹកនោមផ្អែមប្រភេទទី ២ កើតឡើងនៅពេលកោសិការាងកាយមិនឆ្លើយតបធម្មតាទៅនឹងអាំងស៊ុយលីន (ភាពធន់នឹងអាំងស៊ុយលីន)។ ស្វែងយល់ពីរបៀបដែលអាំងស៊ុយលីនគ្រប់គ្រងជាតិស្ករ។',
+      'ជំងឺទឹកនោមផ្អែមប្រភេទទី ២ កើតឡើងនៅពេលកោសិការាងកាយមិនឆ្លើយតបធម្មតាទៅនឹងអាំងស៊ុយលីន (ភាពធន់នឹងអាំងស៊ុយលីន) ស្វែងយល់ពីរបៀបដែលអាំងស៊ុយលីនគ្រប់គ្រងជាតិស្ករ',
     contentHtml: `
       <h3>What is Type 2 Diabetes?</h3>
       <p>Type 2 diabetes is a chronic condition that affects the way your body processes blood sugar (glucose). With type 2 diabetes, your pancreas still produces insulin, but your cells become resistant to its effects. Consequently, glucose builds up in your bloodstream instead of being used for cell energy.</p>
@@ -39,7 +39,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     `,
     contentKm: `
       <h3>តើអ្វីជាជំងឺទឹកនោមផ្អែមប្រភេទទី ២?</h3>
-      <p>ជំងឺទឹកនោមផ្អែមប្រភេទទី ២ គឺជាស្ថានភាពរ៉ាំរ៉ៃដែលប៉ះពាល់ដល់ដំណើរការស្រូបយកជាតិស្ករ (គ្លុយកូស) ក្នុងរាងកាយ។ ក្នុងប្រភេទនេះ លំពែងនៅតែផលិតអាំងស៊ុយលីនបាន ប៉ុន្តែកោសិកាមិនឆ្លើយតបល្អ (ភាពធន់នឹងអាំងស៊ុយលីន) ធ្វើឱ្យជាតិស្ករកើនឡើងក្នុងឈាម។</p>
+      <p>ជំងឺទឹកនោមផ្អែមប្រភេទទី ២ គឺជាស្ថានភាពរ៉ាំរ៉ៃដែលប៉ះពាល់ដល់ដំណើរការស្រូបយកជាតិស្ករ (គ្លុយកូស) ក្នុងរាងកាយ ក្នុងប្រភេទនេះ លំពែងនៅតែផលិតអាំងស៊ុយលីនបាន ប៉ុន្តែកោសិកាមិនឆ្លើយតបល្អ (ភាពធន់នឹងអាំងស៊ុយលីន) ធ្វើឱ្យជាតិស្ករកើនឡើងក្នុងឈាម</p>
       <h4>រោគសញ្ញាសំខាន់ៗ៖</h4>
       <ul>
         <li>ស្រេកទឹកញឹកញាប់ និងនោមច្រើនដង (ជាពិសេសពេលយប់)</li>
@@ -48,7 +48,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
         <li>ស្ពឹក ឬស្រពន់នៅចុងដៃចុងជើង</li>
       </ul>
       <h4>សសរស្តម្ភនៃការគ្រប់គ្រង៖</h4>
-      <p>ការគ្រប់គ្រងរបបអាហារ ការដើរហាត់ប្រាណប្រចាំថ្ងៃ ការលេបថ្នាំទៀងទាត់តាមវេជ្ជបញ្ជា និងការតាមដានកម្រិតជាតិស្ករជាប្រចាំ គឺជាគន្លឹះចម្បងក្នុងការថែទាំសុខភាព។</p>
+      <p>ការគ្រប់គ្រងរបបអាហារ ការដើរហាត់ប្រាណប្រចាំថ្ងៃ ការលេបថ្នាំទៀងទាត់តាមវេជ្ជបញ្ជា និងការតាមដានកម្រិតជាតិស្ករជាប្រចាំ គឺជាគន្លឹះចម្បងក្នុងការថែទាំសុខភាព</p>
     `,
     sourceName: 'National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK)',
     sourceUrl: 'https://medlineplus.gov/diabetestype2.html',
@@ -67,7 +67,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     summary:
       'Learn proper handwashing, lancet technique, meter preparation, and why recording the measurement context (fasting, post-meal) is crucial for family tracking.',
     summaryKm:
-      'ស្វែងយល់ពីការលាងសម្អាតដៃ បច្ចេកទេសប្រើម្ជុលចាក់ ម៉ាស៊ីនវាស់ និងមូលហេតុដែលត្រូវកត់ត្រាពេលវេលាវាស់ (មុនបាយ ឬក្រោយបាយ) ឱ្យបានច្បាស់លាស់។',
+      'ស្វែងយល់ពីការលាងសម្អាតដៃ បច្ចេកទេសប្រើម្ជុលចាក់ ម៉ាស៊ីនវាស់ និងមូលហេតុដែលត្រូវកត់ត្រាពេលវេលាវាស់ (មុនបាយ ឬក្រោយបាយ) ឱ្យបានច្បាស់លាស់',
     contentHtml: `
       <h3>Step-by-Step Blood Glucose Measurement</h3>
       <ol>
@@ -84,14 +84,14 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     contentKm: `
       <h3>ជំហានវាស់ជាតិស្ករក្នុងឈាម</h3>
       <ol>
-        <li><strong>លាងសម្អាតដៃ៖</strong> លាងដៃជាមួយទឹកក្ដៅឧណ្ហៗ និងសាប៊ូ រួចជូតឱ្យស្ងួតស្អាត។ ចៀសវាងលាបឡេមុនពេលវាស់។</li>
-        <li><strong>រៀបចំម៉ាស៊ីន៖</strong> ដាក់បន្ទះតេស្តចូលក្នុងម៉ាស៊ីនវាស់ជាតិស្ករឱ្យត្រឹមត្រូវ។</li>
-        <li><strong>ចាក់យកឈាម៖</strong> ចាក់នៅគែមចំហៀងចុងម្រាមដៃ (ឈឺតិចជាងកណ្តាលម្រាម) ដោយប្រើម្ជុលស្អាតថ្មីជានិច្ច។</li>
-        <li><strong>ដាក់ឈាមលើបន្ទះ៖</strong> យកគែមបន្ទះតេស្តទៅផ្អឹបនឹងតំណក់ឈាម រួចរង់ចាំប្រហែល ៥ វិនាទី។</li>
-        <li><strong>កត់ត្រាភ្លាមៗ៖</strong> កត់ត្រាលេខ (គិតជា mg/dL) ព្រមទាំងពេលវេលាវាស់ (មុនបាយ ឬក្រោយបាយ ២ ម៉ោង)។</li>
+        <li><strong>លាងសម្អាតដៃ៖</strong> លាងដៃជាមួយទឹកក្ដៅឧណ្ហៗ និងសាប៊ូ រួចជូតឱ្យស្ងួតស្អាត ចៀសវាងលាបឡេមុនពេលវាស់</li>
+        <li><strong>រៀបចំម៉ាស៊ីន៖</strong> ដាក់បន្ទះតេស្តចូលក្នុងម៉ាស៊ីនវាស់ជាតិស្ករឱ្យត្រឹមត្រូវ</li>
+        <li><strong>ចាក់យកឈាម៖</strong> ចាក់នៅគែមចំហៀងចុងម្រាមដៃ (ឈឺតិចជាងកណ្តាលម្រាម) ដោយប្រើម្ជុលស្អាតថ្មីជានិច្ច</li>
+        <li><strong>ដាក់ឈាមលើបន្ទះ៖</strong> យកគែមបន្ទះតេស្តទៅផ្អឹបនឹងតំណក់ឈាម រួចរង់ចាំប្រហែល ៥ វិនាទី</li>
+        <li><strong>កត់ត្រាភ្លាមៗ៖</strong> កត់ត្រាលេខ (គិតជា mg/dL) ព្រមទាំងពេលវេលាវាស់ (មុនបាយ ឬក្រោយបាយ ២ ម៉ោង)</li>
       </ol>
       <div class="note">
-        <strong>ការណែនាំសំខាន់៖</strong> កុំច្របាច់ចុងម្រាមដៃខ្លាំងពេក ព្រោះទឹកថ្លាក្នុងជាលិកាអាចលាយជាមួយឈាម ធ្វើឱ្យលទ្ធផលជាតិស្ករទាបជាងការពិត។
+        <strong>ការណែនាំសំខាន់៖</strong> កុំច្របាច់ចុងម្រាមដៃខ្លាំងពេក ព្រោះទឹកថ្លាក្នុងជាលិកាអាចលាយជាមួយឈាម ធ្វើឱ្យលទ្ធផលជាតិស្ករទាបជាងការពិត
       </div>
     `,
     sourceName: 'Centers for Disease Control and Prevention (CDC) & MedlinePlus',
@@ -110,7 +110,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     summary:
       'Educational guide on fasting vs post-meal glucose targets, how HbA1c reflects 2–3 month blood sugar control, and why targets must be clinician-individualized.',
     summaryKm:
-      'ការណែនាំអំពីកម្រិតជាតិស្ករមុន និងក្រោយអាហារ របៀបដែលតេស្ត HbA1c បង្ហាញពីការគ្រប់គ្រងជាតិស្ករក្នុងរយៈពេល ២-៣ ខែ និងសារៈសំខាន់នៃការកំណត់គោលដៅដោយគ្រូពេទ្យ។',
+      'ការណែនាំអំពីកម្រិតជាតិស្ករមុន និងក្រោយអាហារ របៀបដែលតេស្ត HbA1c បង្ហាញពីការគ្រប់គ្រងជាតិស្ករក្នុងរយៈពេល ២-៣ ខែ និងសារៈសំខាន់នៃការកំណត់គោលដៅដោយគ្រូពេទ្យ',
     contentHtml: `
       <h3>General Educational Reference Targets (ADA Guidelines)</h3>
       <ul>
@@ -129,9 +129,9 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
         <li><strong>១ ដល់ ២ ម៉ោងក្រោយពេលបាយ៖</strong> ក្រោម ១៨០ mg/dL</li>
         <li><strong>មុនពេលចូលគេង៖</strong> ១០០ ដល់ ១៤០ mg/dL</li>
       </ul>
-      <p><em>*ចំណាំ៖ នេះជាកម្រិតយោងអប់រំទូទៅប៉ុណ្ណោះ។ កម្រិតគោលដៅពិតប្រាកដសម្រាប់អ្នកម្តាយ ត្រូវកំណត់ដោយវេជ្ជបណ្ឌិតផ្ទាល់។</em></p>
+      <p><em>*ចំណាំ៖ នេះជាកម្រិតយោងអប់រំទូទៅប៉ុណ្ណោះ កម្រិតគោលដៅពិតប្រាកដសម្រាប់អ្នកម្តាយ ត្រូវកំណត់ដោយវេជ្ជបណ្ឌិតផ្ទាល់</em></p>
       <h3>តើអ្វីជាតេស្ត HbA1c?</h3>
-      <p>តេស្ត HbA1c គឺជាការវាស់ស្ទង់ជាតិស្ករដែលតោងជាប់នឹងគ្រាប់ឈាមក្រហម។ ដោយសារគ្រាប់ឈាមក្រហមរស់នៅបានប្រហែល ៣ ខែ តេស្តនេះបង្ហាញពីមធ្យមភាគជាតិស្ករក្នុងរយៈពេល ៨-១២ សប្តាហ៍កន្លងមក។ កម្រិត HbA1c ក្រោម 7.0% គឺជាគោលដៅទូទៅសម្រាប់មនុស្សពេញវ័យភាគច្រើន។</p>
+      <p>តេស្ត HbA1c គឺជាការវាស់ស្ទង់ជាតិស្ករដែលតោងជាប់នឹងគ្រាប់ឈាមក្រហម ដោយសារគ្រាប់ឈាមក្រហមរស់នៅបានប្រហែល ៣ ខែ តេស្តនេះបង្ហាញពីមធ្យមភាគជាតិស្ករក្នុងរយៈពេល ៨-១២ សប្តាហ៍កន្លងមក កម្រិត HbA1c ក្រោម 7.0% គឺជាគោលដៅទូទៅសម្រាប់មនុស្សពេញវ័យភាគច្រើន</p>
     `,
     sourceName: 'American Diabetes Association (ADA) Standards of Care',
     sourceUrl: 'https://medlineplus.gov/a1c.html',
@@ -150,7 +150,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     summary:
       'Learn the critical signs of hypoglycemia (< 70 mg/dL), the emergency 15-15 rule for conscious seniors, unconscious emergency protocols, and high sugar symptoms.',
     summaryKm:
-      'ស្វែងយល់ពីរោគសញ្ញាជាតិស្ករធ្លាក់ចុះ (< 70 mg/dL) គោលការណ៍សង្គ្រោះបន្ទាន់ ១៥-១៥ វិធានការពេលសន្លប់ និងរោគសញ្ញាជាតិស្ករឡើងខ្ពស់។',
+      'ស្វែងយល់ពីរោគសញ្ញាជាតិស្ករធ្លាក់ចុះ (< 70 mg/dL) គោលការណ៍សង្គ្រោះបន្ទាន់ ១៥-១៥ វិធានការពេលសន្លប់ និងរោគសញ្ញាជាតិស្ករឡើងខ្ពស់',
     contentHtml: `
       <h3>Hypoglycemia (Low Blood Sugar: &lt; 70 mg/dL)</h3>
       <h4>Common Symptoms:</h4>
@@ -170,18 +170,18 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     contentKm: `
       <h3>ជាតិស្ករចុះទាប (Hypoglycemia: &lt; 70 mg/dL)</h3>
       <h4>រោគសញ្ញាសម្គាល់៖</h4>
-      <p>ញ័រដៃជើង បែកញើសត្រជាក់ វិលមុខ បេះដូងលោតញាប់ ស្លេកស្លាំង វង្វេងវង្វាន់ ឬឃ្លានខ្លាំងភ្លាមៗ។</p>
+      <p>ញ័រដៃជើង បែកញើសត្រជាក់ វិលមុខ បេះដូងលោតញាប់ ស្លេកស្លាំង វង្វេងវង្វាន់ ឬឃ្លានខ្លាំងភ្លាមៗ</p>
       <h4>គោលការណ៍ ១៥-១៥ សម្រាប់អ្នកជំងឺដែលនៅដឹងខ្លួន៖</h4>
       <ol>
-        <li>ពិសារជាតិស្ករស្រូបលឿន ១៥ ក្រាមជាបន្ទាន់៖ ទឹកផ្លែឈើកន្លះកែវ ឬស្ករ ៣-៤ ស្លាបព្រា។</li>
-        <li>សម្រាកស្ងប់ស្ងាត់រយៈពេល ១៥ នាទី។</li>
-        <li>វាស់ជាតិស្ករឡើងវិញ។ ប្រសិនបើនៅក្រោម ៧០ mg/dL សូមបន្តពិសារ ១៥ ក្រាមទៀត។</li>
+        <li>ពិសារជាតិស្ករស្រូបលឿន ១៥ ក្រាមជាបន្ទាន់៖ ទឹកផ្លែឈើកន្លះកែវ ឬស្ករ ៣-៤ ស្លាបព្រា</li>
+        <li>សម្រាកស្ងប់ស្ងាត់រយៈពេល ១៥ នាទី</li>
+        <li>វាស់ជាតិស្ករឡើងវិញ ប្រសិនបើនៅក្រោម ៧០ mg/dL សូមបន្តពិសារ ១៥ ក្រាមទៀត</li>
       </ol>
       <div class="danger">
         <strong>វិធានការសង្គ្រោះអាសន្ន៖</strong> ប្រសិនបើអ្នកជំងឺសន្លប់ ឬលេបមិនរួច កុំបញ្ចុកអាហារ ឬទឹកតាមមាត់ជាដាច់ខាត! សូមទូរស័ព្ទហៅសង្គ្រោះបន្ទាន់ (១១៩) ភ្លាមៗ!
       </div>
       <h3>ជាតិស្ករឡើងខ្ពស់ (Hyperglycemia)</h3>
-      <p>នោមញឹកញាប់ ស្រេកទឹកខ្លាំង ឈឺក្បាល និងអស់កម្លាំង។ សូមពិសារទឹកស្អាតឱ្យបានច្រើន និងកុំបន្ថែមថ្នាំដោយគ្មានការណែនាំពីគ្រូពេទ្យ។</p>
+      <p>នោមញឹកញាប់ ស្រេកទឹកខ្លាំង ឈឺក្បាល និងអស់កម្លាំង សូមពិសារទឹកស្អាតឱ្យបានច្រើន និងកុំបន្ថែមថ្នាំដោយគ្មានការណែនាំពីគ្រូពេទ្យ</p>
     `,
     sourceName: 'MedlinePlus & American Association of Diabetes Educators',
     sourceUrl: 'https://medlineplus.gov/hypoglycemia.html',
@@ -200,7 +200,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     summary:
       'Overview of Metformin and oral diabetes medications, instructions on taking with meals to prevent stomach upset, and adherence safety rules.',
     summaryKm:
-      'ព័ត៌មានទូទៅអំពីថ្នាំ Metformin និងថ្នាំលេបដទៃទៀត ការណែនាំលេបជាមួយអាហារដើម្បីការពារការរមួលក្រពះ និងវិន័យលេបថ្នាំឱ្យបានទៀងទាត់។',
+      'ព័ត៌មានទូទៅអំពីថ្នាំ Metformin និងថ្នាំលេបដទៃទៀត ការណែនាំលេបជាមួយអាហារដើម្បីការពារការរមួលក្រពះ និងវិន័យលេបថ្នាំឱ្យបានទៀងទាត់',
     contentHtml: `
       <h3>How Oral Diabetes Medications Work</h3>
       <p>Oral medications work through various mechanisms to assist your body in managing blood glucose:</p>
@@ -217,12 +217,12 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
       <h3>របៀបដែលថ្នាំលេបដំណើរការ</h3>
       <p>ថ្នាំលេបនីមួយៗមានតួនាទីជួយរាងកាយគ្រប់គ្រងជាតិស្ករតាមវិធីផ្សេងៗគ្នា៖</p>
       <ul>
-        <li><strong>Metformin (ក្រុម Biguanides)៖</strong> កាត់បន្ថយការផលិតជាតិស្ករពីថ្លើម និងបង្កើនការឆ្លើយតបរបស់កោសិកា។ គួរលេបជាមួយ ឬភ្លាមៗក្រោយបាយ ដើម្បីកុំឱ្យរមួលក្រពះ។</li>
-        <li><strong>Gliclazide / Glipizide (ក្រុម Sulfonylureas)៖</strong> ជួយជំរុញលំពែងឱ្យបញ្ចេញអាំងស៊ុយលីនបន្ថែម។ ត្រូវលេបជាមួយអាហារដើម្បីការពារកុំឱ្យជាតិស្ករចុះទាបពេក។</li>
-        <li><strong>Sitagliptin (ក្រុម DPP-4)៖</strong> ជួយបញ្ចេញអាំងស៊ុយលីននៅពេលជាតិស្ករឡើងខ្ពស់ក្រោយពេលបាយ។</li>
+        <li><strong>Metformin (ក្រុម Biguanides)៖</strong> កាត់បន្ថយការផលិតជាតិស្ករពីថ្លើម និងបង្កើនការឆ្លើយតបរបស់កោសិកា គួរលេបជាមួយ ឬភ្លាមៗក្រោយបាយ ដើម្បីកុំឱ្យរមួលក្រពះ</li>
+        <li><strong>Gliclazide / Glipizide (ក្រុម Sulfonylureas)៖</strong> ជួយជំរុញលំពែងឱ្យបញ្ចេញអាំងស៊ុយលីនបន្ថែម ត្រូវលេបជាមួយអាហារដើម្បីការពារកុំឱ្យជាតិស្ករចុះទាបពេក</li>
+        <li><strong>Sitagliptin (ក្រុម DPP-4)៖</strong> ជួយបញ្ចេញអាំងស៊ុយលីននៅពេលជាតិស្ករឡើងខ្ពស់ក្រោយពេលបាយ</li>
       </ul>
       <div class="safety">
-        <strong>សុវត្ថិភាពថ្នាំ៖</strong> ត្រូវលេបថ្នាំទៀងទាត់តាមវេជ្ជបញ្ជា។ កុំបង្អត់អាហារនៅពេលលេបថ្នាំ ហើយកុំលេបថ្នាំទ្វេដងនៅពេលភ្លេចលេបកាលពីពេលមុន។
+        <strong>សុវត្ថិភាពថ្នាំ៖</strong> ត្រូវលេបថ្នាំទៀងទាត់តាមវេជ្ជបញ្ជា កុំបង្អត់អាហារនៅពេលលេបថ្នាំ ហើយកុំលេបថ្នាំទ្វេដងនៅពេលភ្លេចលេបកាលពីពេលមុន
       </div>
     `,
     sourceName: 'MedlinePlus Drug Information & NLM Connect',
@@ -242,7 +242,7 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
     summary:
       'Practical tips for balancing white rice portions, incorporating non-starchy local vegetables, fish and tofu protein, and choosing water over sweetened drinks.',
     summaryKm:
-      'គន្លឹះជាក់ស្តែងក្នុងការវាស់កម្រិតបាយស បន្ថែមបន្លែស្លឹកបៃតងក្នុងស្រុក ប្រភពប្រូតេអ៊ីនពីត្រី និងតៅហ៊ូ ព្រមទាំងការពិសារទឹកជំនួសភេសជ្ជៈផ្អែម។',
+      'គន្លឹះជាក់ស្តែងក្នុងការវាស់កម្រិតបាយស បន្ថែមបន្លែស្លឹកបៃតងក្នុងស្រុក ប្រភពប្រូតេអ៊ីនពីត្រី និងតៅហ៊ូ ព្រមទាំងការពិសារទឹកជំនួសភេសជ្ជៈផ្អែម',
     contentHtml: `
       <h3>The Balanced Plate Method</h3>
       <p>A simple visual guide for preparing meals for seniors with diabetes:</p>
@@ -258,12 +258,12 @@ export const CURATED_ARTICLES: HealthKnowledgeArticle[] = [
       <h3>រូបមន្តចានបាយសុខភាព</h3>
       <p>ការបែងចែកចានអាហារឱ្យមានតុល្យភាពសម្រាប់មនុស្សចាស់៖</p>
       <ul>
-        <li><strong>ពាក់កណ្តាលចាន (១/២) - បន្លែគ្មានម្សៅ៖</strong> ត្រកួន ផ្កាខាត់ណា ស្ពៃក្តោប ត្រសក់ ត្រឡាច និងម្រះ។</li>
-        <li><strong>មួយភាគបួនចាន (១/៤) - ប្រូតេអ៊ីនល្អ៖</strong> ត្រីស្រស់ (ត្រីរ៉ស់ ត្រីឆ្ពិន) សាច់មាន់គ្មានស្បែក តៅហ៊ូ និងស៊ុតស្ងោរ។</li>
-        <li><strong>មួយភាគបួនចាន (១/៤) - កាបូអ៊ីដ្រាត៖</strong> កម្រិតបាយឱ្យល្មម (ប្រហែល ១ ចានចង្កឹះតូច ឬបាយសម្រូប) ដំឡូងជ្វា ឬគ្រាប់ធញ្ញជាតិ។</li>
+        <li><strong>ពាក់កណ្តាលចាន (១/២) - បន្លែគ្មានម្សៅ៖</strong> ត្រកួន ផ្កាខាត់ណា ស្ពៃក្តោប ត្រសក់ ត្រឡាច និងម្រះ</li>
+        <li><strong>មួយភាគបួនចាន (១/៤) - ប្រូតេអ៊ីនល្អ៖</strong> ត្រីស្រស់ (ត្រីរ៉ស់ ត្រីឆ្ពិន) សាច់មាន់គ្មានស្បែក តៅហ៊ូ និងស៊ុតស្ងោរ</li>
+        <li><strong>មួយភាគបួនចាន (១/៤) - កាបូអ៊ីដ្រាត៖</strong> កម្រិតបាយឱ្យល្មម (ប្រហែល ១ ចានចង្កឹះតូច ឬបាយសម្រូប) ដំឡូងជ្វា ឬគ្រាប់ធញ្ញជាតិ</li>
       </ul>
       <h4>ការជ្រើសរើសភេសជ្ជៈ៖</h4>
-      <p>ពិសារទឹកស្អាត ឬតែបៃតងគ្មានជាតិស្ករ។ កាត់បន្ថយការទទួលទានកាហ្វេទឹកដោះគោផ្អែមខ្លាំង ទឹកផ្លែឈើក្រឡុកបន្ថែមស្ករ និងភេសជ្ជៈប៉ូវកម្លាំង។</p>
+      <p>ពិសារទឹកស្អាត ឬតែបៃតងគ្មានជាតិស្ករ កាត់បន្ថយការទទួលទានកាហ្វេទឹកដោះគោផ្អែមខ្លាំង ទឹកផ្លែឈើក្រឡុកបន្ថែមស្ករ និងភេសជ្ជៈប៉ូវកម្លាំង</p>
     `,
     sourceName: 'USDA FoodData Central & Cambodian Nutrition Guidelines',
     sourceUrl: 'https://fdc.nal.usda.gov/',

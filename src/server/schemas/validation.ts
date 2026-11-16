@@ -215,7 +215,9 @@ export const PatientProfileUpdateSchema = z.object({
   fullName: z.string().min(1).max(100).optional(),
   fullNameKm: z.string().max(100).optional(),
   ageGroup: z.string().optional(),
-  diabetesType: z.enum(['unknown', 'type_1', 'type_2', 'other']).optional(),
+  diabetesType: z
+    .enum(['unknown', 'type_1', 'type_2', 'prediabetes', 'gestational', 'other'])
+    .optional(),
   diagnosisStatus: z.string().optional(),
   currentMedicationsSummary: z.string().optional(),
   allergies: z.array(z.string()).optional(),

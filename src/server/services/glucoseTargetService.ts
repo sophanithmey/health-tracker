@@ -28,7 +28,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: 'Fasting (8–10h without food)',
     labelKm: 'ជាតិស្ករពេលព្រឹកព្រលឹម (អត់អាហារ ៨-១០ ម៉ោង)',
     notesEn: 'ADA recommendation for nonpregnant adults: 80–130 mg/dL.',
-    notesKm: 'គោលការណ៍ណែនាំទូទៅ ADA សម្រាប់មនុស្សពេញវ័យ៖ ៨០–១៣០ mg/dL។',
+    notesKm: 'គោលការណ៍ណែនាំទូទៅ ADA សម្រាប់មនុស្សពេញវ័យ៖ ៨០–១៣០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   },
@@ -39,7 +39,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: 'Before Meal (Preprandial)',
     labelKm: 'មុនពេលអាហារ',
     notesEn: 'ADA recommendation before meals: 80–130 mg/dL.',
-    notesKm: 'គោលការណ៍ណែនាំទូទៅមុនពេលអាហារ៖ ៨០–១៣០ mg/dL។',
+    notesKm: 'គោលការណ៍ណែនាំទូទៅមុនពេលអាហារ៖ ៨០–១៣០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   },
@@ -49,7 +49,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: '1 Hour After Meal',
     labelKm: '១ ម៉ោងក្រោយអាហារ',
     notesEn: 'Peak postprandial goal: under 180 mg/dL.',
-    notesKm: 'គោលដៅក្រោយអាហារ៖ តិចជាង ១៨០ mg/dL។',
+    notesKm: 'គោលដៅក្រោយអាហារ៖ តិចជាង ១៨០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   },
@@ -59,7 +59,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: '2 Hours After Meal (Postprandial)',
     labelKm: '២ ម៉ោងក្រោយអាហារ',
     notesEn: 'ADA postprandial goal: below 180 mg/dL for nonpregnant adults.',
-    notesKm: 'គោលការណ៍ណែនាំទូទៅ ADA ២ ម៉ោងក្រោយអាហារ៖ តិចជាង ១៨០ mg/dL។',
+    notesKm: 'គោលការណ៍ណែនាំទូទៅ ADA ២ ម៉ោងក្រោយអាហារ៖ តិចជាង ១៨០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   },
@@ -70,7 +70,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: 'Bedtime',
     labelKm: 'មុនពេលចូលគេង',
     notesEn: 'General overnight safety recommendation: 100–140 mg/dL.',
-    notesKm: 'គោលការណ៍ណែនាំទូទៅមុនចូលគេង៖ ១០០–១៤០ mg/dL។',
+    notesKm: 'គោលការណ៍ណែនាំទូទៅមុនចូលគេង៖ ១០០–១៤០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   },
@@ -80,7 +80,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: 'Random / Casual Reading',
     labelKm: 'វាស់ចៃដន្យទូទៅ',
     notesEn: 'General casual reading threshold: below 180 mg/dL.',
-    notesKm: 'កម្រិតវាស់ចៃដន្យទូទៅ៖ តិចជាង ១៨០ mg/dL។',
+    notesKm: 'កម្រិតវាស់ចៃដន្យទូទៅ៖ តិចជាង ១៨០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   },
@@ -91,7 +91,7 @@ export const ADA_GUIDELINE_TARGETS: Record<MeasurementType, GeneralGuidelineRefe
     labelEn: 'Other Reading Time',
     labelKm: 'ពេលផ្សេងទៀត',
     notesEn: 'General glycemic target range: 80–180 mg/dL.',
-    notesKm: 'កម្រិតគោលដៅទូទៅ៖ ៨០–១៨០ mg/dL។',
+    notesKm: 'កម្រិតគោលដៅទូទៅ៖ ៨០–១៨០ mg/dL',
     guidelineSource: 'ADA Standards of Care in Diabetes',
     guidelineVersion: '2026'
   }
@@ -163,7 +163,7 @@ export class GlucoseTargetService {
     const targets = await this.getPatientTargets(patientId);
     const measuredTime = measuredAt.getTime();
 
-    // Filter strictly for approved, active targets matching measurement type
+    // Filter for approved, active targets matching measurement type
     const matching = targets.filter((t) => {
       if (t.patientId !== patientId) return false;
       if (t.measurementType !== measurementType) return false;
@@ -173,10 +173,7 @@ export class GlucoseTargetService {
         t.approvalStatus === 'approved' || t.clinicianApprovalStatus === 'clinician_approved';
       if (!isApproved) return false;
 
-      // Check effective dates
-      const effectiveFrom = t.effectiveFrom ? new Date(t.effectiveFrom).getTime() : new Date(t.effectiveDate).getTime();
-      if (measuredTime < effectiveFrom) return false;
-
+      // Check if target is not expired
       if (t.effectiveUntil) {
         const effectiveUntil = new Date(t.effectiveUntil).getTime();
         if (measuredTime > effectiveUntil) return false;
@@ -185,14 +182,26 @@ export class GlucoseTargetService {
       return true;
     });
 
+    if (matching.length === 0) return undefined;
+
+    // Prefer target that was already effective at measuredTime
+    const effectiveAtTime = matching.filter((t) => {
+      const effectiveFrom = t.effectiveFrom
+        ? new Date(t.effectiveFrom).getTime()
+        : new Date(t.effectiveDate).getTime();
+      return measuredTime >= effectiveFrom;
+    });
+
+    const candidates = effectiveAtTime.length > 0 ? effectiveAtTime : matching;
+
     // Return most recently effective target
-    matching.sort((a, b) => {
+    candidates.sort((a, b) => {
       const timeA = new Date(a.effectiveFrom || a.effectiveDate).getTime();
       const timeB = new Date(b.effectiveFrom || b.effectiveDate).getTime();
       return timeB - timeA;
     });
 
-    return matching[0];
+    return candidates[0];
   }
 
   /**
@@ -226,7 +235,7 @@ export class GlucoseTargetService {
         explanationEn:
           'Personal target not configured for this measurement time. Reference values are educational only and not personalized.',
         explanationKm:
-          'មិនទាន់មានការកំណត់គោលដៅផ្ទាល់ខ្លួនសម្រាប់ពេលវាស់នេះឡើយ។ តម្លៃយោងគឺសម្រាប់ជាការអប់រំទូទៅប៉ុណ្ណោះ។',
+          'មិនទាន់មានការកំណត់គោលដៅផ្ទាល់ខ្លួនសម្រាប់ពេលវាស់នេះឡើយ តម្លៃយោងគឺសម្រាប់ជាការអប់រំទូទៅប៉ុណ្ណោះ',
         isEducationalReferenceOnly: true
       };
     }
@@ -248,7 +257,7 @@ export class GlucoseTargetService {
           activeTarget,
           differenceFromMin: diff,
           explanationEn: `Reading is ${diff} mg/dL below the configured minimum target of ${min} mg/dL.`,
-          explanationKm: `កម្រិតជាតិស្ករគឺទាបជាងគោលដៅអប្បបរមា (${min} mg/dL) ចំនួន ${diff} mg/dL។`,
+          explanationKm: `កម្រិតជាតិស្ករគឺទាបជាងគោលដៅអប្បបរមា (${min} mg/dL) ចំនួន ${diff} mg/dL`,
           isEducationalReferenceOnly: false
         };
       }
@@ -259,7 +268,7 @@ export class GlucoseTargetService {
         measuredAt,
         activeTarget,
         explanationEn: `Reading meets the configured threshold (≥ ${min} mg/dL).`,
-        explanationKm: `កម្រិតជាតិស្ករស្របតាមគោលដៅកំណត់ (≥ ${min} mg/dL)។`,
+        explanationKm: `កម្រិតជាតិស្ករស្របតាមគោលដៅកំណត់ (≥ ${min} mg/dL)`,
         isEducationalReferenceOnly: false
       };
     }
@@ -276,7 +285,7 @@ export class GlucoseTargetService {
           activeTarget,
           differenceFromMax: diff,
           explanationEn: `This reading is ${diff} mg/dL above the configured target (${max} mg/dL). Record the result and monitor the trend. Follow the care plan provided by the healthcare professional.`,
-          explanationKm: `កម្រិតជាតិស្ករលើសពីគោលដៅកំណត់ (${max} mg/dL) ចំនួន ${diff} mg/dL។ សូមកត់ត្រាលទ្ធផល និងតាមដានបន្តតាមការណែនាំរបស់គ្រូពេទ្យ។`,
+          explanationKm: `កម្រិតជាតិស្ករលើសពីគោលដៅកំណត់ (${max} mg/dL) ចំនួន ${diff} mg/dL សូមកត់ត្រាលទ្ធផល និងតាមដានបន្តតាមការណែនាំរបស់គ្រូពេទ្យ`,
           isEducationalReferenceOnly: false
         };
       }
@@ -287,7 +296,7 @@ export class GlucoseTargetService {
         measuredAt,
         activeTarget,
         explanationEn: `Reading meets the configured target (≤ ${max} mg/dL).`,
-        explanationKm: `កម្រិតជាតិស្ករស្ថិតក្នុងកម្រិតគោលដៅល្អ (≤ ${max} mg/dL)។`,
+        explanationKm: `កម្រិតជាតិស្ករស្ថិតក្នុងកម្រិតគោលដៅល្អ (≤ ${max} mg/dL)`,
         isEducationalReferenceOnly: false
       };
     }
@@ -306,7 +315,7 @@ export class GlucoseTargetService {
         activeTarget,
         differenceFromMin: diff,
         explanationEn: `Reading is ${diff} mg/dL below the configured target range (${effectiveMin}–${effectiveMax} mg/dL).`,
-        explanationKm: `កម្រិតជាតិស្ករទាបជាងកម្រិតគោលដៅកំណត់ (${effectiveMin}–${effectiveMax} mg/dL) ចំនួន ${diff} mg/dL។`,
+        explanationKm: `កម្រិតជាតិស្ករទាបជាងកម្រិតគោលដៅកំណត់ (${effectiveMin}–${effectiveMax} mg/dL) ចំនួន ${diff} mg/dL`,
         isEducationalReferenceOnly: false
       };
     }
@@ -321,7 +330,7 @@ export class GlucoseTargetService {
         activeTarget,
         differenceFromMax: diff,
         explanationEn: `This reading is above the configured target. Record the result and monitor the trend. Follow the care plan provided by the healthcare professional.`,
-        explanationKm: `កម្រិតជាតិស្ករនេះលើសពីកម្រិតគោលដៅកំណត់។ សូមកត់ត្រាលទ្ធផល និងតាមដាននិន្នាការជាបន្តបន្ទាប់។ អនុវត្តតាមផែនការថែទាំរបស់វេជ្ជបណ្ឌិត។`,
+        explanationKm: `កម្រិតជាតិស្ករនេះលើសពីកម្រិតគោលដៅកំណត់ សូមកត់ត្រាលទ្ធផល និងតាមដាននិន្នាការជាបន្តបន្ទាប់ អនុវត្តតាមផែនការថែទាំរបស់វេជ្ជបណ្ឌិត`,
         isEducationalReferenceOnly: false
       };
     }
@@ -333,7 +342,7 @@ export class GlucoseTargetService {
       measuredAt,
       activeTarget,
       explanationEn: `Reading is within the configured target range (${effectiveMin}–${effectiveMax} mg/dL).`,
-      explanationKm: `កម្រិតជាតិស្ករស្ថិតក្នុងកម្រិតគោលដៅកំណត់ (${effectiveMin}–${effectiveMax} mg/dL)។`,
+      explanationKm: `កម្រិតជាតិស្ករស្ថិតក្នុងកម្រិតគោលដៅកំណត់ (${effectiveMin}–${effectiveMax} mg/dL)`,
       isEducationalReferenceOnly: false
     };
   }
@@ -441,19 +450,28 @@ export class GlucoseTargetService {
    * Find a specific target by its ID
    */
   public static async findTargetById(targetId: string): Promise<GlucoseTarget | null> {
+    const resolvedId =
+      targetId === 'tgt-fasting'
+        ? store.FASTING_TARGET_UUID
+        : targetId === 'tgt-postmeal'
+        ? store.POSTMEAL_TARGET_UUID
+        : targetId;
+
     if (isSupabaseConfigured && supabaseServer) {
       try {
         const { data, error } = await supabaseServer
           .from('health_glucose_targets')
           .select('*')
-          .eq('id', targetId)
-          .single();
+          .eq('id', resolvedId)
+          .maybeSingle();
         if (data && !error) return this.mapFromDb(data);
       } catch (err) {
         console.warn('Error fetching target by id from Supabase:', err);
       }
     }
-    return store.targets.find((t) => t.id === targetId) || null;
+    return (
+      store.targets.find((t) => t.id === targetId || t.id === resolvedId) || null
+    );
   }
 
   /**
@@ -498,20 +516,21 @@ export class GlucoseTargetService {
       try {
         await supabaseServer
           .from('health_glucose_targets')
-          .update(this.mapToDb(updatedTarget))
-          .eq('id', targetId);
+          .upsert(this.mapToDb(updatedTarget));
       } catch (err) {
         console.warn('Error updating target in Supabase:', err);
       }
     }
 
-    const idx = store.targets.findIndex((t) => t.id === targetId);
+    const idx = store.targets.findIndex((t) => t.id === existing.id || t.id === targetId);
     if (idx >= 0) {
       store.targets[idx] = updatedTarget;
+    } else {
+      store.targets.unshift(updatedTarget);
     }
 
     await this.recordAuditLog({
-      targetId,
+      targetId: existing.id,
       patientId: existing.patientId,
       action: 'updated',
       oldValues,
@@ -539,7 +558,7 @@ export class GlucoseTargetService {
     const nowIso = new Date().toISOString();
 
     // 1. Inactivate / supersede any previous active targets for the same measurement type
-    await this.supersedePreviousTargets(existing.patientId, existing.measurementType, targetId);
+    await this.supersedePreviousTargets(existing.patientId, existing.measurementType, existing.id);
 
     const resolvedProfileId = await this.resolveProfileId(clinicianUser.id);
 
@@ -560,20 +579,21 @@ export class GlucoseTargetService {
       try {
         await supabaseServer
           .from('health_glucose_targets')
-          .update(this.mapToDb(approvedTarget))
-          .eq('id', targetId);
+          .upsert(this.mapToDb(approvedTarget));
       } catch (err) {
         console.warn('Error approving target in Supabase:', err);
       }
     }
 
-    const idx = store.targets.findIndex((t) => t.id === targetId);
+    const idx = store.targets.findIndex((t) => t.id === existing.id || t.id === targetId);
     if (idx >= 0) {
       store.targets[idx] = approvedTarget;
+    } else {
+      store.targets.unshift(approvedTarget);
     }
 
     await this.recordAuditLog({
-      targetId,
+      targetId: existing.id,
       patientId: existing.patientId,
       action: 'approved',
       oldValues,
@@ -613,16 +633,17 @@ export class GlucoseTargetService {
       try {
         await supabaseServer
           .from('health_glucose_targets')
-          .update(this.mapToDb(rejectedTarget))
-          .eq('id', targetId);
+          .upsert(this.mapToDb(rejectedTarget));
       } catch (err) {
         console.warn('Error rejecting target in Supabase:', err);
       }
     }
 
-    const idx = store.targets.findIndex((t) => t.id === targetId);
+    const idx = store.targets.findIndex((t) => t.id === existing.id || t.id === targetId);
     if (idx >= 0) {
       store.targets[idx] = rejectedTarget;
+    } else {
+      store.targets.unshift(rejectedTarget);
     }
 
     await this.recordAuditLog({

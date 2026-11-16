@@ -1,503 +1,100 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
-import { usePathname, useRouter, Link } from '@/i18n/routing';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { PatientProfile } from '@/types';
-import {
-  Activity,
-  Droplet,
-  Pill,
-  Utensils,
-  Target,
-  FileText,
-  Settings,
-  BookOpen,
-  ShieldAlert,
-  Menu,
-  X,
-  User,
-  HeartHandshake,
-  PhoneCall,
-  CheckCircle2,
-  Stethoscope,
-  ChevronRight,
-  Globe
-} from 'lucide-react';
-import { useRole } from '@/context/RoleContext';
-import { EmergencyHypoBanner } from './EmergencyHypoBanner';
+import React from 'react';
+import dynamic from 'next/dynamic';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
+import { Activity, Menu } from 'lucide-react';
+import { useHeaderNavigation } from '@/hooks/use-header-navigation';
+import { HeaderDesktopNav } from './HeaderDesktopNav';
+import { HeaderUserControls } from './HeaderUserControls';
+import { HeaderMobileDrawer } from './HeaderMobileDrawer';
+
+const EmergencyHypoBanner = dynamic(
+  () => import('./EmergencyHypoBanner').then((m) => m.EmergencyHypoBanner),
+  { ssr: false }
+);
 
 export function AppHeader() {
   const t = useTranslations('common');
-  const tNav = useTranslations('nav');
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-  const { role, switchRole } = useRole();
-  const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Listen for mobile drawer open requests from bottom nav or buttons
-  useEffect(() => {
-    const handleToggle = () => setIsMobileMenuOpen((prev) => !prev);
-    const handleOpen = () => setIsMobileMenuOpen(true);
-    window.addEventListener('toggle-mobile-menu', handleToggle);
-    window.addEventListener('open-mobile-menu', handleOpen);
-    return () => {
-      window.removeEventListener('toggle-mobile-menu', handleToggle);
-      window.removeEventListener('open-mobile-menu', handleOpen);
-    };
-  }, []);
-
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMobileMenuOpen]);
-
-  const { data: patient } = useQuery<PatientProfile>({
-    queryKey: ['patient'],
-    queryFn: async () => {
-      const res = await axios.get('/api/patient');
-      return res.data?.data;
-    },
-    staleTime: 0
-  });
-
-  const patientDisplayName = patient
-    ? locale === 'km'
-      ? patient.fullNameKm || patient.fullName
-      : patient.fullName
-    : '';
-
-  const handleLanguageChange = (newLocale: 'km' | 'en') => {
-    router.replace(pathname, { locale: newLocale });
-  };
-
-  const navItems = [
-    { href: '/', label: tNav('dashboard'), icon: Activity },
-    { href: '/blood-sugar', label: tNav('bloodSugar'), icon: Droplet },
-    { href: '/medications', label: tNav('medications'), icon: Pill },
-    { href: '/lifestyle', label: tNav('lifestyle'), icon: Utensils },
-    { href: '/targets', label: tNav('targets'), icon: Target },
-    { href: '/knowledge', label: tNav('knowledge'), icon: BookOpen },
-    { href: '/reports', label: tNav('reports'), icon: FileText },
-    { href: '/settings', label: tNav('settings'), icon: Settings }
-  ];
+  const {
+    navItems,
+    pathname,
+    locale,
+    role,
+    switchRole,
+    patient,
+    patientDisplayName,
+    isEmergencyModalOpen,
+    setIsEmergencyModalOpen,
+    isMobileMenuOpen,
+    setIsMobileMenuOpen,
+    handleLanguageChange
+  } = useHeaderNavigation();
 
   return (
-    <>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
-        {/* Tier 1: Main Brand & Utility Bar */}
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-15 sm:h-18">
-            {/* Left: Brand Identity & Patient Pulse */}
-            <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group min-w-0 pr-2">
-              <div className="relative flex-shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-700 flex items-center justify-center text-white shadow-sm shadow-teal-700/20 group-hover:scale-105 transition">
-                  <Activity className="w-5 h-5" />
-                </div>
-                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border-2 border-white"></span>
-                </span>
-              </div>
-
-              <div className="min-w-0">
-                <div className="flex items-center space-x-1.5">
-                  <span className="text-sm sm:text-lg font-black text-slate-900 tracking-tight leading-tight font-khmer truncate">
-                    {locale === 'km' ? (
-                      <>
-                        <span className="xs:hidden">ថែទាំជាតិស្ករ</span>
-                        <span className="hidden xs:inline sm:hidden">ថែទាំទឹកនោមផ្អែម</span>
-                        <span className="hidden sm:inline">{t('appName')}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="sm:hidden">Diabetes Care</span>
-                        <span className="hidden sm:inline">{t('appName')}</span>
-                      </>
-                    )}
-                  </span>
-                  <span className="hidden lg:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80 flex-shrink-0">
-                    {patientDisplayName || 'Mom'} (Live)
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 font-medium hidden sm:block truncate">
-                  {patient
-                    ? locale === 'km'
-                      ? `ប្រព័ន្ធតាមដានជាតិស្ករ និងសុខភាពសម្រាប់ ${patientDisplayName}`
-                      : `Family Health & Blood Sugar Monitoring for ${patient.fullName}`
-                    : t('appTagline')}
-                </p>
-              </div>
-            </Link>
-
-            {/* Right: Controls & Emergency Button */}
-            <div className="flex items-center space-x-1.5 sm:space-x-3 flex-shrink-0">
-              {/* Emergency 15-15 Rule Button */}
-              <button
-                type="button"
-                onClick={() => setIsEmergencyModalOpen(true)}
-                className="flex items-center space-x-1 px-2.5 py-1.5 sm:px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold transition shadow-2xs touch-target"
-                title="Emergency Guidance & 15-15 Rule"
-              >
-                <ShieldAlert className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 flex-shrink-0" />
-                <span className="hidden sm:inline font-bold">15-15 Rule</span>
-                <span className="sm:hidden font-black text-[11px]">15-15</span>
-              </button>
-
-              {/* Desktop Only: Role Switcher Pill */}
-              <div className="hidden md:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => switchRole('family_admin')}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
-                    role === 'family_admin'
-                      ? 'bg-teal-700 text-white shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Caregiver Control Mode"
-                >
-                  <span>{t('roleCaregiver')}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchRole('clinician')}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
-                    role === 'clinician'
-                      ? 'bg-blue-700 text-white shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Healthcare Professional Review Mode"
-                >
-                  <span>{locale === 'km' ? 'វេជ្ជបណ្ឌិត' : 'Clinician'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchRole('patient')}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
-                    role === 'patient'
-                      ? 'bg-emerald-600 text-white shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title={patientDisplayName ? `${patientDisplayName} (Senior Mode)` : 'Patient (Senior Mode)'}
-                >
-                  <span>
-                    {patientDisplayName
-                      ? locale === 'km'
-                        ? `${patientDisplayName} (អ្នកជំងឺ)`
-                        : `${patient?.fullName} (Patient)`
-                      : t('rolePatient')}
-                  </span>
-                </button>
-              </div>
-
-              {/* Desktop Language Switcher (Segmented) */}
-              <div className="hidden sm:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => handleLanguageChange('km')}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
-                    locale === 'km'
-                      ? 'bg-white text-teal-800 shadow-2xs'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  ខ្មែរ
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleLanguageChange('en')}
-                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition ${
-                    locale === 'en'
-                      ? 'bg-white text-teal-800 shadow-2xs'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  EN
-                </button>
-              </div>
-
-              {/* Mobile Single Tap Language Switcher (Fits perfectly on phone screen) */}
-              <button
-                type="button"
-                onClick={() => handleLanguageChange(locale === 'km' ? 'en' : 'km')}
-                className="sm:hidden px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold flex items-center space-x-1 touch-target shadow-2xs"
-                title={locale === 'km' ? 'Switch to English' : 'ប្តូរទៅភាសាខ្មែរ'}
-              >
-                <Globe className="w-3.5 h-3.5 text-teal-700" />
-                <span className="font-bold text-[11px]">{locale === 'km' ? 'EN' : 'ខ្មែរ'}</span>
-              </button>
-
-              {/* Mobile Hamburger Menu Toggle Button */}
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition touch-target flex-shrink-0"
-                aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Navigation Menu'}
-              >
-                {isMobileMenuOpen ? (
-                  <X className="w-4 h-4 text-slate-900" />
-                ) : (
-                  <Menu className="w-4 h-4 text-slate-900" />
-                )}
-              </button>
-            </div>
+    <header className="sticky top-0 z-40 w-full bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-4">
+        {/* Left: Brand Logo */}
+        <Link href="/" className="flex items-center gap-2.5 sm:gap-3 shrink-0 group">
+          <div className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform duration-150">
+            <Activity className="w-4 h-4 text-white" />
           </div>
+          <span className="text-sm sm:text-base font-bold text-slate-900 tracking-tight whitespace-nowrap leading-tight font-khmer">
+            {t('appName') || 'Family Diabetes Care'}
+          </span>
+        </Link>
 
-          {/* Tier 2: Horizontal Segmented Tab Navigation (Desktop & Tablet) */}
-          <div className="hidden md:flex items-center space-x-1 sm:space-x-2 py-2 overflow-x-auto scrollbar-none border-t border-slate-100">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all flex-shrink-0 touch-target ${
-                    isActive
-                      ? 'bg-teal-700 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
-                >
-                  <Icon
-                    className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`}
-                  />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </header>
+        {/* Center: Desktop/Tablet Nav */}
+        <HeaderDesktopNav navItems={navItems} pathname={pathname} />
 
-      {/* -------------------------------------------------------------------- */}
-      {/* MOBILE SLIDE-OUT NAVIGATION DRAWER                                   */}
-      {/* -------------------------------------------------------------------- */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity"
-            onClick={() => setIsMobileMenuOpen(false)}
+        {/* Right: Actions & User Controls */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <HeaderUserControls
+            role={role}
+            switchRole={switchRole}
+            locale={locale}
+            onLanguageChange={handleLanguageChange}
+            onOpenEmergency={() => setIsEmergencyModalOpen(true)}
           />
 
-          {/* Drawer Container */}
-          <div className="relative ml-auto w-full max-w-xs sm:max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-fade-in overflow-y-auto">
-            {/* Drawer Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 flex-shrink-0">
-              <div className="flex items-center space-x-2.5 min-w-0 pr-2">
-                <div className="w-10 h-10 rounded-2xl bg-teal-700 flex items-center justify-center text-white shadow-xs flex-shrink-0">
-                  <Activity className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-sm sm:text-base font-black text-slate-900 font-khmer truncate">
-                    {patientDisplayName || t('appName')}
-                  </h3>
-                  <div className="flex items-center space-x-1.5 mt-0.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-                    <span className="text-[11px] font-bold text-emerald-800 truncate">
-                      {locale === 'km' ? 'ប្រព័ន្ធតាមដានផ្ទាល់' : 'Active Patient (Live)'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition shadow-2xs flex-shrink-0 touch-target"
-                aria-label="Close Navigation Menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Drawer Body */}
-            <div className="p-4 sm:p-5 space-y-6 flex-1">
-              {/* Role Switcher Section in Drawer */}
-              <div>
-                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-2 font-khmer">
-                  {locale === 'km' ? 'ប្តូរតួនាទីប្រើប្រាស់' : 'Active Role / View Mode'}
-                </label>
-                <div className="space-y-1.5 bg-slate-50 p-2 rounded-2xl border border-slate-200/80">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      switchRole('family_admin');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left touch-target ${
-                      role === 'family_admin'
-                        ? 'bg-teal-700 text-white shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-200/60'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2.5">
-                      <HeartHandshake className="w-4 h-4 flex-shrink-0" />
-                      <div>
-                        <div>{t('roleCaregiver')}</div>
-                        <div className={`text-[10px] ${role === 'family_admin' ? 'text-teal-100' : 'text-slate-400'}`}>
-                          {locale === 'km' ? 'គ្រប់គ្រង និងកត់ត្រាថែទាំ' : 'Full caregiver controls'}
-                        </div>
-                      </div>
-                    </div>
-                    {role === 'family_admin' && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      switchRole('clinician');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left touch-target ${
-                      role === 'clinician'
-                        ? 'bg-blue-700 text-white shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-200/60'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2.5">
-                      <Stethoscope className="w-4 h-4 flex-shrink-0" />
-                      <div>
-                        <div>{locale === 'km' ? 'វេជ្ជបណ្ឌិត (Clinician)' : 'Attending Clinician'}</div>
-                        <div className={`text-[10px] ${role === 'clinician' ? 'text-blue-100' : 'text-slate-400'}`}>
-                          {locale === 'km' ? 'ពិនិត្យ & អនុម័តគោលដៅ' : 'Clinical reviews & target approval'}
-                        </div>
-                      </div>
-                    </div>
-                    {role === 'clinician' && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      switchRole('patient');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition text-left touch-target ${
-                      role === 'patient'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-200/60'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2.5">
-                      <User className="w-4 h-4 flex-shrink-0" />
-                      <div>
-                        <div>{patientDisplayName ? `${patientDisplayName} (${locale === 'km' ? 'អ្នកជំងឺ' : 'Patient'})` : t('rolePatient')}</div>
-                        <div className={`text-[10px] ${role === 'patient' ? 'text-emerald-100' : 'text-slate-400'}`}>
-                          {locale === 'km' ? 'ទម្រង់ងាយស្រួលអក្សរធំសម្រាប់ម៉ាក់' : 'Senior simplified mode'}
-                        </div>
-                      </div>
-                    </div>
-                    {role === 'patient' && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* All Navigation Links */}
-              <div>
-                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-2 font-khmer">
-                  {locale === 'km' ? 'ទំព័រកម្មវិធីទាំងអស់' : 'All Destinations'}
-                </label>
-                <div className="space-y-1">
-                  {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = pathname === item.href;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center justify-between p-2.5 sm:p-3 rounded-2xl text-xs sm:text-sm font-bold transition touch-target ${
-                          isActive
-                            ? 'bg-teal-50 text-teal-900 border border-teal-200/80 shadow-2xs'
-                            : 'text-slate-700 hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3 min-w-0">
-                          <div
-                            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                              isActive ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-500'
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <span className="font-khmer truncate">{item.label}</span>
-                        </div>
-                        <ChevronRight className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-teal-700' : 'text-slate-300'}`} />
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Emergency Quick Actions in Drawer */}
-              <div className="pt-2 border-t border-slate-100 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    setIsEmergencyModalOpen(true);
-                  }}
-                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-black rounded-2xl shadow-sm transition touch-target text-xs"
-                >
-                  <ShieldAlert className="w-4 h-4 flex-shrink-0" />
-                  <span>{locale === 'km' ? 'សង្គ្រោះបន្ទាន់ជាតិស្ករ 15-15 Rule' : 'Emergency 15-15 Rule'}</span>
-                </button>
-
-                <a
-                  href="tel:119"
-                  className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-2xl font-bold transition touch-target text-xs"
-                >
-                  <PhoneCall className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>{locale === 'km' ? 'ហៅសង្គ្រោះបន្ទាន់ 119 (Ambulance)' : 'Call Ambulance 119'}</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Drawer Footer */}
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 flex-shrink-0">
-              <span className="font-medium">Language:</span>
-              <div className="flex items-center space-x-1 bg-white p-1 rounded-xl border border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => handleLanguageChange('km')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    locale === 'km' ? 'bg-teal-700 text-white' : 'text-slate-600'
-                  }`}
-                >
-                  ខ្មែរ
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleLanguageChange('en')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    locale === 'en' ? 'bg-teal-700 text-white' : 'text-slate-600'
-                  }`}
-                >
-                  English
-                </button>
-              </div>
-            </div>
-          </div>
+          {/* Mobile Hamburger Menu Button (Mobile only: < md) */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="md:hidden w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 flex items-center justify-center transition-colors"
+            aria-label="Open mobile navigation menu"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
         </div>
-      )}
+      </div>
 
-      {/* Emergency 15-15 Guidance Modal */}
-      <EmergencyHypoBanner
-        isOpen={isEmergencyModalOpen}
-        onClose={() => setIsEmergencyModalOpen(false)}
+      {/* Mobile Drawer */}
+      <HeaderMobileDrawer
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        patient={patient}
+        patientDisplayName={patientDisplayName}
+        role={role}
+        switchRole={switchRole}
+        navItems={navItems}
+        pathname={pathname}
+        locale={locale}
+        onLanguageChange={handleLanguageChange}
+        onOpenEmergency={() => {
+          setIsMobileMenuOpen(false);
+          setIsEmergencyModalOpen(true);
+        }}
       />
-    </>
+
+      {/* Emergency Hypoglycemia Rule 15-15 Modal */}
+      {isEmergencyModalOpen ? (
+        <EmergencyHypoBanner
+          isOpen={isEmergencyModalOpen}
+          onClose={() => setIsEmergencyModalOpen(false)}
+        />
+      ) : null}
+    </header>
   );
 }
