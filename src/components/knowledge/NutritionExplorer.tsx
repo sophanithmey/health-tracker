@@ -7,6 +7,7 @@ import { knowledgeService } from '@/services/knowledge-service';
 import { FoodNutritionItem } from '@/types';
 import { Search, Utensils } from 'lucide-react';
 import { FoodNutritionCard } from './FoodNutritionCard';
+import { KhmerDishesExplorer } from './KhmerDishesExplorer';
 
 const QUICK_SEARCH_ITEMS = [
   { key: 'whiteRice', query: 'white rice' },
@@ -24,11 +25,10 @@ const QUICK_SEARCH_ITEMS = [
 
 export function NutritionExplorer() {
   const t = useTranslations('knowledge');
+  const [explorerMode, setExplorerMode] = useState<'usda' | 'khmer'>('usda');
   const [searchQuery, setSearchQuery] = useState('white rice');
   const [activeQuery, setActiveQuery] = useState('white rice');
-  const [displayMode, setDisplayMode] = useState<'per100g' | 'perServing'>(
-    'per100g',
-  );
+  const [displayMode, setDisplayMode] = useState<'per100g' | 'perServing'>('per100g');
 
   const {
     data: foods = [],
@@ -37,7 +37,7 @@ export function NutritionExplorer() {
   } = useQuery<FoodNutritionItem[]>({
     queryKey: ['nutrition', activeQuery],
     queryFn: () => knowledgeService.searchFoods(activeQuery),
-    enabled: Boolean(activeQuery.trim()),
+    enabled: Boolean(activeQuery.trim()) && explorerMode === 'usda',
   });
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -93,94 +93,129 @@ export function NutritionExplorer() {
         </div>
       </div>
 
-      {/* Search Input & Quick Chips */}
-      <div className='bg-white rounded-3xl p-6 border border-slate-200/90 shadow-2xs space-y-4'>
-        <form onSubmit={handleSearchSubmit} className='flex items-center gap-2'>
-          <div className='relative flex-1'>
-            <Search className='w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2' />
-            <input
-              type='text'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('foodSearchPlaceholder')}
-              className='w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/30 focus:border-teal-600 transition'
-            />
-          </div>
-          <button
-            type='submit'
-            className='px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl text-sm shadow-sm transition touch-target flex-shrink-0 font-khmer'
-          >
-            {t('search')}
-          </button>
-        </form>
-
-        <div className='flex flex-wrap gap-1.5 pt-1'>
-          {QUICK_SEARCH_ITEMS.map((item) => (
-            <button
-              key={item.key}
-              type='button'
-              onClick={() => {
-                setSearchQuery(item.query);
-                setActiveQuery(item.query);
-              }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                activeQuery === item.query
-                  ? 'bg-teal-700 text-white shadow-2xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
-            >
-              {t(`quickFoods.${item.key}`)}
-            </button>
-          ))}
-        </div>
+      {/* Tab Switcher: USDA Ingredients vs Khmer Traditional Dishes */}
+      <div className='flex items-center gap-2'>
+        <button
+          type='button'
+          onClick={() => setExplorerMode('usda')}
+          className={`px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center space-x-1.5 font-khmer ${
+            explorerMode === 'usda'
+              ? 'bg-teal-700 text-white shadow-2xs'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+          }`}
+        >
+          <span>🥦</span>
+          <span>{t('usdaFoodsTab')}</span>
+        </button>
+        <button
+          type='button'
+          onClick={() => setExplorerMode('khmer')}
+          className={`px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center space-x-1.5 font-khmer ${
+            explorerMode === 'khmer'
+              ? 'bg-teal-700 text-white shadow-2xs'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+          }`}
+        >
+          <span>🍲</span>
+          <span>{t('khmerDishesTab')}</span>
+        </button>
       </div>
 
-      {/* Serving Toggle */}
-      <div className='flex justify-end'>
-        <div className='inline-flex bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold'>
-          <button
-            onClick={() => setDisplayMode('per100g')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              displayMode === 'per100g'
-                ? 'bg-white text-teal-800 shadow-2xs'
-                : 'text-slate-600'
-            }`}
-          >
-            {t('per100g')}
-          </button>
-          <button
-            onClick={() => setDisplayMode('perServing')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              displayMode === 'perServing'
-                ? 'bg-white text-teal-800 shadow-2xs'
-                : 'text-slate-600'
-            }`}
-          >
-            {t('perServing')}
-          </button>
-        </div>
-      </div>
-
-      {/* Food Cards Grid */}
-      {isLoading ? (
-        <div className='bg-white rounded-3xl p-12 text-center text-slate-400 font-khmer border border-slate-200'>
-          <div className='w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-2' />
-          {t('fetchingFoodData')}
-        </div>
-      ) : isError || foods.length === 0 ? (
-        <div className='bg-white rounded-3xl p-10 text-center text-slate-500 font-khmer border border-slate-200'>
-          <Utensils className='w-8 h-8 text-slate-300 mx-auto mb-2' />
-          {t('noFoodFound', { query: activeQuery })}
-        </div>
+      {/* Mode View: Khmer Dishes or USDA Search */}
+      {explorerMode === 'khmer' ? (
+        <KhmerDishesExplorer />
       ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          {foods.map((food) => (
-            <FoodNutritionCard
-              key={food.fdcId}
-              food={food}
-              displayMode={displayMode}
-            />
-          ))}
+        <div className='space-y-4'>
+          {/* Search Input & Quick Chips */}
+          <div className='bg-white rounded-3xl p-6 border border-slate-200/90 shadow-2xs space-y-4'>
+            <form onSubmit={handleSearchSubmit} className='flex items-center gap-2'>
+              <div className='relative flex-1'>
+                <Search className='w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2' />
+                <input
+                  type='text'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('foodSearchPlaceholder')}
+                  className='w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/30 focus:border-teal-600 transition'
+                />
+              </div>
+              <button
+                type='submit'
+                className='px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl text-sm shadow-sm transition touch-target flex-shrink-0 font-khmer'
+              >
+                {t('search')}
+              </button>
+            </form>
+
+            <div className='flex flex-wrap gap-1.5 pt-1'>
+              {QUICK_SEARCH_ITEMS.map((item) => (
+                <button
+                  key={item.key}
+                  type='button'
+                  onClick={() => {
+                    setSearchQuery(item.query);
+                    setActiveQuery(item.query);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    activeQuery === item.query
+                      ? 'bg-teal-700 text-white shadow-2xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {t(`quickFoods.${item.key}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Serving Toggle */}
+          <div className='flex justify-end'>
+            <div className='inline-flex bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold'>
+              <button
+                onClick={() => setDisplayMode('per100g')}
+                className={`px-3 py-1.5 rounded-xl transition ${
+                  displayMode === 'per100g'
+                    ? 'bg-white text-teal-800 shadow-2xs'
+                    : 'text-slate-600'
+                }`}
+              >
+                {t('per100g')}
+              </button>
+              <button
+                onClick={() => setDisplayMode('perServing')}
+                className={`px-3 py-1.5 rounded-xl transition ${
+                  displayMode === 'perServing'
+                    ? 'bg-white text-teal-800 shadow-2xs'
+                    : 'text-slate-600'
+                }`}
+              >
+                {t('perServing')}
+              </button>
+            </div>
+          </div>
+
+          {/* Food Cards Grid */}
+          {isLoading ? (
+            <div className='bg-white rounded-3xl p-12 text-center text-slate-400 font-khmer border border-slate-200'>
+              <div className='w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-2' />
+              {t('fetchingFoodData')}
+            </div>
+          ) : isError || foods.length === 0 ? (
+            <div className='bg-white rounded-3xl p-10 text-center text-slate-500 font-khmer border border-slate-200'>
+              <Utensils className='w-8 h-8 text-slate-300 mx-auto mb-2' />
+              {t('noFoodFound', { query: activeQuery })}
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {foods.map((food) => (
+                <FoodNutritionCard
+                  key={food.fdcId}
+                  food={food}
+                  displayMode={displayMode}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

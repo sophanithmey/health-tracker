@@ -14,6 +14,7 @@ const { CURATED_ARTICLES, getCuratedArticles, searchHealthKnowledge } = jiti('..
 const { DIABETES_RXNORM_MAP, DIABETES_CLINICAL_CODES } = jiti('../src/server/services/medlineConnectService.ts');
 const { KnowledgeSearchSchema, NutritionSearchSchema, MedicationEducationQuerySchema } = jiti('../src/server/schemas/validation.ts');
 const { getDiabeticFoodAdvice } = jiti('../src/lib/diabetic-food-advisor.ts');
+const { CAMBODIAN_FOOD_GUIDE } = jiti('../src/data/cambodianFoodGuide.ts');
 
 // ----------------------------------------------------------------------------
 // 1. MedlinePlus Web Service & XML Parsing Tests
@@ -306,4 +307,41 @@ test('getDiabeticFoodAdvice classifies durian dynamically as strict_limit with s
   assert.ok(advice.portionGuideEn.includes('1 small seed / segment'));
   assert.ok(!advice.portionGuideEn.includes('cup cooked'));
   assert.ok(advice.portionGuideKm.includes('១ កញ្ចង់តូច'));
+});
+
+// ----------------------------------------------------------------------------
+// 7. Cambodian Food Guide & Cultural Nutrition Tests
+// ----------------------------------------------------------------------------
+
+test('CAMBODIAN_FOOD_GUIDE includes rich selection of iconic traditional meals', () => {
+  assert.ok(CAMBODIAN_FOOD_GUIDE.length >= 12);
+  const dishIds = new Set(CAMBODIAN_FOOD_GUIDE.map((d) => d.id));
+  assert.ok(dishIds.has('samlor-korko'));
+  assert.ok(dishIds.has('bai-sach-chrouk'));
+  assert.ok(dishIds.has('num-banh-chok'));
+  assert.ok(dishIds.has('amok-trey'));
+  assert.ok(dishIds.has('samlor-machu-kroeung'));
+  assert.ok(dishIds.has('kuy-teav'));
+  assert.ok(dishIds.has('lok-lak'));
+  assert.ok(dishIds.has('chhar-knyei'));
+  assert.ok(dishIds.has('samlor-prohir'));
+  assert.ok(dishIds.has('nom-krouk'));
+});
+
+test('CAMBODIAN_FOOD_GUIDE has complete bilingual data and clinical guidance', () => {
+  for (const dish of CAMBODIAN_FOOD_GUIDE) {
+    assert.ok(dish.id);
+    assert.ok(dish.nameKm && dish.nameKm.length > 0);
+    assert.ok(dish.nameEn && dish.nameEn.length > 0);
+    assert.ok(dish.descriptionKm && dish.descriptionKm.length > 0);
+    assert.ok(dish.descriptionEn && dish.descriptionEn.length > 0);
+    assert.ok(['low', 'moderate', 'high'].includes(dish.carbLevel));
+    assert.ok(dish.portionGuidanceKm && dish.portionGuidanceKm.length > 0);
+    assert.ok(dish.portionGuidanceEn && dish.portionGuidanceEn.length > 0);
+    assert.ok(dish.educationalTipKm && dish.educationalTipKm.length > 0);
+    assert.ok(dish.educationalTipEn && dish.educationalTipEn.length > 0);
+    assert.ok(Array.isArray(dish.keyComponents.vegetables));
+    assert.ok(Array.isArray(dish.keyComponents.protein));
+    assert.ok(Array.isArray(dish.keyComponents.carbohydrates));
+  }
 });
