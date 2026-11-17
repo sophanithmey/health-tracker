@@ -10,18 +10,21 @@ import { FoodNutritionCard } from './FoodNutritionCard';
 
 const quickSearchItems = [
   { en: 'white rice', km: 'បាយស' },
-  { en: 'brown rice', km: 'បាយសម្រូប' },
-  { en: 'fresh fish', km: 'ត្រីស្រស់' },
-  { en: 'chicken breast', km: 'ទ្រូងមាន់' },
   { en: 'morning glory', km: 'ត្រកួន' },
-  { en: 'tofu', km: 'តៅហ៊ូ' },
+  { en: 'cabbage', km: 'ស្ពៃក្តោប' },
+  { en: 'cucumber', km: 'ត្រសក់' },
+  { en: 'fresh fish', km: 'ត្រីស្រស់' },
   { en: 'boiled egg', km: 'ស៊ុតស្ងោរ' },
-  { en: 'apple', km: 'ផ្លែប៉ោម' },
-  { en: 'banana', km: 'ផ្លែចេក' }
+  { en: 'chicken breast', km: 'ទ្រូងមាន់' },
+  { en: 'brown rice', km: 'បាយសម្រូប' },
+  { en: 'tofu', km: 'តៅហ៊ូ' },
+  { en: 'banana', km: 'ផ្លែចេក' },
+  { en: 'apple', km: 'ផ្លែប៉ោម' }
 ];
 
 export function NutritionExplorer() {
   const locale = useLocale();
+  const isKhmer = locale === 'km';
   const [searchQuery, setSearchQuery] = useState('white rice');
   const [activeQuery, setActiveQuery] = useState('white rice');
   const [displayMode, setDisplayMode] = useState<'per100g' | 'perServing'>('per100g');
@@ -46,18 +49,48 @@ export function NutritionExplorer() {
         <div className="relative z-10 max-w-2xl">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 mb-3">
             <Utensils className="w-3.5 h-3.5 mr-1 text-emerald-300" />
-            {locale === 'km' ? 'អាហារូបត្ថម្ភ និងកាបូអ៊ីដ្រាត' : 'Food & Nutrition Explorer'}
+            {isKhmer ? 'អាហារូបត្ថម្ភ និងកាបូអ៊ីដ្រាត' : 'Food & Nutrition Explorer'}
           </span>
           <h2 className="text-2xl sm:text-3xl font-black font-khmer tracking-tight">
-            {locale === 'km'
-              ? 'ស្វែងយល់ពីកាបូអ៊ីដ្រាត និងអាហារូបត្ថម្ភ (USDA Database)'
-              : 'Nutrient Breakdown & Carb Awareness (USDA)'}
+            {isKhmer
+              ? 'ស្វែងយល់ពីកាបូអ៊ីដ្រាត និងរបៀបញ៉ាំសុវត្ថិភាព (USDA)'
+              : 'Nutrient Breakdown & Diabetic Portion Guide (USDA)'}
           </h2>
           <p className="text-emerald-100/90 text-xs sm:text-sm mt-2 leading-relaxed font-khmer">
-            {locale === 'km'
-              ? 'ស្រាវជ្រាវបរិមាណកាបូអ៊ីដ្រាត ជាតិស្ករ ជាតិសរសៃ និងកាឡូរីពីទិន្នន័យផ្លូវការរបស់ USDA ដើម្បីជួយរៀបចំម្ហូបអាហារឱ្យមានតុល្យភាព'
-              : 'Search official USDA FoodData Central nutritional facts. Distinguish total carbohydrates from sugars and understand portion pacing.'}
+            {isKhmer
+              ? 'ស្វែងរកព័ត៌មានអាហារូបត្ថម្ភ ជាមួយការណែនាំពីបរិមាណដែលគួរញ៉ាំ និងកម្រិតសុវត្ថិភាពសម្រាប់អ្នកជំងឺទឹកនោមផ្អែម'
+              : 'Search official USDA FoodData Central nutritional facts with clinical portion sizes, glycemic spike warnings, and safe pairing advice.'}
           </p>
+        </div>
+      </div>
+
+      {/* ADA Plate Method Visual Summary */}
+      <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-3xl p-4 sm:p-5 text-xs text-emerald-950">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2.5">
+            <span className="text-xl">🍽️</span>
+            <div>
+              <h4 className="font-bold text-emerald-900 font-khmer">
+                {isKhmer ? 'វិធានចានសុខភាព ADA (Diabetes Plate Method)' : 'ADA Diabetes Plate Method'}
+              </h4>
+              <p className="text-[11px] text-emerald-800 font-khmer mt-0.5">
+                {isKhmer
+                  ? 'បន្លែគ្មានម្សៅ ១/២ ចាន (ញ៉ាំដោយសេរី) • សាច់/ត្រី ១/៤ ចាន • បាយ/ជាតិម្សៅ ១/៤ ចាន (កម្រិត ១/២ កែវ)'
+                  : '1/2 Plate Non-Starchy Veggies (Eat Freely) • 1/4 Plate Lean Protein • 1/4 Plate Carbs (Limit to 1/2 cup)'}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-1.5 shrink-0 text-[11px] font-bold">
+            <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300">
+              🟢 {isKhmer ? 'បន្លែ៖ កន្លះចាន' : 'Veg: 1/2 Plate'}
+            </span>
+            <span className="px-2 py-0.5 rounded-lg bg-teal-100 text-teal-800 border border-teal-300">
+              🔵 {isKhmer ? 'ប្រូតេអ៊ីន៖ ១/៤' : 'Protein: 1/4'}
+            </span>
+            <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-800 border border-amber-300">
+              🟡 {isKhmer ? 'បាយ៖ ១/៤' : 'Carbs: 1/4'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -71,9 +104,9 @@ export function NutritionExplorer() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
-                locale === 'km'
-                  ? 'ស្វែងរកឈ្មោះម្ហូប ឬអាហារ (ឧ. rice, fish, apple)...'
-                  : 'Search foods (e.g. white rice, salmon, tofu, banana)...'
+                isKhmer
+                  ? 'ស្វែងរកឈ្មោះម្ហូប ឬបន្លែ (ឧ. white rice, morning glory, fish)...'
+                  : 'Search food or vegetable (e.g. white rice, morning glory, fish)...'
               }
               className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/30 focus:border-teal-600 transition"
             />
@@ -82,7 +115,7 @@ export function NutritionExplorer() {
             type="submit"
             className="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl text-sm shadow-sm transition touch-target flex-shrink-0 font-khmer"
           >
-            {locale === 'km' ? 'ស្វែងរក' : 'Search'}
+            {isKhmer ? 'ស្វែងរក' : 'Search'}
           </button>
         </form>
 
@@ -101,7 +134,7 @@ export function NutritionExplorer() {
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
-              {locale === 'km' ? item.km : item.en}
+              {isKhmer ? item.km : item.en}
             </button>
           ))}
         </div>

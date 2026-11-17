@@ -13,6 +13,7 @@ const { normalizeUsdaFood } = jiti('../src/server/services/usdaFoodService.ts');
 const { CURATED_ARTICLES, getCuratedArticles, searchHealthKnowledge } = jiti('../src/server/services/knowledgeService.ts');
 const { DIABETES_RXNORM_MAP, DIABETES_CLINICAL_CODES } = jiti('../src/server/services/medlineConnectService.ts');
 const { KnowledgeSearchSchema, NutritionSearchSchema, MedicationEducationQuerySchema } = jiti('../src/server/schemas/validation.ts');
+const { getDiabeticFoodAdvice } = jiti('../src/lib/diabetic-food-advisor.ts');
 
 // ----------------------------------------------------------------------------
 // 1. MedlinePlus Web Service & XML Parsing Tests
@@ -196,4 +197,113 @@ test('NutritionSearchSchema enforces positive page size limit', () => {
   assert.throws(() => {
     NutritionSearchSchema.parse({ q: 'rice', pageSize: 0 });
   });
+});
+
+// ----------------------------------------------------------------------------
+// 6. Clinical Diabetic Food Advisor & Portion Rules Tests
+// ----------------------------------------------------------------------------
+
+test('getDiabeticFoodAdvice classifies non-starchy vegetables as eat_freely', () => {
+  const morningGloryFood = {
+    fdcId: 111,
+    description: 'WATER SPINACH, MORNING GLORY, RAW',
+    per100g: {
+      caloriesKcal: 19,
+      carbohydratesG: 3.1,
+      totalSugarsG: 0.4,
+      dietaryFiberG: 2.1,
+      proteinG: 2.6,
+      totalFatG: 0.2
+    }
+  };
+
+  const advice = getDiabeticFoodAdvice(morningGloryFood);
+  assert.equal(advice.verdict, 'eat_freely');
+  assert.equal(advice.plateCategory, 'vegetables');
+  assert.ok(advice.portionGuideEn.includes('half of Mom'));
+  assert.ok(advice.howToEatEn.includes('FIRST'));
+});
+
+test('getDiabeticFoodAdvice classifies white rice as strict_limit with 1/2 cup max guidance', () => {
+  const whiteRiceFood = {
+    fdcId: 222,
+    description: 'WHITE RICE, LONG GRAIN, ENRICHED',
+    per100g: {
+      caloriesKcal: 365,
+      carbohydratesG: 80.0,
+      totalSugarsG: 0.1,
+      dietaryFiberG: 1.3,
+      proteinG: 7.1,
+      totalFatG: 0.7
+    }
+  };
+
+  const advice = getDiabeticFoodAdvice(whiteRiceFood);
+  assert.equal(advice.verdict, 'strict_limit');
+  assert.equal(advice.plateCategory, 'caution');
+  assert.ok(advice.portionGuideEn.includes('1/2 cup'));
+  assert.ok(advice.howToEatEn.includes('Never eat high-carb grains on an empty stomach'));
+  assert.ok(advice.healthierSwapEn && advice.healthierSwapEn.includes('brown rice'));
+});
+
+test('getDiabeticFoodAdvice classifies fresh fish as healthy protein', () => {
+  const fishFood = {
+    fdcId: 333,
+    description: 'FISH, SALMON, ATLANTIC, WILD, RAW',
+    per100g: {
+      caloriesKcal: 142,
+      carbohydratesG: 0,
+      totalSugarsG: 0,
+      dietaryFiberG: 0,
+      proteinG: 19.8,
+      totalFatG: 6.3
+    }
+  };
+
+  const advice = getDiabeticFoodAdvice(fishFood);
+  assert.equal(advice.verdict, 'eat_freely');
+  assert.equal(advice.plateCategory, 'protein');
+  assert.ok(advice.portionGuideEn.includes('Palm-sized'));
+});
+
+test('getDiabeticFoodAdvice classifies whole fruit as portion_control with 1 small fruit guidance', () => {
+  const bananaFood = {
+    fdcId: 444,
+    description: 'BANANAS, RAW',
+    per100g: {
+      caloriesKcal: 89,
+      carbohydratesG: 22.8,
+      totalSugarsG: 12.2,
+      dietaryFiberG: 2.6,
+      proteinG: 1.1,
+      totalFatG: 0.3
+    }
+  };
+
+  const advice = getDiabeticFoodAdvice(bananaFood);
+  assert.equal(advice.verdict, 'portion_control');
+  assert.equal(advice.plateCategory, 'fruit');
+  assert.ok(advice.portionGuideEn.includes('1 small banana'));
+});
+
+test('getDiabeticFoodAdvice classifies durian dynamically as strict_limit with seed/segment guidance', () => {
+  const durianFood = {
+    fdcId: 555,
+    description: 'DURIAN, RAW OR FROZEN',
+    per100g: {
+      caloriesKcal: 147,
+      carbohydratesG: 27.1,
+      totalSugarsG: 12.0,
+      dietaryFiberG: 3.8,
+      proteinG: 1.5,
+      totalFatG: 5.3
+    }
+  };
+
+  const advice = getDiabeticFoodAdvice(durianFood);
+  assert.equal(advice.verdict, 'strict_limit');
+  assert.equal(advice.plateCategory, 'caution');
+  assert.ok(advice.portionGuideEn.includes('1 small seed / segment'));
+  assert.ok(!advice.portionGuideEn.includes('cup cooked'));
+  assert.ok(advice.portionGuideKm.includes('១ កញ្ចង់តូច'));
 });
