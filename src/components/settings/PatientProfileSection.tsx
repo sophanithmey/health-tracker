@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { patientService } from '@/services/patient-service';
-import { User, PhoneCall, Save } from 'lucide-react';
+import { User, PhoneCall, Save, Stethoscope } from 'lucide-react';
 import { PatientProfile, DiabetesType } from '@/types';
 
 interface PatientProfileSectionProps {
@@ -17,6 +17,9 @@ export function PatientProfileSection({ patient, onRefresh }: PatientProfileSect
   const [fullNameKm, setFullNameKm] = useState(patient.fullNameKm || '');
   const [ageGroup, setAgeGroup] = useState(patient.ageGroup || '60-69');
   const [diabetesType, setDiabetesType] = useState<DiabetesType>(patient.diabetesType || 'unknown');
+  const [doctorName, setDoctorName] = useState(patient.doctorName || '');
+  const [doctorClinic, setDoctorClinic] = useState(patient.doctorClinic || '');
+  const [doctorPhone, setDoctorPhone] = useState(patient.doctorPhone || '');
   const [emergencyName, setEmergencyName] = useState(patient.emergencyContactName || '');
   const [emergencyPhone, setEmergencyPhone] = useState(patient.emergencyContactPhone || '');
   const [emergencyRel, setEmergencyRel] = useState(patient.emergencyContactRelation || 'Daughter');
@@ -31,14 +34,18 @@ export function PatientProfileSection({ patient, onRefresh }: PatientProfileSect
         fullNameKm: fullNameKm.trim() || undefined,
         ageGroup,
         diabetesType,
+        doctorName: doctorName.trim(),
+        doctorClinic: doctorClinic.trim(),
+        doctorPhone: doctorPhone.trim(),
         emergencyContactName: emergencyName.trim(),
         emergencyContactPhone: emergencyPhone.trim(),
         emergencyContactRelation: emergencyRel.trim()
       });
       onRefresh();
       alert(t('saveSuccess') || 'Patient profile updated successfully');
-    } catch (err: any) {
-      alert(err.message || 'Failed to update patient profile');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update patient profile';
+      alert(msg);
     } finally {
       setIsSaving(false);
     }
@@ -112,6 +119,47 @@ export function PatientProfileSection({ patient, onRefresh }: PatientProfileSect
             <option value="other">{tPatient('otherType') || 'Other'}</option>
             <option value="unknown">{tPatient('unknown') || 'Unknown / Not specified'}</option>
           </select>
+        </div>
+      </div>
+
+      {/* Attending Clinician */}
+      <div className="pt-4 border-t border-slate-100">
+        <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center">
+          <Stethoscope className="w-4 h-4 mr-2 text-teal-600" />
+          {t('attendingClinician')}
+        </h4>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-[11px] font-bold text-slate-600 mb-1">{t('doctorName')}</label>
+            <input
+              type="text"
+              value={doctorName}
+              onChange={(e) => setDoctorName(e.target.value)}
+              placeholder="e.g. Dr. Linat Kong"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-bold text-slate-600 mb-1">{t('doctorClinic')}</label>
+            <input
+              type="text"
+              value={doctorClinic}
+              onChange={(e) => setDoctorClinic(e.target.value)}
+              placeholder="e.g. Ekip Medical Center"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-bold text-slate-600 mb-1">{t('doctorPhone')}</label>
+            <input
+              type="tel"
+              value={doctorPhone}
+              onChange={(e) => setDoctorPhone(e.target.value)}
+              placeholder="e.g. +855 23 888 999"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none"
+            />
+          </div>
         </div>
       </div>
 

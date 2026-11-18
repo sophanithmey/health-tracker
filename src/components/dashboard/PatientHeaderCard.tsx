@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { PatientProfile } from '@/types';
@@ -9,17 +9,21 @@ import {
   Stethoscope,
   PhoneCall,
   Activity,
-  ChevronRight
+  ChevronRight,
+  Pencil
 } from 'lucide-react';
+import { EditClinicianModal } from './EditClinicianModal';
 
 interface PatientHeaderCardProps {
   patient: PatientProfile;
   onRecordClick?: () => void;
+  estimatedA1c?: number | null;
 }
 
-export function PatientHeaderCard({ patient }: PatientHeaderCardProps) {
+export function PatientHeaderCard({ patient, estimatedA1c }: PatientHeaderCardProps) {
   const t = useTranslations('patient');
   const locale = useLocale();
+  const [isEditClinicianOpen, setIsEditClinicianOpen] = useState(false);
 
   const diabetesTypeKey =
     patient.diabetesType === 'prediabetes' ? 'prediabetes' :
@@ -76,10 +80,18 @@ export function PatientHeaderCard({ patient }: PatientHeaderCardProps) {
 
             {/* Badges Row */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-teal-50 text-teal-900 border border-teal-200/70 shadow-2xs">
+              <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-teal-50 text-teal-900 border border-teal-200/70 shadow-2xs font-khmer">
                 <Activity className="w-3.5 h-3.5 mr-1.5 text-teal-700" />
                 {t(diabetesTypeKey)}
               </span>
+
+              {estimatedA1c !== null && estimatedA1c !== undefined ? (
+                <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200/80 shadow-2xs font-khmer">
+                  <span className="mr-1.5 text-xs">🩺</span>
+                  <span>{locale === 'km' ? 'HbA1c ប៉ាន់ស្មាន៖ ' : 'eA1c: '}</span>
+                  <strong className="ml-1 text-indigo-700">{estimatedA1c.toFixed(1)}%</strong>
+                </span>
+              ) : null}
 
               <Link
                 href="/medications"
@@ -98,23 +110,40 @@ export function PatientHeaderCard({ patient }: PatientHeaderCardProps) {
 
         {/* Right: Care Team & Emergency Quick Actions */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:self-center shrink-0">
-          {/* Clinician Card */}
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex items-center space-x-3 text-xs">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-700 flex items-center justify-center shrink-0">
+          {/* Clinician Card (Interactive 1-Tap Edit) */}
+          <button
+            type="button"
+            onClick={() => setIsEditClinicianOpen(true)}
+            className="p-3 sm:p-3.5 rounded-2xl bg-slate-50/90 hover:bg-teal-50/50 border border-slate-200/80 hover:border-teal-300 flex items-center space-x-3 text-xs text-left transition shadow-2xs group cursor-pointer"
+            title={t('editDoctor')}
+          >
+            <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <Stethoscope className="w-5 h-5" />
             </div>
-            <div className="min-w-0">
-              <div className="text-[10px] font-bold text-teal-800 uppercase tracking-wider">
-                {t('doctor')}
+            <div className="min-w-0 pr-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-bold text-teal-800 uppercase tracking-wider">
+                  {t('doctor')}
+                </span>
+                <span className="flex items-center text-[10px] font-medium text-slate-400 group-hover:text-teal-700 transition">
+                  <Pencil className="w-2.5 h-2.5 mr-0.5" />
+                  {locale === 'km' ? 'កែ' : 'Edit'}
+                </span>
               </div>
               <div className="font-bold text-slate-900 truncate">
                 {patient.doctorName || (locale === 'km' ? 'មិនទាន់កំណត់' : 'Not assigned')}
               </div>
-              <div className="text-[11px] text-slate-500 truncate">
-                {patient.doctorClinic || (locale === 'km' ? 'គ្លីនិកមិនទាន់បញ្ជាក់' : 'No clinic specified')}
+              <div className="text-[11px] text-slate-500 truncate flex items-center gap-1.5">
+                <span>{patient.doctorClinic || (locale === 'km' ? 'គ្លីនិកមិនទាន់បញ្ជាក់' : 'No clinic specified')}</span>
+                {patient.doctorPhone ? (
+                  <>
+                    <span>•</span>
+                    <span className="font-mono text-teal-700 font-semibold">{patient.doctorPhone}</span>
+                  </>
+                ) : null}
               </div>
             </div>
-          </div>
+          </button>
 
           {/* Emergency 1-Tap Call Button */}
           {patient.emergencyContactPhone ? (
@@ -148,6 +177,12 @@ export function PatientHeaderCard({ patient }: PatientHeaderCardProps) {
           )}
         </div>
       </div>
+
+      <EditClinicianModal
+        isOpen={isEditClinicianOpen}
+        onClose={() => setIsEditClinicianOpen(false)}
+        patient={patient}
+      />
     </div>
   );
 }

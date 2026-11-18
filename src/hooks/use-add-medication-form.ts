@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocale } from 'next-intl';
+import { useQueryClient } from '@tanstack/react-query';
 import { medicationService } from '@/services/medication-service';
 import { MEDICATION_PRESETS, MedicationPreset } from '@/constants/medication-presets.constants';
 
@@ -19,6 +20,7 @@ export function useAddMedicationForm(
   onClose: () => void
 ) {
   const locale = useLocale();
+  const queryClient = useQueryClient();
 
   const [name, setName] = useState(initialData?.name || '');
   const [dosage, setDosage] = useState(initialData?.dosage || '500 mg');
@@ -64,9 +66,10 @@ export function useAddMedicationForm(
         frequency,
         timingInstructions: timingInstructions.trim(),
         prescribingDoctor: prescribingDoctor.trim() || undefined,
-        startDate: new Date(startDate).toISOString(),
-        endDate: endDate ? new Date(endDate).toISOString() : undefined,
+        startDate: startDate ? startDate.split('T')[0] : new Date().toISOString().split('T')[0],
+        endDate: endDate ? endDate.split('T')[0] : undefined,
         notes: notes.trim() || undefined,
+        isActive: true,
         rxcui,
         genericName,
         brandName,
@@ -74,6 +77,8 @@ export function useAddMedicationForm(
         dosageForm
       });
 
+      await queryClient.invalidateQueries({ queryKey: ['medications'] });
+      await queryClient.refetchQueries({ queryKey: ['medications'] });
       onSuccess();
       onClose();
     } catch (err: any) {

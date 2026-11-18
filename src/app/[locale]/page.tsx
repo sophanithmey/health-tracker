@@ -61,6 +61,7 @@ export default function DashboardPage() {
         <PatientHeaderCard
           patient={patient}
           onRecordClick={() => setIsEntryOpen(true)}
+          estimatedA1c={reportData?.summary?.estimatedA1c}
         />
       ) : null}
 

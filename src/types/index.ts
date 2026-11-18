@@ -316,6 +316,8 @@ export interface HealthReportSummary {
   totalMeasurements: number;
   fastingAverage: number | null;
   postMealAverage: number | null;
+  overallAverage?: number | null;
+  estimatedA1c?: number | null;
   overallLowest: number | null;
   overallHighest: number | null;
   belowTargetCount: number;

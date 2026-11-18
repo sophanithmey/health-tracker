@@ -672,9 +672,51 @@ export class HealthRepository {
 
         if (data && !error) {
           return data.map((d: any) => {
+            let notes = d.notes || undefined;
             let rxcui = d.rxcui;
             let genericName = d.generic_name;
             let brandName = d.brand_name;
+            let activeIngredients = d.active_ingredients || [];
+            let dosageForm = d.dosage_form;
+            let referenceSource = d.reference_source;
+
+            if (notes && typeof notes === 'string') {
+              if (notes.includes('<!--med_meta:')) {
+                const match = notes.match(/<!--med_meta:(.*?)-->/);
+                if (match && match[1]) {
+                  try {
+                    const meta = JSON.parse(match[1]);
+                    if (!rxcui) rxcui = meta.rxcui;
+                    if (!genericName) genericName = meta.genericName;
+                    if (!brandName) brandName = meta.brandName;
+                    if ((!activeIngredients || activeIngredients.length === 0) && meta.activeIngredients) {
+                      activeIngredients = meta.activeIngredients;
+                    }
+                    if (!dosageForm) dosageForm = meta.dosageForm;
+                    if (!referenceSource) referenceSource = meta.referenceSource || (meta.rxcui ? 'RxNorm' : undefined);
+                  } catch {
+                    // Ignore JSON parse error
+                  }
+                }
+                notes = notes.replace(/<!--med_meta:.*?-->/, '').trim() || undefined;
+              } else if (notes.startsWith('{"__meta":true,')) {
+                try {
+                  const meta = JSON.parse(notes);
+                  if (!rxcui) rxcui = meta.rxcui;
+                  if (!genericName) genericName = meta.genericName;
+                  if (!brandName) brandName = meta.brandName;
+                  if ((!activeIngredients || activeIngredients.length === 0) && meta.activeIngredients) {
+                    activeIngredients = meta.activeIngredients;
+                  }
+                  if (!dosageForm) dosageForm = meta.dosageForm;
+                  if (!referenceSource) referenceSource = meta.referenceSource || (meta.rxcui ? 'RxNorm' : undefined);
+                  notes = undefined;
+                } catch {
+                  // Ignore JSON parse error
+                }
+              }
+            }
+
             const nameLower = (d.name || '').toLowerCase();
             if (!rxcui) {
               if (nameLower.includes('domicron') || nameLower.includes('diamicron') || nameLower.includes('gliclazide')) {
@@ -707,13 +749,13 @@ export class HealthRepository {
               startDate: d.start_date,
               endDate: d.end_date,
               isActive: d.is_active,
-              notes: d.notes,
+              notes,
               rxcui,
               genericName,
               brandName,
-              activeIngredients: d.active_ingredients || [],
-              dosageForm: d.dosage_form,
-              referenceSource: d.reference_source || (rxcui ? 'RxNorm' : undefined),
+              activeIngredients: activeIngredients || [],
+              dosageForm,
+              referenceSource: referenceSource || (rxcui ? 'RxNorm' : undefined),
               createdAt: d.created_at,
               updatedAt: d.updated_at
             };
@@ -757,17 +799,44 @@ export class HealthRepository {
           });
         }
 
-        await supabaseServer.from('health_medications').insert({
+        const startDateFormatted = newMed.startDate ? newMed.startDate.split('T')[0] : new Date().toISOString().split('T')[0];
+        const endDateFormatted = newMed.endDate ? newMed.endDate.split('T')[0] : null;
+
+        const hasRefFields = Boolean(
+          newMed.rxcui ||
+          newMed.genericName ||
+          newMed.brandName ||
+          (newMed.activeIngredients && newMed.activeIngredients.length > 0) ||
+          newMed.dosageForm ||
+          newMed.referenceSource
+        );
+
+        const metaPayload = hasRefFields
+          ? {
+              rxcui: newMed.rxcui,
+              genericName: newMed.genericName,
+              brandName: newMed.brandName,
+              activeIngredients: newMed.activeIngredients,
+              dosageForm: newMed.dosageForm,
+              referenceSource: newMed.referenceSource
+            }
+          : null;
+
+        const encodedNotes = metaPayload
+          ? (newMed.notes ? `${newMed.notes}\n<!--med_meta:${JSON.stringify(metaPayload)}-->` : `<!--med_meta:${JSON.stringify(metaPayload)}-->`)
+          : (newMed.notes || null);
+
+        const fullPayload = {
           id: newMed.id,
           patient_id: newMed.patientId,
           name: newMed.name,
           dosage: newMed.dosage,
           frequency: newMed.frequency,
           timing_instructions: newMed.timingInstructions,
-          prescribing_doctor: newMed.prescribingDoctor,
-          start_date: newMed.startDate,
-          end_date: newMed.endDate || null,
-          is_active: newMed.isActive,
+          prescribing_doctor: newMed.prescribingDoctor || null,
+          start_date: startDateFormatted,
+          end_date: endDateFormatted,
+          is_active: newMed.isActive ?? true,
           notes: newMed.notes || null,
           rxcui: newMed.rxcui || null,
           generic_name: newMed.genericName || null,
@@ -775,9 +844,33 @@ export class HealthRepository {
           active_ingredients: newMed.activeIngredients || [],
           dosage_form: newMed.dosageForm || null,
           reference_source: newMed.referenceSource || null
-        });
+        };
+
+        const insertRes = await supabaseServer.from('health_medications').insert(fullPayload);
+        if (insertRes.error) {
+          // If PostgREST fails due to schema missing reference columns (PGRST204)
+          const basePayload = {
+            id: newMed.id,
+            patient_id: newMed.patientId,
+            name: newMed.name,
+            dosage: newMed.dosage,
+            frequency: newMed.frequency,
+            timing_instructions: newMed.timingInstructions,
+            prescribing_doctor: newMed.prescribingDoctor || null,
+            start_date: startDateFormatted,
+            end_date: endDateFormatted,
+            is_active: newMed.isActive ?? true,
+            notes: encodedNotes
+          };
+          const retryRes = await supabaseServer.from('health_medications').insert(basePayload);
+          if (retryRes.error) {
+            console.error('Error inserting health_medication into Supabase:', retryRes.error);
+            throw new Error(retryRes.error.message || 'Failed to save medication in database');
+          }
+        }
       } catch (err) {
-        console.warn('Error creating health_medications in Supabase:', err);
+        console.error('Error creating health_medications in Supabase:', err);
+        throw err;
       }
     }
 
@@ -805,7 +898,11 @@ export class HealthRepository {
         if (updates.dosageForm !== undefined) payload.dosage_form = updates.dosageForm;
         if (updates.referenceSource !== undefined) payload.reference_source = updates.referenceSource;
 
-        await supabaseServer.from('health_medications').update(payload).eq('id', id);
+        const updateRes = await supabaseServer.from('health_medications').update(payload).eq('id', id);
+        if (updateRes.error) {
+          const { rxcui, generic_name, brand_name, active_ingredients, dosage_form, reference_source, ...basePayload } = payload;
+          await supabaseServer.from('health_medications').update(basePayload).eq('id', id);
+        }
       } catch (err) {
         console.warn('Error updating health_medications in Supabase:', err);
       }
@@ -1322,6 +1419,12 @@ export class HealthRepository {
 
     const totalActMins = activities.reduce((acc, a) => acc + (a.durationMinutes || 0), 0);
 
+    const totalGlucoseSum = records.reduce((acc, r) => acc + r.valueMgDl, 0);
+    const overallAvg =
+      records.length > 0 ? Math.round((totalGlucoseSum / records.length) * 10) / 10 : null;
+    const estimatedA1c =
+      overallAvg !== null ? Math.round(((overallAvg + 46.7) / 28.7) * 10) / 10 : null;
+
     const takenCount = medLogs.filter((m) => m.status === 'taken').length;
     const adherenceRate = medLogs.length > 0 ? Math.round((takenCount / medLogs.length) * 100) : 0;
 
@@ -1332,6 +1435,8 @@ export class HealthRepository {
       totalMeasurements: records.length,
       fastingAverage: fastingAvg,
       postMealAverage: postMealAvg,
+      overallAverage: overallAvg,
+      estimatedA1c: estimatedA1c,
       overallLowest: lowest,
       overallHighest: highest,
       belowTargetCount,
